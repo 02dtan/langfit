@@ -1,0 +1,28 @@
+[01:09:02] replication: S&B protocol on Austen
+[01:10:17]   S_ind 14.323  S_2 7.549  S_3 6.982  S_full 6.982  captured 0.923  conv True
+[01:10:17] corpora at N = 142,614 tokens x 5 subsamples: 17 corpora
+[01:13:58]   Austen done
+[01:16:27]   Gutenberg done
+[01:18:06]   Bluesky done
+[01:18:06]   Twitter 2010 done
+[01:18:31]   Twitter 2011 done
+[01:20:43]   Twitter 2012 done
+[01:20:43]   Twitter 2013 done
+[01:21:27]   Twitter 2014 done
+[01:22:20]   Twitter 2015 done
+[01:24:07]   Twitter 2016 done
+[01:24:07]   Twitter 2017 done
+[01:25:25]   Twitter 2018 done
+[01:25:36]   Twitter 2019 done
+[01:27:58]   Twitter 2020 done
+[01:27:58]   Twitter 2021 done
+[01:29:12]   Twitter 2022 done
+[01:29:15]   Twitter 2023 done
+[01:29:16] nested CV (5 outer x 4 inner folds) at N = 142,614: ['Austen', 'Gutenberg', 'Twitter 2010', 'Twitter 2017', 'Twitter 2023', 'Bluesky']
+[15:01:49]   Austen: independent 14.3861 +- 0.0082  pairwise 7.6775 +- 0.0089 bits/token  sigma^2 [100.00000000000001, 100.00000000000001, 100.00000000000001, 100.00000000000001, 100.00000000000001]  interior True
+[15:01:49]   Gutenberg: independent 14.4750 +- 0.0036  pairwise 8.6294 +- 0.0102 bits/token  sigma^2 [31.622776601683796, 31.622776601683796, 31.622776601683796, 31.622776601683796, 31.622776601683796]  interior True
+[15:01:49]   Twitter 2010: independent 15.2599 +- 0.0114  pairwise 9.8778 +- 0.0060 bits/token  sigma^2 [10.0, 10.0, 10.0, 10.0, 10.0]  interior True
+[15:01:49]   Twitter 2017: independent 15.0704 +- 0.0079  pairwise 9.5944 +- 0.0099 bits/token  sigma^2 [3.1622776601683795, 3.1622776601683795, 3.1622776601683795, 3.1622776601683795, 3.1622776601683795]  interior True
+[15:01:49]   Twitter 2023: independent 14.9438 +- 0.0050  pairwise 9.4809 +- 0.0086 bits/token  sigma^2 [3.1622776601683795, 3.1622776601683795, 3.1622776601683795, 3.1622776601683795, 3.1622776601683795]  interior True
+[15:01:49]   Bluesky: independent 14.8472 +- 0.0033  pairwise 9.3122 +- 0.0078 bits/token  sigma^2 [10.0, 3.1622776601683795, 3.1622776601683795, 10.0, 10.0]  interior True
+[15:01:49] wrote /Users/dtan/projects/languagefitness/data/derived/maxent_study.json (49968s)

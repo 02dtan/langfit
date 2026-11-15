@@ -1,0 +1,2366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Energy landscape of words under maximum-entropy models</title>
+<script src="__PLOTLY__"></script>
+<style>
+  :root { --fg:#1d2330; --muted:#5b6475; --line:#d9dde5; --accent:#2b5fab; --bg:#fafbfc; }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 13px/1.45 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color:var(--fg); background:#fff; }
+  header { padding:10px 16px 0; border-bottom:1px solid var(--line); }
+  header h1 { font-size:16px; margin:0 0 6px; font-weight:600; }
+  .tabs button { border:1px solid var(--line); border-bottom:none; background:var(--bg); padding:6px 12px; margin-right:4px;
+                 border-radius:6px 6px 0 0; cursor:pointer; font-size:12.5px; color:var(--muted); }
+  .tabs button.on { background:#fff; color:var(--fg); font-weight:600; position:relative; top:1px; }
+  .tab { display:none; }
+  .tab.on { display:flex; flex-direction:column; height:calc(100vh - 74px); }
+  .strip { flex:0 0 auto; padding:6px 14px; font-size:12px; font-weight:700; letter-spacing:.02em; border-bottom:1px solid var(--line); }
+  .strip.sb { background:#eef3fb; color:#2455a0; }
+  .strip.new { background:#fbeeea; color:#a03c28; }
+  .strip.over { background:#f2f3f5; color:var(--muted); }
+  .row { flex:1 1 auto; display:flex; min-height:0; }
+  .main { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; }
+  .panel { flex:0 0 430px; max-width:430px; border-left:1px solid var(--line); padding:10px 14px; overflow-y:auto;
+           background:var(--bg); }
+  .intro { flex:1 1 auto; overflow-y:auto; padding:12px 20px; max-width:900px; }
+  .intro h2 { font-size:15px; margin:18px 0 6px; }
+  .intro h3 { font-size:13.5px; margin:14px 0 4px; }
+  .intro .prop { border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:4px;
+                 padding:6px 10px; margin:8px 0; background:#fbfcfe; }
+  .intro .todo { background:#fff6e5; border-left:3px solid #e0a800; }
+  .note { border:1px solid #f0d8a0; background:#fff9ea; color:#6b4d00; border-radius:5px; padding:8px 12px;
+          margin:8px 0; font-size:12.5px; }
+  .controls { padding:8px 12px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--line); }
+  .plot { width:100%; }
+  h2 { font-size:14px; margin:12px 0 4px; }
+  h3 { font-size:13px; margin:10px 0 3px; color:var(--accent); }
+  p { margin:4px 0; }
+  .muted { color:var(--muted); }
+  table { border-collapse:collapse; width:100%; margin:4px 0; font-size:12px; }
+  th, td { border-bottom:1px solid var(--line); padding:2px 4px; text-align:right; }
+  th:first-child, td:first-child { text-align:left; }
+  td.l { text-align:left; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size:12px; }
+  .bar { display:inline-block; height:9px; background:var(--accent); vertical-align:middle; }
+  .neg { color:#b03a2e; } .pos { color:#1f6f43; }
+  .slider { padding:6px 12px 2px; display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; border-top:1px solid var(--line); }
+  .slider button { width:70px; padding:4px; }
+  .date { font-weight:600; min-width:220px; font-variant-numeric: tabular-nums; }
+  /* Fixed-size inner controls: only the time slider stretches; labels wrap as units instead of overflowing. */
+  .controls label, .slider label { display:inline-flex; align-items:center; flex-wrap:wrap; gap:4px; max-width:100%; }
+  .controls select, .slider select { min-width:0; max-width:min(260px, 100%); text-overflow:ellipsis; }
+  .controls input[type=range], .slider input[type=range] { flex:none; width:110px; }
+  .slider #frame, .slider #nframe { flex:1 1 220px; width:auto; min-width:140px; }
+  .key { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+  select { font-size:13px; padding:3px; }
+  .refs li { margin-bottom:3px; }
+  .grey-key { display:inline-block; width:10px; height:10px; background:#d9dde5; margin-right:4px; vertical-align:middle; border:1px solid #c3c9d3; }
+  /* Narrow screens (phones, iPad portrait): the landscape stays pinned in the top ~62% of the viewport while controls and the
+     explanatory panel scroll underneath it; the tab bar scrolls sideways; controls become a tidy wrapped grid. */
+  @media (max-width: 900px) {
+    html { -webkit-text-size-adjust:100%; }
+    header { padding:8px 10px 0; }
+    header h1 { font-size:14.5px; }
+    .tabs { display:flex; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .tabs button { flex:0 0 auto; white-space:nowrap; padding:7px 12px; top:0; }
+    .tab.on { height:auto; }
+    .strip { padding:5px 10px; }
+    .row { flex:none; flex-direction:column; }
+    .main { display:contents; }
+    #plot1, #plot2, #nplot, #nplot2 { order:-1; position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid var(--line); }
+    .panel { flex:none; width:100%; max-width:none; border-left:none; border-top:1px solid var(--line); overflow:visible;
+             overflow-wrap:anywhere; padding:10px 12px 28px; }
+    .panel table { display:block; overflow-x:auto; max-width:100%; }
+    .controls, .slider { padding:8px 10px; gap:8px 12px; }
+    .controls > label, .slider > label { flex:1 1 150px; min-width:0; justify-content:space-between; }
+    .controls > label.wide { flex-basis:100%; }
+    .controls select, .slider select { flex:1 1 90px; max-width:100%; font-size:16px; }
+    .controls input[type=range], .slider input[type=range] { flex:1 1 80px; width:auto; min-width:60px; }
+    .controls input[type=checkbox] { width:18px; height:18px; }
+    .slider > * { order:3; }
+    .slider > button { order:0; width:auto; min-width:70px; padding:8px 12px; }
+    .slider > #frame, .slider > #nframe { order:1; flex:1 1 50%; min-width:120px; }
+    .slider > .date { order:2; min-width:0; flex:0 0 auto; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Energy landscapes of words under maximum-entropy models</h1>
+  <div class="tabs">
+    <button id="tb0" class="on" onclick="showTab(0)">0 · What this is</button>
+    <button id="tb1" onclick="showTab(1)">1 · 3D landscape — S&amp;B (four-letter)</button>
+    <button id="tb2" onclick="showTab(2)">2 · Over time — S&amp;B (four-letter)</button>
+    <button id="tb3" onclick="showTab(3)">3 · 3D landscape — New model</button>
+    <button id="tb4" onclick="showTab(4)">4 · Over time — New model</button>
+  </div>
+</header>
+
+__INTRO__
+
+<section id="tab1" class="tab">
+  <div class="strip sb" id="strip1">Stephens &amp; Bialek model (pure, four-letter)</div>
+  <div class="row">
+    <div class="main">
+      <div class="controls">
+        <label>Model <select id="model"></select></label>
+        <label>Basis <select id="basis1"></select> <span id="basis1note" class="muted" style="font-size:11px"></span></label>
+        <label>View <select id="view1"><option value="3d">3D</option><option value="2d">2D</option></select></label>
+        <label>Resolution <input type="range" id="res1" min="8" max="256" value="32" step="8"> <span id="res1v" class="mono">32</span></label>
+        <label>Hover words <select id="hover1"><option value="off">off</option><option value="1">top-1</option><option value="3" selected>top-3</option><option value="5">top-5</option><option value="near">nearest</option></select></label>
+        <label><input type="checkbox" id="clip1"> cap at 18.80 bits</label>
+        <label><input type="checkbox" id="smooth1"> smooth</label>
+        <label id="smoothlen1label" style="display:none">length (cells) <input type="range" id="smoothlen1" min="0.5" max="4" value="1.5" step="0.1"> <span id="smoothlen1v" class="mono">1.5</span></label>
+        <label class="wide"><input type="checkbox" id="showpath" checked> show path <select id="pathfrom" title="from well"></select> → <select id="pathto" title="to well"></select></label>
+      </div>
+      <div id="plot1" class="plot"></div>
+    </div>
+    <aside class="panel" id="panel1"></aside>
+  </div>
+</section>
+
+<section id="tab2" class="tab">
+  <div class="strip sb" id="strip2">Stephens &amp; Bialek model (pure, four-letter)</div>
+  <div class="row">
+    <div class="main">
+      <div id="plot2" class="plot"></div>
+      <div class="slider">
+        <button id="play">▶ play</button>
+        <label>Basis <select id="basis2"></select></label>
+        <label>View <select id="view2"><option value="3d">3D</option><option value="2d">2D</option></select></label>
+        <label>Resolution <input type="range" id="res2" min="8" max="256" value="32" step="8"> <span id="res2v" class="mono">32</span></label>
+        <label>Hover words <select id="hover2"><option value="off">off</option><option value="1">top-1</option><option value="3" selected>top-3</option><option value="5">top-5</option><option value="near">nearest</option></select></label>
+        <label><input type="checkbox" id="clip2"> cap at 18.80 bits</label>
+        <label><input type="checkbox" id="smooth2"> smooth</label>
+        <label id="smoothlen2label" style="display:none">length (cells) <input type="range" id="smoothlen2" min="0.5" max="4" value="1.5" step="0.1"> <span id="smoothlen2v" class="mono">1.5</span></label>
+        <input type="range" id="frame" min="0" value="0" step="1">
+        <span class="date" id="dateLabel"></span>
+      </div>
+      <div id="lines" class="plot"></div>
+    </div>
+    <aside class="panel" id="panel2"></aside>
+  </div>
+</section>
+
+<section id="tab3" class="tab">
+  <div class="strip new" id="strip3">New model (augmented: all lengths, edit moves, 41 shards)</div>
+  <div class="row">
+    <div class="main">
+      <div class="controls">
+        <label>Model <select id="nmodel"></select></label>
+        <label title="Display only: heights above z = 40 bits (the zero-mass ceiling used in the data) are drawn at 40; hover shows true values"><input type="checkbox" id="nclip"> cap at z = 40</label>
+        <label title="Display only"><input type="checkbox" id="nsmooth"> smooth</label>
+        <label id="smoothlen3label" style="display:none">length (cells) <input type="range" id="smoothlen3" min="0.5" max="4" value="1.5" step="0.1"> <span id="smoothlen3v" class="mono">1.5</span></label>
+        <label>view <select id="nview"><option value="3d">3D</option><option value="2d">2D heatmap</option></select></label>
+        <label>level <select id="nlevel"></select></label>
+        <label>Hover words <select id="nhover"><option value="off">off</option><option value="1">top-1</option><option value="3" selected>top-3</option><option value="5">top-5</option><option value="near">nearest</option></select></label>
+      </div>
+      <div id="nplot" class="plot"></div>
+    </div>
+    <aside class="panel" id="npanel"></aside>
+  </div>
+</section>
+
+<section id="tab4" class="tab">
+  <div class="strip new" id="strip4">New model (augmented: all lengths, edit moves, 41 shards)</div>
+  <div class="row">
+    <div class="main">
+      <div id="nplot2" class="plot"></div>
+      <div class="slider">
+        <button id="nplay">▶ play</button>
+        <label title="Display only: heights above z = 40 bits (the zero-mass ceiling used in the data) are drawn at 40; hover shows true values"><input type="checkbox" id="nclip2"> cap at z = 40</label>
+        <label title="Display only"><input type="checkbox" id="nsmooth2"> smooth</label>
+        <label id="smoothlen4label" style="display:none">length (cells) <input type="range" id="smoothlen4" min="0.5" max="4" value="1.5" step="0.1"> <span id="smoothlen4v" class="mono">1.5</span></label>
+        <select id="nview2"><option value="3d">3D</option><option value="2d">2D heatmap</option></select>
+        <label>level <select id="nlevel2"></select></label>
+        <label>Hover words <select id="nhover2"><option value="off">off</option><option value="1">top-1</option><option value="3" selected>top-3</option><option value="5">top-5</option><option value="near">nearest</option></select></label>
+        <input type="range" id="nframe" min="0" value="0" step="1">
+        <span class="date" id="ndateLabel"></span>
+      </div>
+      <div id="nlines" class="plot"></div>
+    </div>
+    <aside class="panel" id="npanel2"></aside>
+  </div>
+</section>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+/* LandscapeEngine (client-side recomputation of E_bin / wells / words). */
+__ENGINE__
+</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("data").textContent);
+const UC = D.ui_copy || {};
+function uc(key, fallback) { const v = key.split(".").reduce((o, k) => (o == null ? o : o[k]), UC); return (v == null || v === "") ? (fallback || "") : v; }
+function bindUICopy() {
+  const stripIds = ["strip1", "strip2", "strip3", "strip4"];
+  const tabKeys = ["sb_static", "sb_time", "nm_static", "nm_time"];
+  tabKeys.forEach((k, i) => { const el = document.getElementById(stripIds[i]); if (el && UC.tabs && UC.tabs[k]) el.textContent = UC.tabs[k].title || el.textContent; });
+  const ctrl = UC.controls || {};
+  const ctrlMap = [["model", "model"], ["basis", "basis1"], ["view", "view1"], ["resolution", "res1"], ["hover", "hover1"], ["clip", "clip1"], ["smooth", "smooth1"], ["path", "showpath"]];
+  ctrlMap.forEach(([k, id]) => { const el = document.getElementById(id); if (el && ctrl[k]) el.title = ctrl[k]; });
+  ctrlMap.forEach(([k, id]) => { const el = document.getElementById(id.replace("1", "2")); if (el && ctrl[k]) el.title = ctrl[k]; });
+}
+function compactWellsTable(wells, isNM) {
+  const top = (wells || []).slice(0, 8);
+  if (!top.length) return "";
+  const rows = top.map((w, i) => {
+    const name = wWord(w.words[0]), approx = wApprox(w.words[0]);
+    const share = (w.mass != null) ? `${(100 * w.mass).toFixed(1)}%` : (w.basin_mass != null ? `${(100 * w.basin_mass).toFixed(1)}%` : "—");
+    const z = isNM ? `<td class="mono">${fmt(w.E, 1)}</td>` : "";
+    return `<tr><td class="l"><b>W${i + 1}</b></td><td class="l mono">${name}${approx ? "*" : ""}</td>${z}<td class="mono">${share}</td></tr>`;
+  }).join("");
+  const zhead = isNM ? "<th>z</th>" : "";
+  const cap = isNM ? `<p class="muted" style="margin:0 0 2px;font-size:11px">* = estimated</p>` : "";
+  return `<table class="compact"><tr><th class="l">well</th><th class="l">word</th>${zhead}<th>share</th></tr>${rows}</table>${cap}`;
+}
+function sidebarBarrierLine(barrier, wells) {
+  if (!barrier || !barrier.wells) return "";
+  const iw = barrier.wells.map(c => (wells || []).findIndex(w => w.cell === c) + 1);
+  return `<p class="muted" style="margin:2px 0">Barrier W${iw[0]}↔W${iw[1]}: climb +${fmt(barrier.above[0], 1)} / +${fmt(barrier.above[1], 1)} bits</p>`;
+}
+function sidebarPathLine(pathInfo, res) {
+  if (!pathInfo || !res) return "";
+  const words = pathInfo.path.map(id => res.decodeId(id));
+  const seq = words.length <= 8 ? words.join(" → ") : words.slice(0, 5).join(" → ") + " → … → " + words[words.length - 1];
+  return `<p class="muted" style="margin:2px 0">Path: ${seq} (peak ${res.decodeId(pathInfo.bottleId)}, ${fmt(pathInfo.bottleE, 1)} bits)</p>`;
+}
+function sidebarLegend(opts) {
+  const L = UC.legend || {};
+  const parts = [L.wells, opts.isNM ? L.height_nm : L.height_sb];
+  if (opts.hasPath) parts.push(L.path);
+  return parts.filter(Boolean).map(t => `<p class="muted" style="margin:1px 0;font-size:11px">${t}</p>`).join("");
+}
+function sidebarHead(tabKey, opts) {
+  return `<h2>${uc("tabs." + tabKey + ".title", "")}</h2>
+  <p>${uc("tabs." + tabKey + ".blurb", "")}</p>
+  ${compactWellsTable(opts.wells, opts.isNM)}
+  ${sidebarBarrierLine(opts.barrier, opts.wells)}
+  ${sidebarPathLine(opts.pathInfo, opts.res)}
+  ${sidebarLegend(opts)}`;
+}
+const G = D.grid;
+const fmt = (v, d = 2) => (v === null || v === undefined || !isFinite(v)) ? "∞" : Number(v).toFixed(d);
+const pct = v => (100 * v).toFixed(1) + "%";
+const big = n => Number(n).toLocaleString("en-US", {maximumFractionDigits: 0});
+const num = (v, frac = 0) => (v === null || v === undefined || !isFinite(v)) ? "∞" : Number(v).toLocaleString("en-US", {maximumFractionDigits: frac});
+const POS = ["1st", "2nd", "3rd", "4th"];
+const INSET = 0.04;
+const CAMERAS = {   // zoomed out on narrow screens so the 3D scene and its axis titles fit the plot width
+  get "3d"() {
+    const s = window.matchMedia("(max-width: 900px)").matches ? 1.55 : 1;
+    return {eye: {x: 1.45 * s, y: -1.5 * s, z: 0.75 * s}, center: {x: 0, y: 0, z: -0.18}, up: {x: 0, y: 0, z: 1}, projection: {type: "perspective"}};
+  },
+};
+const CAP = D.uniform_bits;
+const clipZ = (v, clip) => (v === null || v === undefined || !clip) ? v : Math.min(v, CAP);
+const SURFACE_OPACITY = 1.0;   // opaque: gl3d depth-sorts markers correctly against it
+const GREY = "#d9dde5";
+const NC = {x: {show: false, highlight: false}, y: {show: false, highlight: false}, z: {show: false, highlight: false}};
+
+function tileAxis(centres) {
+  const w = centres[1] - centres[0], out = [];
+  for (const c of centres) { out.push(c - w / 2 + INSET * w, c + w / 2 - INSET * w); }
+  return out;
+}
+function tileZ(rows, clip) {
+  const out = [];
+  for (const row of rows) { const r = []; for (const v of row) { const z = clipZ(v, clip); r.push(z, z); } out.push(r, r.slice()); }
+  return out;
+}
+function tileText(rows, extra, label) {
+  const out = [];
+  rows.forEach((row, r) => { const t = [];
+    row.forEach((v, c) => { const s = v === null ? "" : `${label || "E<sub>bin</sub>"} = ${v.toFixed(2)} bits` + (extra ? extra(r, c) : ""); t.push(s, s); });
+    out.push(t, t.slice()); });
+  return out;
+}
+function colorbar(clip, bitsLabel) {
+  return {title: {text: clip ? `E<sub>bin</sub> bits<br>(clipped at<br>${CAP.toFixed(2)})` : (bitsLabel || "E<sub>bin</sub><br>bits"), side: "top"},
+          len: 0.6, thickness: 12};
+}
+function finiteRange(rows) {
+  let lo = Infinity, hi = -Infinity;
+  for (const row of rows) for (const v of row) if (v !== null && v !== undefined && isFinite(v)) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+  return [lo, hi];
+}
+const NARROW = window.matchMedia("(max-width: 900px)");
+/* Wide: height tracks the window. Narrow (phone / tablet portrait): the landscape takes ~62% of the viewport (sticky at the top). */
+function plotHeight(frac) { return NARROW.matches ? Math.max(280, Math.round(window.innerHeight * 0.62)) : Math.max(300, Math.round((window.innerHeight - 120) * frac)); }
+function linesHeight() { return NARROW.matches ? 200 : Math.max(150, Math.round((window.innerHeight - 120) * 0.22)); }
+/* Narrow screens: slimmer, shorter colour bars with small type so they do not eat the plot width (applies to every trace). */
+function narrowTune(traces) {
+  if (!NARROW.matches || !Array.isArray(traces)) return traces;
+  for (const t of traces) {
+    if (!t || !t.colorbar) continue;
+    const title = t.colorbar.title || {};
+    t.colorbar = Object.assign({}, t.colorbar, {thickness: 8, len: 0.5, xpad: 2, tickfont: {size: 9},
+      title: Object.assign({}, typeof title === "string" ? {text: title} : title, {font: {size: 9}})});
+  }
+  return traces;
+}
+function narrowLayout(layout) {
+  if (!NARROW.matches || !layout) return layout;
+  const L = Object.assign({}, layout);
+  L.margin = Object.assign({}, layout.margin, {r: Math.max((layout.margin || {}).r || 0, 34)});   // room for the colour-bar tick labels
+  if (L.scene) {
+    const sc = Object.assign({}, L.scene);
+    for (const a of ["xaxis", "yaxis", "zaxis"]) if (sc[a]) sc[a] = Object.assign({}, sc[a], {title: Object.assign({}, sc[a].title, {font: {size: 10}})});
+    L.scene = sc;
+  }
+  return L;
+}
+for (const fn of ["react", "newPlot"]) { const orig = Plotly[fn].bind(Plotly); Plotly[fn] = (id, tr, layout, ...rest) => orig(id, narrowTune(tr), narrowLayout(layout), ...rest); }
+function zRange(lo, hi, clip) { return [Math.floor(lo) - 1, clip ? Math.ceil(CAP) + 1 : Math.ceil(hi) + 1]; }
+
+/* Smooth-surface decoding: int16 centibits + uint8 grey mask, sub x sub per cell. */
+function decodeSmooth(s) {
+  const bin = atob(s.zb64), buf = new ArrayBuffer(bin.length), u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  const q = new Int16Array(buf);
+  const gbin = atob(s.grey_b64), gbuf = new ArrayBuffer(gbin.length), gu8 = new Uint8Array(gbuf);
+  for (let i = 0; i < gbin.length; i++) gu8[i] = gbin.charCodeAt(i);
+  return {q, grey: new Uint8Array(gbuf), sub: s.sub, n: G * s.sub, scale: s.scale || 100,
+          stride: s.stride, frames: s.frames};
+}
+function fineCentres(centres, sub) {
+  const w = centres[1] - centres[0], out = [];
+  for (const c of centres) for (let j = 0; j < sub; j++) out.push(c + (j - (sub - 1) / 2) * (w / sub));
+  return out;
+}
+/* fine z matrix (data cells only) and grey matrix (1 where unsupported) */
+function fineGrid(sm) {
+  const n = sm.n, data = [], grey = [];
+  for (let r = 0; r < n; r++) {
+    const dr = [], gr = [];
+    for (let c = 0; c < n; c++) {
+      const i = r * n + c, g = sm.grey[i];
+      gr.push(g);
+      dr.push(g ? null : sm.q[i] / sm.scale);
+    }
+    data.push(dr); grey.push(gr);
+  }
+  return {data, grey, n};
+}
+/* Contour levels spanning the DISPLAYED (already clipped, if clip is on) finite range. */
+function contourLevels(zRows, n) {
+  let lo = Infinity, hi = -Infinity;
+  for (const row of zRows) for (const v of row) if (v !== null && v !== undefined && isFinite(v)) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+  if (!isFinite(lo) || hi - lo < 1e-9) return [];
+  const out = [];
+  for (let k = 1; k <= n; k++) out.push(lo + (hi - lo) * k / (n + 1));
+  return out;
+}
+
+/* ------------------------------------------------------------------ well marks */
+function wellCap() {
+  return 12;
+}
+function capWells(wells, barrier) {
+  wells = wells || [];
+  const N = wellCap();
+  if (!wells.length) return {wells: [], barrier: null, shown: 0, total: 0};
+  if (wells.length <= N) return {wells: wells, barrier: barrier || null, shown: wells.length, total: wells.length};
+  const top = wells.slice(0, N);
+  const topCells = new Set(top.map(w => w.cell));
+  const extra = [];
+  for (const w of wells) {
+    if (!topCells.has(w.cell) && barrier && barrier.wells && barrier.wells.includes(w.cell)) {
+      extra.push(w); topCells.add(w.cell);
+    }
+  }
+  const capped = top.concat(extra);
+  let bar = null;
+  if (barrier && barrier.wells && barrier.wells.every(c => topCells.has(c))) bar = barrier;
+  return {wells: capped, barrier: bar, shown: capped.length, total: wells.length};
+}
+function wWord(e) { return typeof e === "string" ? e : (e ? e.w : ""); }
+function wApprox(e) { return typeof e !== "string" && !!e && !!(e.approx || e.L >= 6); }
+function wellMinCell(w) {
+  const e = w && w.min_cell_top;
+  if (!e) return "";
+  return `<br>minimum cell: ${wWord(e)}${wApprox(e) ? "*" : ""} (P=${(+e.p).toExponential(1)})`;
+}
+function wellWordLabel(e) {
+  const w = wWord(e);
+  if (!w) return "";
+  const share = (typeof e !== "string" && e && e.share != null) ? ` (${(100 * e.share).toFixed(1)}%)` : "";
+  return `${w}${wApprox(e) ? "*" : ""}${share}`;
+}
+function wellTraces3d(wells, barrier, show, clip, zMode) {
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  const el = zMode ? "z" : "E<sub>bin</sub>";
+  const tr = [];
+  if (!show) return tr;
+  tr.push({type: "scatter3d", mode: "markers", name: "projected wells",
+    x: wells.map(w => w.x), y: wells.map(w => w.y), z: wells.map(w => clipZ(smoothedZAt(w.x, w.y, w.E), clip)),
+    marker: {size: 6, color: "#e8590c", symbol: "circle", line: {color: "#5c2405", width: 1}},
+    hovertemplate: wells.map((w, i) =>
+      `<b>W${i + 1}</b> projected well<br>${el} min ${fmt(w.E)} bits<br>persistence ${fmt(w.persistence)} bits${w.essential ? " (global minimum: full height range)" : ""}` +
+      `<br>basin: ${w.words.map(e => wellWordLabel(e)).join(", ")}${wellMinCell(w)}${w.mass !== undefined ? `<br>P(basin) ${fmt(w.mass, 3)}` : ""}<extra></extra>`),
+    showlegend: false});
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    tr.push({type: "scatter3d", mode: "markers", name: "barrier",
+      x: [barrier.x], y: [barrier.y], z: [clipZ(smoothedZAt(barrier.x, barrier.y, barrier.E), clip)],
+      marker: {size: 6, color: "#7048e8", symbol: "diamond"},
+      hovertemplate: `<b>barrier</b> (saddle) ${el} ${fmt(barrier.E)} bits<br>` +
+        `climb from W${iw[0]} = +${fmt(barrier.above[0])} bits, from W${iw[1]} = +${fmt(barrier.above[1])} bits<extra></extra>`,
+      showlegend: false});
+  }
+  return tr;
+}
+function wellTraces2d(wells, barrier, show, zMode) {
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  const el = zMode ? "z" : "E<sub>bin</sub>";
+  const tr = [];
+  if (!show) return tr;
+  tr.push({type: "scatter", mode: "markers", name: "projected wells",
+    x: wells.map(w => w.x), y: wells.map(w => w.y),
+    marker: {size: 9, color: "#e8590c", symbol: "circle", line: {color: "#5c2405", width: 1.2}},
+    hovertemplate: wells.map((w, i) =>
+      `<b>W${i + 1}</b> projected well<br>${el} min ${fmt(w.E)} bits<br>persistence ${fmt(w.persistence)} bits${w.essential ? " (global minimum)" : ""}` +
+      `<br>basin: ${w.words.map(e => wellWordLabel(e)).join(", ")}${wellMinCell(w)}${w.mass !== undefined ? `<br>P(basin) ${fmt(w.mass, 3)}` : ""}<extra></extra>`),
+    showlegend: false});
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    tr.push({type: "scatter", mode: "markers", name: "barrier",
+      x: [barrier.x], y: [barrier.y],
+      marker: {size: 9, color: "#7048e8", symbol: "diamond"},
+      hovertemplate: `<b>barrier</b> (saddle) E<sub>bin</sub> ${fmt(barrier.E)} bits<br>` +
+        `climb from W${iw[0]} = +${fmt(barrier.above[0])} bits, from W${iw[1]} = +${fmt(barrier.above[1])} bits<extra></extra>`,
+      showlegend: false});
+  }
+  return tr;
+}
+function wellAnnotations3d(wells, barrier, show, clip) {
+  if (!show) return [];
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  const cx = wells.reduce((s, w) => s + w.x, 0) / Math.max(wells.length, 1);
+  const out = wells.map((w, i) => ({
+    x: w.x, y: w.y, z: clipZ(smoothedZAt(w.x, w.y, w.E), clip), text: `<b>W${i + 1}</b> ${wWord(w.words[0])}${wApprox(w.words[0]) ? "*" : ""}`,
+    showarrow: true, arrowhead: 0, arrowwidth: 1, arrowcolor: "#a8380a",
+    ax: (w.x >= cx ? 1 : -1) * (28 + 10 * (i % 3)), ay: -(26 + 16 * (i % 4)),
+    font: {size: 12, color: "#7a2a07"}, bgcolor: "rgba(255,255,255,0.85)", bordercolor: "#e8590c", borderpad: 2}));
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    out.push({x: barrier.x, y: barrier.y, z: clipZ(smoothedZAt(barrier.x, barrier.y, barrier.E), clip),
+      text: `barrier: climb from W${iw[0]} = +${fmt(barrier.above[0], 1)}, from W${iw[1]} = +${fmt(barrier.above[1], 1)} bits`,
+      showarrow: true, arrowhead: 0, arrowcolor: "#4b2bb3", ax: 0, ay: -70,
+      font: {size: 11, color: "#3b1f99"}, bgcolor: "rgba(255,255,255,0.85)", bordercolor: "#7048e8", borderpad: 2});
+  }
+  return out;
+}
+function wellAnnotations2d(wells, barrier, show) {
+  if (!show) return [];
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  const cx = wells.reduce((s, w) => s + w.x, 0) / Math.max(wells.length, 1);
+  const out = wells.map((w, i) => ({
+    x: w.x, y: w.y, text: `<b>W${i + 1}</b> ${wWord(w.words[0])}${wApprox(w.words[0]) ? "*" : ""}`,
+    showarrow: true, arrowhead: 0, arrowwidth: 1, arrowcolor: "#a8380a",
+    ax: (w.x >= cx ? 1 : -1) * (30 + 10 * (i % 3)), ay: -(24 + 16 * (i % 4)),
+    font: {size: 12, color: "#7a2a07"}, bgcolor: "rgba(255,255,255,0.85)", bordercolor: "#e8590c", borderpad: 2}));
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    out.push({x: barrier.x, y: barrier.y,
+      text: `barrier: climb from W${iw[0]} = +${fmt(barrier.above[0], 1)}, from W${iw[1]} = +${fmt(barrier.above[1], 1)} bits`,
+      showarrow: true, arrowhead: 0, arrowcolor: "#4b2bb3", ax: 0, ay: -40,
+      font: {size: 11, color: "#3b1f99"}, bgcolor: "rgba(255,255,255,0.85)", bordercolor: "#7048e8", borderpad: 2});
+  }
+  return out;
+}
+function sceneLayout(m, zrange, annotations, zLabel) {
+  const ax = (t) => ({title: {text: t, font: {size: 12}}, tickfont: {size: 10}, backgroundcolor: "#f4f6f9", showbackground: true, showspikes: false});
+  return {
+    xaxis: ax(`x = ${axisTitle(m, 0)}`),
+    yaxis: ax(`y = ${axisTitle(m, 1)}`),
+    zaxis: Object.assign(ax(zLabel || "E<sub>bin</sub> (bits)"), {range: zrange, autorange: false}),
+    camera: CAMERAS["3d"], aspectmode: "manual", aspectratio: {x: 1.15, y: 1.15, z: 0.75},
+    showlegend: false,
+    annotations: annotations || []};
+}
+
+/* ------------------------------------------------------------------ 2D heatmap traces */
+function heatmapTraces(m, rows, smoothMode, clip, showMin, showWells) {
+  const [lo, hi] = finiteRange(rows);
+  const cmin = Math.floor(lo), cmax = clip ? CAP : Math.ceil(hi);
+  let dataRows, greyMask, xs, ys;
+  if (smoothMode) {
+    const sm = decodeSmooth(m.smooth), fg = fineGrid(sm);
+    dataRows = fg.data; greyMask = fg.grey;
+    xs = fineCentres(m.x, sm.sub); ys = fineCentres(m.y, sm.sub);
+  } else {
+    dataRows = rows.map(r => r.map(v => v === null ? null : v));
+    greyMask = rows.map(r => r.map(v => v === null ? 1 : 0));
+    xs = m.x; ys = m.y;
+  }
+  const zClip = dataRows.map(r => r.map(v => clipZ(v, clip)));
+  const zGrey = greyMask.map(r => r.map(g => g ? 0 : null));
+  const tr = [];
+  tr.push({type: "heatmap", x: xs, y: ys, z: zGrey, zmin: 0, zmax: 1,
+    colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+  tr.push({type: "heatmap", x: xs, y: ys, z: zClip, colorscale: "Viridis",
+    zmin: cmin, zmax: cmax, zauto: false, connectgaps: false, hoverongaps: false,
+    colorbar: colorbar(clip),
+    hovertemplate: (smoothMode ? "smoothed E ≈ %{z:.2f} bits (display only)<extra></extra>" : "E<sub>bin</sub> %{z:.2f} bits<extra></extra>")});
+  const levels = contourLevels(zClip, D.contours);
+  if (levels.length >= 2) {
+    tr.push({type: "contour", x: xs, y: ys, z: zClip,
+      contours: {coloring: "none", showlines: true, start: levels[0], end: levels[levels.length - 1], size: levels[1] - levels[0]},
+      line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+  }
+  tr.push(...wellTraces2d(m.wells, m.barrier, showWells));
+  return tr;
+}
+function heatmapLayout(m, title, annotations) {
+  return {height: plotHeight(1.0), margin: {l: 60, r: 10, t: 28, b: 50},
+    title: {text: title, font: {size: 13}, x: 0.02},
+    showlegend: false,
+    xaxis: {title: {text: `x = ${axisTitle(m, 0)}`, font: {size: 12}},
+            scaleanchor: "y", scaleratio: 1, constrain: "domain", tickfont: {size: 10}},
+    yaxis: {title: {text: `y = ${axisTitle(m, 1)}`, font: {size: 12}},
+            tickfont: {size: 10}},
+    annotations: annotations || []};
+}
+
+/* ------------------------------------------------------------------ blurbs */
+const B = D.blurbs || {};
+function blurbHTML(key) { return B[key] ? `<div class="note">${B[key]}</div>` : ""; }
+function clipExplanation() { return B.clip || `<div class="note">Heights above the uniform-model level ${CAP.toFixed(2)} bits are real: cells whose strings are on average less probable than under a flat model. Clipping the drawn height keeps the deep wells visible; hover always shows true values.</div>`; }
+function aboveMaxExplanation() { return B.above_max || ""; }
+function smoothingNote() { return B.smoothing || `<div class="note">Smoothing is a <b>visualization effect only</b>: Boltzmann-domain kernel regression over the cell energies (a Gaussian kernel in probability space), so deep wells survive the average while barriers are lowered. Empty and capped cells are not forced to the cap — the surface relaxes to it far from data. Barrier and path numbers stay unsmoothed.</div>`; }
+function heatmapNote() { return B.heatmap || ""; }
+
+/* ------------------------------------------------------------------ tab 2 (S&B landscape) */
+const sel = document.getElementById("model");
+D.models.forEach((m, i) => { const o = document.createElement("option"); o.value = i; o.textContent = m.label; sel.appendChild(o); });
+
+/* ---- switchable projection bases ---- */
+const basis1 = document.getElementById("basis1"), basis2 = document.getElementById("basis2");
+(function populateBases() {
+  const labels = UC.bases_labels || {};
+  const lin = (D.bases || []).filter(b => !b.diagnostic);
+  const diag = (D.bases || []).filter(b => b.diagnostic);
+  [basis1, basis2].forEach(el => {
+    lin.forEach(b => { const o = document.createElement("option"); o.value = b.id; o.textContent = labels[b.id] || b.label; el.appendChild(o); });
+    if (diag.length) {
+      const g = document.createElement("optgroup");
+      g.label = "Diagnostic (not a recommended basis)";
+      diag.forEach(b => { const o = document.createElement("option"); o.value = b.id; o.textContent = labels[b.id] || b.label; g.appendChild(o); });
+      el.appendChild(g);
+    }
+  });
+  function basisNote() {
+    const id = basis1.value || "pca";
+    const note = document.getElementById("basis1note");
+    if (note) note.textContent = (UC.bases && UC.bases[id]) || "";
+  }
+  basis1.addEventListener("change", basisNote);
+  basisNote();
+})();
+function viewModel(m, basisId) {
+  if (!basisId || basisId === "pca") return m;
+  if (basisId === "energy_metric") return Object.assign({}, m, {basis: basisId, axis_names: ["x (energy metric)", "y (energy metric)"], axes: null});
+  const b = m.bases && m.bases[basisId];
+  return b ? Object.assign({}, m, b) : m;
+}
+function basisMeta(basisId) {
+  return (D.bases || []).find(b => b.id === (basisId || "pca")) || {id: "pca", label: "PCA (default)", html: "", metrics: {}};
+}
+function axisTitle(m, k) {
+  let nm = (m.axis_names && m.axis_names[k]) || ("PC" + (k + 1));
+  if (!m.axes || !m.axes[k] || m.axes[k].variance_share == null) return nm;
+  if (m.basis && m.basis !== "pca") {
+    const meta = basisMeta(m.basis);
+    const base = ((meta && meta.label) || m.basis).split("(")[0].trim().toLowerCase();
+    nm = `${base} axis ${k + 1}`;
+  }
+  return `${nm} (${pct(m.axes[k].variance_share)} of total indicator variance)`;
+}
+function basisHtml(basisId) {
+  const meta = basisMeta(basisId);
+  return meta.html || `<p>${meta.summary || ""}</p>`;
+}
+function renderPanelMath(el) {
+  if (!el) return;
+  if (typeof window.renderMathInElement !== "function") {
+    window.addEventListener("load", () => renderPanelMath(el), {once: true});
+    return;
+  }
+  window.renderMathInElement(el, {
+    delimiters: [
+      {left: "$$", right: "$$", display: true},
+      {left: "\\[", right: "\\]", display: true},
+      {left: "$", right: "$", display: false},
+      {left: "\\(", right: "\\)", display: false}
+    ],
+    throwOnError: false
+  });
+}
+
+/* ---- LandscapeEngine (client-side recomputation) ---- */
+function decodeF32(b64) {
+  const bin = atob(b64), buf = new ArrayBuffer(bin.length), u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Float32Array(buf);
+}
+function decodeI16(b64) {
+  const bin = atob(b64), buf = new ArrayBuffer(bin.length), u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Int16Array(buf);
+}
+function decodeV(b64) {
+  const f32 = decodeF32(b64), out = new Float64Array(f32.length);
+  for (let i = 0; i < f32.length; i++) out[i] = f32[i];
+  return out;
+}
+function engineCompute(model, basisId, G, topK) {
+  const eng = model.engines[basisId];
+  const V = decodeV(model.V_b64);
+  if (eng.coords_b64) {
+    const coords = ENG_COORDS[model.key] || (eng.deflated ? new Int16Array(0) : decodeI16(eng.coords_b64));
+    return LandscapeEngine.compute({V, coords, extent: eng.extent, G, topK});
+  }
+  return LandscapeEngine.compute({V, U1: decodeF32(eng.U1), U2: decodeF32(eng.U2),
+    mean: eng.mean, extent: eng.extent, G, topK});
+}
+/* Decompress the (deflated) energy_metric coords once at load, keyed by model. */
+const ENG_COORDS = {};
+(async () => {
+  if (typeof DecompressionStream !== "function") return;
+  for (const m of D.models) {
+    const eng = m.engines && m.engines["energy_metric"];
+    if (!eng || !eng.coords_b64 || !eng.deflated) continue;
+    try {
+      const bin = atob(eng.coords_b64), bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const buf = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate"))).arrayBuffer();
+      ENG_COORDS[m.key] = new Int16Array(buf);
+    } catch (e) { console.warn("coords decompress failed", m.key, e); }
+  }
+})();
+const WELL_CACHE = {};  // key → {wells, barrier}; substitution-adjacency persistence is ~190 ms
+function engineWells(res, G, key) {
+  const k = key + ":" + G;
+  if (WELL_CACHE[k]) return WELL_CACHE[k];
+  const wells = LandscapeEngine.persistence(res.Ebin, G, {adjacency: "substitution", cells: res.cells});
+  const bar = LandscapeEngine.barrier(wells, D.persist_bits);
+  WELL_CACHE[k] = {wells, barrier: bar};
+  return WELL_CACHE[k];
+}
+/* Display wells/barrier for the S&B static tab: at G=32 the precomputed
+   substitution-adjacency landscape (m.wells/m.barrier, with basin words) is used so
+   the labels match the unsmoothed default view; otherwise the engine recomputes with
+   the SAME substitution adjacency. Smoothing never changes these. */
+function displayWells(m, res, G, key) {
+  if (G === 32 && m.wells && m.wells.length) {
+    return {wells: m.wells, barrier: m.barrier || null};
+  }
+  const wb = engineWells(res, G, key);
+  return {wells: engineWellObjects(res, wb.wells, 3), barrier: engineBarrierObject(res, wb.barrier)};
+}
+/* Same for the trajectory tab: at G=32 use the precomputed per-frame wells (basin
+   words), else engine substitution. */
+function displayTrajWells(TB, f, res, G, key) {
+  if (G === 32 && TB.wells && TB.wells[f] && TB.wells[f].length) {
+    return {wells: TB.wells[f], barrier: TB.barrier[f] || null};
+  }
+  const wb = engineWells(res, G, key);
+  return {wells: engineWellObjects(res, wb.wells, 3), barrier: engineBarrierObject(res, wb.barrier)};
+}
+function engine2dTraces(res, clip, showWells, hoverMode) {
+  const G = res.G, n = G * G;
+  const z = [], grey = [];
+  for (let r = 0; r < G; r++) {
+    const zr = [], gr = [];
+    for (let c = 0; c < G; c++) {
+      const v = res.Ebin[r * G + c];
+      const finite = isFinite(v);
+      gr.push(finite ? null : 0);
+      zr.push(finite ? (clip ? Math.min(v, CAP) : v) : null);
+    }
+    z.push(zr); grey.push(gr);
+  }
+  const [lo, hi] = finiteRange(z);
+  const tr = [];
+  tr.push({type: "heatmap", x: res.x, y: res.y, z: grey, zmin: 0, zmax: 1,
+    colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+  tr.push({type: "heatmap", x: res.x, y: res.y, z, colorscale: "Viridis",
+    zmin: Math.floor(lo), zmax: clip ? CAP : Math.ceil(hi), zauto: false, connectgaps: false, hoverongaps: false,
+    colorbar: colorbar(clip), hovertemplate: (hoverMode === "off" || hoverMode === "near") ? "E<sub>bin</sub> %{z:.2f} bits<extra></extra>" : "%{text}<extra></extra>"});
+  const levels = contourLevels(z, D.contours);
+  if (levels.length >= 2) tr.push({type: "contour", x: res.x, y: res.y, z,
+    contours: {coloring: "none", showlines: true, start: levels[0], end: levels[levels.length - 1], size: levels[1] - levels[0]},
+    line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+  return tr;
+}
+/* ---- nearest-word (cursor) 2D mode ---- */
+const nearestLabel = document.createElement("div");
+nearestLabel.style.cssText = "position:fixed;display:none;pointer-events:none;background:rgba(255,255,255,0.96);border:1px solid #888;border-radius:3px;padding:5px 8px;font-size:12px;line-height:1.4;z-index:2000;max-width:360px;box-shadow:0 1px 5px rgba(0,0,0,0.22);";
+document.body.appendChild(nearestLabel);
+function nearestShow(html, px, py) {
+  nearestLabel.innerHTML = html;
+  nearestLabel.style.display = "block";
+  let left = px + 16, top = py + 16;
+  const w = nearestLabel.offsetWidth, h = nearestLabel.offsetHeight;
+  if (left + w > window.innerWidth - 10) left = px - w - 16;
+  if (top + h > window.innerHeight - 10) top = py - h - 16;
+  nearestLabel.style.left = Math.max(4, left) + "px";
+  nearestLabel.style.top = Math.max(4, top) + "px";
+}
+function nearestHide() { nearestLabel.style.display = "none"; }
+let RES1 = null, RES1_K = 3, RES2 = null, RES2_K = 3;
+function nearestCellXY(xs, ys, x, y) {
+  const G = xs.length;
+  let col = 0, row = 0, dx = Math.abs(xs[0] - x), dy = Math.abs(ys[0] - y);
+  for (let c = 1; c < G; c++) { const d = Math.abs(xs[c] - x); if (d < dx) { dx = d; col = c; } }
+  for (let r = 1; r < G; r++) { const d = Math.abs(ys[r] - y); if (d < dy) { dy = d; row = r; } }
+  return row * G + col;
+}
+function nearestCell(res, x, y) {
+  return nearestCellXY(res.x, res.y, x, y);
+}
+function nearestEngineHTML(res, topK, cell, x, y) {
+  if (!res || cell < 0 || cell >= res.G * res.G) return "";
+  let s = "";
+  const id = res.nearestInCell(cell, x, y);
+  if (id >= 0) s = `<b>nearest word:</b> ${res.decodeId(id)}<br>E(s) = ${res.energyAt(id).toFixed(3)} bits · P = ${res.probAt(id).toExponential(2)}`;
+  const base = cell * topK, top = [];
+  for (let k = 0; k < Math.min(topK, 3); k++) {
+    const w = res.words[base + k];
+    if (w < 0) break;
+    top.push(`${res.decodeId(w)} (P=${res.wordP[base + k].toExponential(1)})`);
+  }
+  if (top.length) s += `<br><span class="muted">cell top-${top.length}:</span> ${top.join(", ")}`;
+  return s;
+}
+let NM_CW = null, NT_CW = null;  // {cells, vocab, xs, ys, G}
+function nearestNMHTML(cw, cell) {
+  if (!cw || !cw.cells) return "";
+  const c = cw.cells[cell];
+  if (!c || !c.length) return "this cell holds no modelled string";
+  let s = "";
+  const n = Math.min(5, c.length);
+  for (let k = 0; k < n; k++) {
+    const d = nmCellWord(c[k], cw.vocab);
+    if (!d || d.w == null) break;
+    s += `<br>${d.w}${d.approx ? "*" : ""} (L=${d.L}, P=${(+d.p).toExponential(1)}${d.approx ? " approx" : ""})`;
+  }
+  return `<b>nearest word (new model):</b> exact nearest-by-cursor is unavailable (strings are not individually projected at this level); showing this cell's most probable words${s}`;
+}
+/* ---- minimax (bottleneck) mutation path ---- */
+const AL = 26, A3 = 26 * 26 * 26, A2 = 26 * 26, POSM = [A3, A2, 26, 1];
+function idToLetters(id) {
+  const s0 = (id / A3) | 0, r1 = id - s0 * A3;
+  const s1 = (r1 / A2) | 0, r2 = r1 - s1 * A2;
+  const s2 = (r2 / AL) | 0, s3 = r2 - s2 * AL;
+  return [s0, s1, s2, s3];
+}
+function wordToId(w) { return ((w.charCodeAt(0) - 97) * AL + (w.charCodeAt(1) - 97)) * AL * AL + ((w.charCodeAt(2) - 97) * AL + (w.charCodeAt(3) - 97)); }
+function minimaxPath(res, srcId, dstId) {
+  const lws = res.lws, N = lws.length;
+  const dist = new Float64Array(N).fill(-Infinity);
+  const prev = new Int32Array(N).fill(-1);
+  const steps = new Int32Array(N).fill(-1);
+  const heapIds = new Int32Array(N), heapPos = new Int32Array(N).fill(-1);
+  let hs = 0;
+  const better = (a, b) => dist[a] > dist[b] || (dist[a] === dist[b] && steps[a] < steps[b]);
+  const swap = (i, j) => { const ai = heapIds[i], aj = heapIds[j]; heapIds[i] = aj; heapIds[j] = ai; heapPos[ai] = i; heapPos[aj] = j; };
+  const up = (i) => { while (i > 0) { const p = (i - 1) >> 1; if (better(heapIds[i], heapIds[p])) { swap(i, p); i = p; } else break; } };
+  const down = (i) => { for (;;) { const l = 2 * i + 1, r = 2 * i + 2; let b = i; if (l < hs && better(heapIds[l], heapIds[b])) b = l; if (r < hs && better(heapIds[r], heapIds[b])) b = r; if (b === i) break; swap(i, b); i = b; } };
+  const push = (id) => { heapIds[hs] = id; heapPos[id] = hs++; up(hs - 1); };
+  const pop = () => { const t = heapIds[0]; heapPos[t] = -1; hs--; if (hs) { heapIds[0] = heapIds[hs]; heapPos[heapIds[0]] = 0; down(0); } return t; };
+  dist[srcId] = lws[srcId]; steps[srcId] = 0; push(srcId);
+  while (hs > 0) {
+    const u = pop();
+    if (u === dstId) break;
+    const L = idToLetters(u);
+    for (let p = 0; p < 4; p++) {
+      const cur = L[p], base = u - cur * POSM[p];
+      for (let a = 0; a < AL; a++) {
+        if (a === cur) continue;
+        const v = base + a * POSM[p], lwv = lws[v];
+        if (lwv === -Infinity) continue;
+        const nd = dist[u] < lwv ? dist[u] : lwv, ns = steps[u] + 1;
+        if (nd > dist[v] || (nd === dist[v] && (steps[v] < 0 || ns < steps[v]))) {
+          dist[v] = nd; prev[v] = u; steps[v] = ns;
+          if (heapPos[v] < 0) push(v); else up(heapPos[v]);
+        }
+      }
+    }
+  }
+  if (dist[dstId] === -Infinity) return null;
+  const path = [];
+  for (let c = dstId; c >= 0; c = prev[c]) path.push(c);
+  path.reverse();
+  return {path, bottleneckLw: dist[dstId]};
+}
+const PATH_ENGINE = {}, PATH_CACHE = {};
+function getPathEngine(modelKey, basisId) {
+  const k = modelKey + ":" + (basisId || "pca");
+  if (!PATH_ENGINE[k]) PATH_ENGINE[k] = engineCompute(D.models.find(m => m.key === modelKey), basisId || "pca", 32, 3);
+  return PATH_ENGINE[k];
+}
+const HOVER_ENGINE = {};
+function hoverEngine(modelKey, basisId, topK) {
+  const k = modelKey + ":" + (basisId || "pca") + ":" + topK;
+  if (!HOVER_ENGINE[k]) HOVER_ENGINE[k] = engineCompute(D.models.find(m => m.key === modelKey), basisId || "pca", 32, topK);
+  return HOVER_ENGINE[k];
+}
+function computeMinimaxPath(modelKey, wordA, wordB) {
+  const key = modelKey + ":" + wordA + ":" + wordB;
+  if (PATH_CACHE[key]) return PATH_CACHE[key];
+  const res = getPathEngine(modelKey, "pca");
+  const srcId = wordToId(wordA), dstId = wordToId(wordB);
+  const r = minimaxPath(res, srcId, dstId);
+  if (!r) return null;
+  let bottleId = srcId;
+  for (const id of r.path) if (res.lws[id] === r.bottleneckLw) { bottleId = id; break; }
+  const out = {path: r.path, srcId, dstId, srcWord: wordA, dstWord: wordB, bottleId,
+    bottleE: res.energyAt(bottleId), srcE: res.energyAt(srcId), dstE: res.energyAt(dstId)};
+  PATH_CACHE[key] = out;
+  return out;
+}
+function densifyPath(vertices, zFn, lift) {
+  const N = 10;  // interpolated samples per segment (in x,y, linear)
+  const xs = [], ys = [], hov = [], size = [], hinfo = [];
+  for (let i = 0; i < vertices.length; i++) {
+    const v = vertices[i];
+    if (i > 0) {
+      const p = vertices[i - 1];
+      for (let k = 1; k <= N; k++) {
+        const t = k / (N + 1);
+        xs.push(p.x + (v.x - p.x) * t);
+        ys.push(p.y + (v.y - p.y) * t);
+        hov.push("on the path, nearest word:<br>" + (t < 0.5 ? p.hover : v.hover)); size.push(0); hinfo.push("text");
+      }
+    }
+    xs.push(v.x); ys.push(v.y); hov.push(v.hover); size.push(4); hinfo.push("text");
+  }
+  let breaks = 0;
+  const zs = xs.map((x, i) => { const z = zFn(x, ys[i]); if (Number.isNaN(z)) { breaks++; return NaN; } return z + lift; });
+  // maximal NaN runs (gaps); each is bounded by finite samples [i0, i1]
+  const bridges = [];
+  let k = 0;
+  while (k < zs.length) {
+    if (Number.isNaN(zs[k])) {
+      const i0 = k - 1;
+      while (k < zs.length && Number.isNaN(zs[k])) k++;
+      const i1 = k;
+      if (i0 >= 0 && i1 < zs.length) bridges.push({i0, i1});
+    } else k++;
+  }
+  return {x: xs, y: ys, z: zs, text: hov, size: size, hoverinfo: hinfo, breaks: breaks, bridges: bridges};
+}
+let PATH_BREAKS = 0;  // number of gap samples on the last-drawn path (for the panel note)
+function pathBridgeTrace(d, is3d) {
+  if (!d.bridges || !d.bridges.length) return null;
+  const bx = [], by = [], bz = [];
+  for (const b of d.bridges) {
+    if (bx.length) { bx.push(NaN); by.push(NaN); bz.push(NaN); }
+    bx.push(d.x[b.i0], d.x[b.i1]);
+    by.push(d.y[b.i0], d.y[b.i1]);
+    bz.push(d.z[b.i0], d.z[b.i1]);
+  }
+  if (is3d) return {type: "scatter3d", mode: "lines", name: "path bridge", x: bx, y: by, z: bz,
+    line: {color: "#b0122a", width: 2, dash: "dot"}, hoverinfo: "skip", showlegend: false};
+  return {type: "scatter", mode: "lines", name: "path bridge", x: bx, y: by,
+    line: {color: "#b0122a", width: 2, dash: "dot"}, hoverinfo: "skip", showlegend: false};
+}
+function pathTrace2D(path, res) {
+  const vertices = path.path.map(id => ({x: res.xyAt(id)[0], y: res.xyAt(id)[1],
+    hover: `<b>${res.decodeId(id)}</b><br>E(s) = ${res.energyAt(id).toFixed(3)} bits`}));
+  const zFn = (x, y) => { const cell = nearestCellXY(res.x, res.y, x, y); const e = res.Ebin[cell]; return isFinite(e) ? e : NaN; };
+  const d = densifyPath(vertices, zFn, 0);
+  PATH_BREAKS = d.breaks;
+  const x2 = d.x.map((x, i) => Number.isNaN(d.z[i]) ? NaN : x);
+  const solid = {type: "scatter", mode: "lines+markers", name: "minimax path", x: x2, y: d.y,
+    line: {color: "#b0122a", width: 3}, marker: {size: d.size, color: "#b0122a"},
+    text: d.text, hoverinfo: d.hoverinfo, hovertemplate: "%{text}<extra></extra>", showlegend: false};
+  const bridge = pathBridgeTrace(d, false);
+  return bridge ? [solid, bridge] : [solid];
+}
+function pathTrace3D(path, res, clip) {
+  const vertices = path.path.map(id => ({x: res.xyAt(id)[0], y: res.xyAt(id)[1],
+    hover: `<b>${res.decodeId(id)}</b><br>E(s) = ${res.energyAt(id).toFixed(3)} bits`}));
+  const zFn = (x, y) => {
+    const s = smoothedFieldZ(x, y);
+    if (!Number.isNaN(s)) return s;
+    const cell = nearestCellXY(res.x, res.y, x, y);
+    const e = res.Ebin[cell];
+    return isFinite(e) ? (clip ? Math.min(e, CAP) : e) : NaN;
+  };
+  const d = densifyPath(vertices, zFn, 0.1);
+  PATH_BREAKS = d.breaks;
+  const solid = {type: "scatter3d", mode: "lines+markers", name: "minimax path", x: d.x, y: d.y, z: d.z,
+    line: {color: "#b0122a", width: 6}, marker: {size: d.size, color: "#b0122a"},
+    text: d.text, hoverinfo: d.hoverinfo, hovertemplate: "%{text}<extra></extra>",
+    showlegend: false};
+  const bridge = pathBridgeTrace(d, true);
+  return bridge ? [solid, bridge] : [solid];
+}
+function pathPanelHTML(p, res) {
+  if (!p) return "";
+  let seq = "", runMax = -Infinity;
+  for (let i = 0; i < p.path.length; i++) {
+    const w = res.decodeId(p.path[i]), e = res.energyAt(p.path[i]);
+    runMax = Math.max(runMax, e);
+    let ch = "—";
+    if (i > 0) {
+      const a = res.decodeId(p.path[i - 1]);
+      for (let k = 0; k < 4; k++) if (a[k] !== w[k]) { ch = `${POS[k]} ${a[k]}→${w[k]}`; break; }
+    }
+    seq += `<tr><td class="l mono">${w}</td><td class="mono">${e.toFixed(3)}</td><td class="l mono">${ch}</td><td class="mono">${runMax.toFixed(3)}</td></tr>`;
+  }
+  const coords = p.path.map(id => res.xyAt(id));
+  const steps = [];
+  for (let i = 1; i < coords.length; i++) {
+    const dx = coords[i][0] - coords[i - 1][0], dy = coords[i][1] - coords[i - 1][1];
+    steps.push(Math.sqrt(dx * dx + dy * dy));
+  }
+  let spanNote = "";
+  if (steps.length) {
+    const s = steps.slice().sort((a, b) => a - b);
+    const median = s[Math.floor(s.length / 2)], max = s[s.length - 1];
+    const width = res.x[res.x.length - 1] - res.x[0];
+    spanNote = `<p class="muted">Step span in the current basis: median ${median.toFixed(3)}, max ${max.toFixed(3)} axis units (max = ${(100 * max / Math.max(width, 1e-9)).toFixed(1)}% of the plot width) — smaller means this basis is more 'local' for single substitutions.</p>`;
+  }
+  return `<h2>Minimax mutation path</h2>
+  <p>The single-letter-substitution path from <b>${p.srcWord}</b> to <b>${p.dstWord}</b> that minimises the maximum E(s) along it (ties: fewer steps). Peak: <b>${res.decodeId(p.bottleId)}</b> at E(s) = ${p.bottleE.toFixed(3)} bits — climb from ${p.srcWord} = +${(p.bottleE - p.srcE).toFixed(2)} bits, from ${p.dstWord} = +${(p.bottleE - p.dstE).toFixed(2)} bits.</p>
+  ${spanNote}
+  ${PATH_BREAKS > 0 ? `<p class="muted">Dotted segments cross empty cells (the path jumps across unsampled space).</p>` : ""}
+  <table><tr><th class="l">string</th><th>E(s) bits</th><th class="l">change</th><th>running max</th></tr>${seq}</table>`;
+}
+function pathTraces(res, pathInfo, view, clip) {
+  if (!pathInfo) return [];
+  if (view === "2d") return pathTrace2D(pathInfo, res);
+  const bc = res.cells ? res.cells[pathInfo.bottleId] : -1;
+  const bx = res.xyAt(pathInfo.bottleId)[0], by = res.xyAt(pathInfo.bottleId)[1];
+  const s = smoothedFieldZ(bx, by);
+  const bz = (Number.isNaN(s) ? ((bc >= 0 && isFinite(res.Ebin[bc])) ? (clip ? Math.min(res.Ebin[bc], CAP) : res.Ebin[bc]) : pathInfo.bottleE) : s) + 0.12;
+  return [...pathTrace3D(pathInfo, res, clip), {type: "scatter3d", mode: "markers", name: "bottleneck",
+    x: [bx], y: [by], z: [bz],
+    marker: {size: 8, color: "#b0122a", symbol: "diamond", line: {color: "#fff", width: 1}},
+    hovertemplate: `<b>${res.decodeId(pathInfo.bottleId)}</b> (path peak)<br>E(s) = ${pathInfo.bottleE.toFixed(3)} bits<extra></extra>`,
+    showlegend: false}];
+}
+function pathPair(m) {
+  if (!m.wells || m.wells.length < 2) return null;
+  if (m.barrier && m.barrier.wells && m.barrier.wells.length >= 2) {
+    const iw = m.barrier.wells.map(c => m.wells.findIndex(w => w.cell === c));
+    if (iw[0] >= 0 && iw[1] >= 0 && m.wells[iw[0]].words && m.wells[iw[1]].words) return {wa: wWord(m.wells[iw[0]].words[0]), wb: wWord(m.wells[iw[1]].words[0])};
+  }
+  if (m.wells[0].words && m.wells[1].words) return {wa: wWord(m.wells[0].words[0]), wb: wWord(m.wells[1].words[0])};
+  return null;
+}
+function populatePathDropdowns(m) {
+  const wells = m.wells || [];
+  const from = document.getElementById("pathfrom"), to = document.getElementById("pathto");
+  const curF = from.value, curT = to.value;
+  from.innerHTML = ""; to.innerHTML = "";
+  wells.forEach((w, i) => {
+    const label = `W${i + 1} ${wWord(w.words[0])}`;
+    from.appendChild(new Option(label, i));
+    to.appendChild(new Option(label, i));
+  });
+  const iw = (m.barrier && m.barrier.wells && m.barrier.wells.length >= 2) ? m.barrier.wells.map(c => wells.findIndex(w => w.cell === c)) : [0, 1];
+  from.value = (curF !== "" && +curF < wells.length) ? curF : (iw[0] >= 0 ? iw[0] : 0);
+  to.value = (curT !== "" && +curT < wells.length) ? curT : (iw[1] >= 0 ? iw[1] : 1);
+}
+function resolvePathEndpoints(m) {
+  const wi = +document.getElementById("pathfrom").value, wj = +document.getElementById("pathto").value;
+  if (m.wells && m.wells[wi] && m.wells[wj] && m.wells[wi].words && m.wells[wj].words) {
+    return {wa: wWord(m.wells[wi].words[0]), wb: wWord(m.wells[wj].words[0])};
+  }
+  return pathPair(m);
+}
+function renderEngine2D() {
+  const m0 = D.models[+sel.value];
+  const basisId = basis1.value || "pca";
+  const G = +document.getElementById("res1").value;
+  document.getElementById("res1v").textContent = G;
+  const hoverMode = document.getElementById("hover1").value;
+  const topK = hoverMode === "off" || hoverMode === "near" ? 3 : +hoverMode;
+  const clip = document.getElementById("clip1").checked;
+  const res = engineCompute(m0, basisId, G, topK);
+  const m = viewModel(m0, basisId);
+  const tr = engine2dTraces(res, clip, true, hoverMode);
+  const smooth = document.getElementById("smooth1").checked;
+  if (smooth) {
+    const z2 = [];
+    for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) { const v = res.Ebin[r * G + c]; row.push(isFinite(v) ? v : null); } z2.push(row); }
+    const capVal = clip ? CAP : null;
+    const field = smoothFieldOf(z2, G, capVal, res.x, res.y);
+    const grey = smoothZ2D(field).map(r => r.map(v => v === null ? 0 : null));
+    const zs = smoothZ2D(field).map(r => r.map(v => v === null ? null : clipZ(v, clip)));
+    const [slo, shi] = finiteRange(zs);
+    tr.length = 0;
+    tr.push({type: "heatmap", x: field.xs, y: field.ys, z: grey, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+    tr.push({type: "heatmap", x: field.xs, y: field.ys, z: zs, colorscale: "Viridis", zmin: Math.floor(slo), zmax: clip ? CAP : Math.ceil(shi), zauto: false, connectgaps: false, hoverongaps: false,
+      text: smoothEngineText(field, res, (hoverMode === "off" || hoverMode === "near") ? 0 : +hoverMode),
+      colorbar: colorbar(clip), hovertemplate: "x %{x:.3f} y %{y:.3f}<br>%{text}<extra></extra>"});
+  } else if (hoverMode !== "off" && hoverMode !== "near") {
+    const text = [];
+    for (let r = 0; r < G; r++) {
+      const row = [];
+      for (let c = 0; c < G; c++) {
+        const cell = r * G + c, base = cell * topK;
+        let s = `E<sub>bin</sub> = ${res.Ebin[cell].toFixed(2)} bits`;
+        for (let k = 0; k < topK; k++) {
+          const id = res.words[base + k];
+          if (id < 0) break;
+          s += `<br>${res.decodeId(id)} (P=${res.wordP[base + k].toExponential(1)})`;
+        }
+        row.push(s);
+      }
+      text.push(row);
+    }
+    tr[1].text = text;
+  }
+  let pathInfo = null;
+  if (document.getElementById("showpath").checked) {
+    populatePathDropdowns(m); const pp = resolvePathEndpoints(m);
+    if (pp) pathInfo = computeMinimaxPath(m0.key, pp.wa, pp.wb);
+    if (pathInfo) tr.push(pathTrace2D(pathInfo, res));
+  }
+  const wb2 = displayWells(m, res, G, m0.key + ":" + basisId);
+  const wells2 = wb2.wells, barrier2 = wb2.barrier;
+  tr.push(...wellTraces2d(wells2, barrier2, true));
+  const title = `${m.label} · S<sub>2</sub> = ${fmt(res.S2bits, 3)} bits · ${G}×${G} bins (${basisMeta(basisId).label})`;
+  Plotly.react("plot1", tr, heatmapLayout(m, title, wellAnnotations2d(wells2, barrier2, true)), {displaylogo: false, responsive: true});
+  renderPanel1(m, basisId, pathInfo, res);
+  RES1 = res; RES1_K = topK;
+  bindHover("plot1", h1);
+}
+function engineWellObjects(res, wells, topK) {
+  return (wells || []).filter(w => w.persistence >= D.persist_bits).map(w => {
+    const r = Math.floor(w.cell / res.G), col = w.cell % res.G;
+    const words = [];
+    const base = w.cell * topK;
+    for (let k = 0; k < topK; k++) { const id = res.words[base + k]; if (id < 0) break; words.push(res.decodeId(id)); }
+    return {cell: w.cell, x: res.x[col], y: res.y[r], E: w.E_min, persistence: w.persistence,
+            essential: w.essential, words};
+  });
+}
+function engineBarrierObject(res, bar) {
+  if (!bar) return null;
+  const r = Math.floor(bar.cell / res.G), col = bar.cell % res.G;
+  return {x: res.x[col], y: res.y[r], E: bar.E, cell: bar.cell, wells: bar.wells, above: bar.above};
+}
+function engine3dText(res) {
+  const G = res.G, topK = Math.max(1, res.words.length / (G * G)), out = [];
+  for (let r = 0; r < G; r++) {
+    const t = [];
+    for (let c = 0; c < G; c++) {
+      const cell = r * G + c, base = cell * topK;
+      let s = `E<sub>bin</sub> = ${isFinite(res.Ebin[cell]) ? res.Ebin[cell].toFixed(2) : "—"} bits`;
+      for (let k = 0; k < topK; k++) { const id = res.words[base + k]; if (id < 0) break; s += `<br>${res.decodeId(id)} (P=${res.wordP[base + k].toExponential(1)})`; }
+      t.push(s, s);
+    }
+    out.push(t, t.slice());
+  }
+  return out;
+}
+function smoothLen() {
+  const el = document.getElementById("smoothlen1");
+  return el ? +el.value : 1.5;
+}
+function syncSmoothLen(fromId) {
+  const v = +document.getElementById(fromId).value;
+  for (let i = 1; i <= 4; i++) {
+    const sl = document.getElementById("smoothlen" + i);
+    if (sl) sl.value = v;
+    const vv = document.getElementById("smoothlen" + i + "v");
+    if (vv) vv.textContent = v.toFixed(1);
+  }
+}
+/* Adaptive Boltzmann-domain kernel regression onto a fine grid. rows: GxG array of
+   (number|null); returns {z: Float64Array(nf*nf), nf, sub, xs, ys} with xs/ys the fine
+   axes (cell-centre axis extrapolated half a cell at each end). */
+function smoothFieldOf(rows, G, cap, centresX, centresY) {
+  const flat = new Float64Array(G * G);
+  for (let r = 0; r < G; r++) for (let c = 0; c < G; c++) { const v = rows[r][c]; flat[r * G + c] = (v === null || v === undefined) ? NaN : v; }
+  const s = LandscapeEngine.smoothField(flat, G, {cap: cap, sigmaMax: smoothLen()});
+  const xw = centresX[1] - centresX[0], yw = centresY[1] - centresY[0];
+  const xs = new Array(s.nf), ys = new Array(s.nf);
+  for (let k = 0; k < s.nf; k++) { const u = -0.5 + (k + 0.5) / s.sub; xs[k] = centresX[0] + u * xw; ys[k] = centresY[0] + u * yw; }
+  SMOOTHED_FIELD = {z: s.z, nf: s.nf, sub: s.sub, x0: centresX[0] - 0.5 * xw, xw: xw, y0: centresY[0] - 0.5 * yw, yw: yw};
+  return {z: s.z, nf: s.nf, sub: s.sub, xs: xs, ys: ys};
+}
+let SMOOTHED_FIELD = null;  // {z, nf, sub, x0, y0, w} while smoothing is on
+/* Bilinear lookup of the fine field at (x,y); +0.2 lift keeps markers above the sheet. */
+function smoothedZAt(x, y, fallback) {
+  const f = SMOOTHED_FIELD;
+  if (!f) return fallback;
+  const k = (x - f.x0) / f.xw * f.sub - 0.5;
+  const l = (y - f.y0) / f.yw * f.sub - 0.5;
+  let v;
+  if (k < 0 || l < 0 || k >= f.nf - 1 || l >= f.nf - 1) {
+    const kc = Math.max(0, Math.min(f.nf - 1, Math.round(k)));
+    const lc = Math.max(0, Math.min(f.nf - 1, Math.round(l)));
+    v = f.z[lc * f.nf + kc];
+  } else {
+    const k0 = Math.floor(k), l0 = Math.floor(l), tx = k - k0, ty = l - l0;
+    const z00 = f.z[l0 * f.nf + k0], z10 = f.z[l0 * f.nf + k0 + 1];
+    const z01 = f.z[(l0 + 1) * f.nf + k0], z11 = f.z[(l0 + 1) * f.nf + k0 + 1];
+    v = (z00 * (1 - tx) + z10 * tx) * (1 - ty) + (z01 * (1 - tx) + z11 * tx) * ty;
+  }
+  return Number.isNaN(v) ? fallback : v + 0.2;
+}
+/* Raw bilinear lookup of the fine smoothed field at (x,y) (NaN = gap, no lift). */
+function smoothedFieldZ(x, y) {
+  const f = SMOOTHED_FIELD;
+  if (!f) return NaN;
+  const k = (x - f.x0) / f.xw * f.sub - 0.5;
+  const l = (y - f.y0) / f.yw * f.sub - 0.5;
+  let v;
+  if (k < 0 || l < 0 || k >= f.nf - 1 || l >= f.nf - 1) {
+    const kc = Math.max(0, Math.min(f.nf - 1, Math.round(k)));
+    const lc = Math.max(0, Math.min(f.nf - 1, Math.round(l)));
+    v = f.z[lc * f.nf + kc];
+  } else {
+    const k0 = Math.floor(k), l0 = Math.floor(l), tx = k - k0, ty = l - l0;
+    const z00 = f.z[l0 * f.nf + k0], z10 = f.z[l0 * f.nf + k0 + 1];
+    const z01 = f.z[(l0 + 1) * f.nf + k0], z11 = f.z[(l0 + 1) * f.nf + k0 + 1];
+    v = (z00 * (1 - tx) + z10 * tx) * (1 - ty) + (z01 * (1 - tx) + z11 * tx) * ty;
+  }
+  return Number.isNaN(v) ? NaN : v;
+}
+/* Fine-grid 2D z (nf x nf, null where NaN) and hover text for surfaces/heatmaps. */
+function smoothZ2D(field) {
+  const rows = [];
+  for (let r = 0; r < field.nf; r++) { const row = []; for (let c = 0; c < field.nf; c++) { const v = field.z[r * field.nf + c]; row.push(Number.isNaN(v) ? null : v); } rows.push(row); }
+  return rows;
+}
+function smoothText2D(field, rawRows, cap, label) {
+  const lbl = label || "smoothed ≈";
+  const G = rawRows.length, sub = field.sub, nf = field.nf;
+  const rows = [];
+  for (let r = 0; r < nf; r++) {
+    const v = -0.5 + (r + 0.5) / sub;
+    const row = [];
+    for (let c = 0; c < nf; c++) {
+      const u = -0.5 + (c + 0.5) / sub;
+      const z = field.z[r * nf + c];
+      if (Number.isNaN(z)) { row.push(""); continue; }
+      const rr = Math.round(v), cc = Math.round(u);
+      const empty = (rr < 0 || rr >= G || cc < 0 || cc >= G || rawRows[rr][cc] === null || rawRows[rr][cc] === undefined);
+      row.push(empty ? (cap != null ? "no strings here (drawn at the cap)" : "") : `${lbl} ${z.toFixed(2)} bits`);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+/* Fine-grid hover text for the smoothed S&B surface: the cell's own raw E_bin, the
+   top-n words of that cell (n = 0 when the Hover-words dropdown is off/near), and a
+   muted 'smoothed ≈ …' line. Empty cells read 'E_bin = — bits<br>(no strings here)'. */
+function smoothEngineText(field, res, nWords) {
+  const G = res.G, sub = field.sub, nf = field.nf;
+  const topK = Math.max(1, res.words.length / (G * G));
+  const nShow = Math.max(0, Math.min(nWords, topK));
+  const rows = [];
+  for (let r = 0; r < nf; r++) {
+    const v = -0.5 + (r + 0.5) / sub;
+    const row = [];
+    for (let c = 0; c < nf; c++) {
+      const u = -0.5 + (c + 0.5) / sub;
+      const cr = Math.max(0, Math.min(G - 1, Math.round(v)));
+      const cc = Math.max(0, Math.min(G - 1, Math.round(u)));
+      const cell = cr * G + cc;
+      const sz = field.z[r * nf + c];
+      if (!isFinite(res.Ebin[cell])) {
+        row.push(`E<sub>bin</sub> = — bits<br>(no strings here)`);
+      } else {
+        let s = `E<sub>bin</sub> = ${res.Ebin[cell].toFixed(2)} bits`;
+        const base = cell * topK;
+        for (let k = 0; k < nShow; k++) { const id = res.words[base + k]; if (id < 0) break; s += `<br>${res.decodeId(id)} (P=${res.wordP[base + k].toExponential(1)})`; }
+        if (!Number.isNaN(sz)) s += `<br><span style="opacity:.6">smoothed ≈ ${sz.toFixed(2)} bits</span>`;
+        row.push(s);
+      }
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+/* Fine-grid hover text for the smoothed new-model surface (tabs 3–4): raw cell z,
+   the cell's top-n words (with '*' approx), and a muted 'smoothed ≈ …' line. */
+function smoothNMText(field, zRows, cellWords, vocab, topK) {
+  const G = zRows.length, sub = field.sub, nf = field.nf;
+  const rows = [];
+  for (let r = 0; r < nf; r++) {
+    const v = -0.5 + (r + 0.5) / sub;
+    const row = [];
+    for (let c = 0; c < nf; c++) {
+      const u = -0.5 + (c + 0.5) / sub;
+      const cr = Math.max(0, Math.min(G - 1, Math.round(v)));
+      const cc = Math.max(0, Math.min(G - 1, Math.round(u)));
+      const cell = cr * G + cc;
+      const zc = zRows[cr][cc];
+      const sz = field.z[r * nf + c];
+      if (zc === null || zc === undefined) {
+        row.push(`z = — bits<br>(no strings here)`);
+      } else {
+        let s = `z = ${(+zc).toFixed(2)} bits`;
+        if (cellWords && cellWords[cell] && cellWords[cell].length) s += nmCellWordsHTML(cellWords[cell], vocab, topK);
+        if (!Number.isNaN(sz)) s += `<br><span style="opacity:.6">smoothed ≈ ${sz.toFixed(2)} bits</span>`;
+        row.push(s);
+      }
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+function renderEngine3D() {
+  const m0 = D.models[+sel.value];
+  const basisId = basis1.value || "pca";
+  const G = +document.getElementById("res1").value;
+  document.getElementById("res1v").textContent = G;
+  const clip = document.getElementById("clip1").checked;
+  const hoverMode = document.getElementById("hover1").value;
+  const topK = (hoverMode === "off" || hoverMode === "near") ? 3 : +hoverMode;
+  const res = engineCompute(m0, basisId, G, topK);
+  const m = viewModel(m0, basisId);
+  const z = [];
+  for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) { const v = res.Ebin[r * G + c]; row.push(isFinite(v) ? v : null); } z.push(row); }
+  const [lo, hi] = finiteRange(z);
+  const xs = tileAxis([...res.x]), ys = tileAxis([...res.y]);
+  SMOOTHED_FIELD = null;
+  const smooth = document.getElementById("smooth1").checked;
+  const capVal = clip ? CAP : null;
+  const field = smooth ? smoothFieldOf(z, G, capVal, res.x, res.y) : null;
+  const traces = [{type: "surface", contours: NC,
+    x: field ? field.xs : xs, y: field ? field.ys : ys,
+    z: field ? smoothZ2D(field).map(r => r.map(v => v === null ? null : clipZ(v, clip))) : tileZ(z, clip), text: field ? smoothEngineText(field, res, (hoverMode === "off" || hoverMode === "near") ? 0 : +hoverMode) : engine3dText(res), colorscale: "Viridis",
+    connectgaps: false, cmin: Math.floor(lo), cmax: clip ? CAP : Math.ceil(hi), cauto: false,
+    colorbar: colorbar(clip), hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}<extra></extra>",
+    lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+  const wb = displayWells(m, res, G, m0.key + ":" + basisId);
+  const wells = wb.wells, barrier = wb.barrier;
+  traces.push(...wellTraces3d(wells, barrier, true, clip));
+  let pathInfo = null;
+  if (document.getElementById("showpath").checked) {
+    populatePathDropdowns(m); const pp = resolvePathEndpoints(m);
+    if (pp) pathInfo = computeMinimaxPath(m0.key, pp.wa, pp.wb);
+    if (pathInfo) traces.push(...pathTraces(res, pathInfo, "3d", clip));
+  }
+  const layout = {height: plotHeight(1.0), margin: {l: 0, r: 0, t: 28, b: 0},
+    title: {text: `${m.label} · ${G}×${G} bins (${basisMeta(basisId).label})`, font: {size: 13}, x: 0.02},
+    scene: sceneLayout(m, zRange(lo, hi, clip), wellAnnotations3d(wells, barrier, true, clip)),
+    uirevision: "tab1-3d"};
+  Plotly.react("plot1", traces, layout, {displaylogo: false, responsive: true});
+  renderPanel1(m, basisId, pathInfo, res);
+}
+function compareTable(modelKey, currentBasisId) {
+  const cm = (D.bases_compare || {})[modelKey];
+  if (!cm || !cm.bases) return "";
+  const grid = "32";
+  const rows = (D.bases || []).map(b => {
+    const c = cm.bases[b.id] && cm.bases[b.id][grid];
+    if (!c) return "";
+    const hl = b.id === currentBasisId ? " style='background:#eef3fb;font-weight:600'" : "";
+    const r = c.roughness || {}, w = c.wells || {}, cov = c.coverage || {};
+    return `<tr${hl}><td class="l">${b.label}</td>
+      <td class="mono">${r.mean_abs_dE_sd_norm.toFixed(3)}</td>
+      <td class="mono">${c.moran_i.toFixed(2)}</td>
+      <td class="mono">${c.homogeneity.anova_r2.toFixed(3)}</td>
+      <td class="mono">${w.n_persistent_wells_1bit}/${w.n_persistent_wells_2bit}/${w.n_persistent_wells_3bit}</td>
+      <td class="mono">${c.continuity_fraction.toFixed(3)}</td>
+      <td class="mono">${cov.occupied_fraction.toFixed(3)}</td>
+      <td class="mono">${cov.effective_occupied_cells.toFixed(0)}</td></tr>`;
+  }).join("");
+  return `<table><tr><th class="l">basis (grid 32)</th><th>roughness (SD-norm)</th><th>Moran I</th><th>R²(E|cell)</th><th>wells @1/2/3 bit</th><th>continuity</th><th>coverage</th><th>eff. cells</th></tr>${rows}</table>
+  <p class="muted">Roughness is mean |ΔE| over 4-neighbour pairs divided by the P-mass-weighted SD of E<sub>bin</sub> (outlier-robust). Higher Moran I / R² / continuity and lower roughness are better for a smooth, faithful surface. A basis that looks smoother only by collapsing coverage (fewer occupied cells) is a display artefact, not an improvement.</p>`;
+}
+function basisPanel(m, basisId) {
+  const meta = basisMeta(basisId);
+  const badge = meta.diagnostic ? ` <span style="background:#b03a2e;color:#fff;font-size:11px;padding:1px 7px;border-radius:3px;font-weight:700">DEGENERATE — diagnostic only</span>` : "";
+  return `<h2>Why this basis: ${meta.label}${badge}</h2>
+  ${meta.html || `<p>${meta.summary || ""}</p>`}
+  <h3>Comparison (${m.label}, raw E<sub>bin</sub>, grid 32)</h3>
+  ${compareTable(m.key, basisId)}`;
+}
+
+function hoverText(m) {
+  return tileText(m.z, (r, c) => `<br>${m.count[r][c]} strings · most probable: ${m.words[r][c]}`);
+}
+function renderLandscape() {
+  const basisId = basis1.value || "pca";
+  const m = viewModel(D.models[+sel.value], basisId);
+  const showW = true;
+  const clip = document.getElementById("clip1").checked;
+  const smooth = document.getElementById("smooth1").checked;
+  const view = document.getElementById("view1").value;
+  const hoverMode = document.getElementById("hover1").value;
+  const hoverK = (hoverMode === "off" || hoverMode === "near") ? 3 : +hoverMode;
+  const [lo, hi] = finiteRange(m.z);
+  const title = "";
+  if (view === "2d") {
+    renderEngine2D();
+    return;
+  }
+  if (smooth || basisId === "energy_metric" || +document.getElementById("res1").value !== 32) {
+    renderEngine3D();
+    return;
+  }
+  const xs = tileAxis(m.x), ys = tileAxis(m.y);
+  let traces;
+  traces = [{type: "surface", contours: NC, x: xs, y: ys, z: tileZ(m.z, clip), text: engine3dText(hoverEngine(m.key, basisId, hoverK)),
+      colorscale: "Viridis", connectgaps: false, cmin: Math.floor(lo), cmax: clip ? CAP : hi, cauto: false,
+      colorbar: colorbar(clip),
+      hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}<extra></extra>",
+      lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+  traces.push(...wellTraces3d(m.wells, m.barrier, showW, clip));
+  let pathInfo = null;
+  if (document.getElementById("showpath").checked) {
+    populatePathDropdowns(m); const pp = resolvePathEndpoints(m);
+    if (pp) pathInfo = computeMinimaxPath(m.key, pp.wa, pp.wb);
+    if (pathInfo) traces.push(...pathTraces(getPathEngine(m.key, basisId), pathInfo, "3d", clip));
+  }
+  const layout = {
+    height: plotHeight(1.0), margin: {l: 0, r: 0, t: 28, b: 0},
+    title: {text: title, font: {size: 13}, x: 0.02},
+    scene: sceneLayout(m, zRange(lo, hi, clip), wellAnnotations3d(m.wells, m.barrier, showW, clip)),
+    uirevision: `tab1-${sel.value}-${view}`};
+  Plotly.react("plot1", traces, layout, {displaylogo: false, responsive: true});
+  renderPanel1(m, basisId, pathInfo, pathInfo ? getPathEngine(m.key, basisId) : null);
+}
+
+function loadingRows(ax) {
+  return ax.top_loadings.map(([p, l, v, s]) =>
+    `<tr><td class="l mono">pos ${p} = '${l}'</td><td class="${v < 0 ? "neg" : "pos"} mono">${v >= 0 ? "+" : ""}${v.toFixed(3)}</td>` +
+    `<td class="mono">${(100 * s).toFixed(1)}%</td><td class="l"><span class="bar" style="width:${Math.round(120 * s)}px"></span></td></tr>`).join("");
+}
+function axisBlock(m, k) {
+  const a = m.axes[k];
+  const top = a.top_loadings.reduce((t, r) => t + r[3], 0);
+  return `<h3>${k ? "y" : "x"} = PC${k + 1}: ${pct(a.variance_share)} of total variance (λ<sub>${k + 1}</sub> = ${a.eigenvalue.toFixed(4)})</h3>
+  <table><tr><th>squared loadings by position</th>${a.position_share.map((v, i) => `<th>${POS[i]}</th>`).join("")}</tr>
+  <tr><td>share of axis (sum = 1)</td>${a.position_share.map(v => `<td class="mono">${v.toFixed(3)}</td>`).join("")}</tr></table>
+  <table><tr><th>largest loadings u[(pos, letter)]</th><th>signed</th><th>u²</th><th></th></tr>${loadingRows(a)}</table>
+  <p class="muted">These ${a.top_loadings.length} entries carry ${pct(top)} of the axis (Σu² over all 104 entries = 1).</p>`;
+}
+function wellsTable(wells, barrier) {
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  if (!wells.length) return "<p>No well reaches the 1-bit threshold.</p>";
+  const capNote = cw.shown < cw.total ? `<p class="muted">Showing ${cw.shown} of ${cw.total} wells (top by persistence; the global minimum and the barrier endpoints are always included).</p>` : "";
+  const rows = wells.map((w, i) => `<tr><td class="l"><b>W${i + 1}</b></td><td class="mono">${fmt(w.E)}</td>
+     <td class="mono">${fmt(w.persistence)}${w.essential ? "*" : ""}</td><td class="l mono">${w.words.map(e => wellWordLabel(e)).join(", ")}</td>
+     <td class="mono">${fmt(w.mass, 3)}</td></tr>`).join("");
+  let b = "";
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    b = `<p><b>Main barrier</b> (saddle where W${iw[0]} merges into W${iw[1]}): E<sub>bin</sub> = ${fmt(barrier.E)} bits, i.e. <b>climb from W${iw[0]} = +${fmt(barrier.above[0])} bits</b> and <b>from W${iw[1]} = +${fmt(barrier.above[1])} bits</b> (a factor 2<sup>${fmt(barrier.above[0], 1)}</sup> drop in mean string probability).</p>`;
+  }
+  return `<table><tr><th>well</th><th>E<sub>min</sub></th><th>persistence</th><th class="l">most probable strings in basin</th><th>P(basin)</th></tr>${rows}</table>
+  ${capNote}
+  <p class="muted">* global minimum: it never merges, so by convention its persistence is the full height range of the surface (max − min E<sub>bin</sub>). A trailing * on a word marks an approximate (importance-sampled, L ≥ 6) entry. Bits throughout.</p>${b}`;
+}
+
+function renderPanel1(m, basisId, pathInfo, res) {
+  const d = m.desc;
+  const chk = m.mode === "exact"
+    ? `<p>Fit: exact marginal matching, converged = ${m.converged} (max gradient ${fmt(m.max_gradient_in_se, 4)} s.e.). S<sub>2</sub> reproduces the stored study value ${fmt(m.S2_study, 6)} to ${m.S2_abs_diff.toExponential(1)} bits. max |C<sub>model</sub> − C<sub>empirical</sub>| = ${m.C_check.toExponential(1)} (claim iii).</p>`
+    : `<p>Fit: MAP, σ² = ${fmt(m.sigma2, 3)}, λ = 1/(2σ²N); converged = ${m.converged} (max gradient ${fmt(m.max_gradient_in_se, 4)} s.e.).</p>`;
+  const head = sidebarHead("sb_static", {wells: m.wells, barrier: m.barrier, pathInfo, res, isNM: false, hasBarrier: !!m.barrier, hasPath: !!pathInfo, hasCap: document.getElementById("clip1").checked});
+  document.getElementById("panel1").innerHTML = `
+  ${head}
+  <details class="tech"><summary>${uc("details_heading")}</summary>
+  <p>${d} N = ${big(m.tokens)} tokens. S<sub>2</sub> = ${fmt(m.S2, 4)} bits.</p>${chk}
+
+  ${basisPanel(m, basisId)}
+
+  <h2>What x and y are</h2>
+  ${(m.axes && m.axes[0]) ? `
+  <p>Each string s is its one-hot vector <b>x(s)</b> ∈ {0,1}<sup>104</sup> over (position, letter). The basis is a pair of unit loadings u<sub>1</sub>, u<sub>2</sub> over (position, letter),
+  so <b>x = u<sub>1</sub>·(x(s) − ⟨x⟩)</b> and <b>y = u<sub>2</sub>·(x(s) − ⟨x⟩)</b>.
+  Because x(s) has one 1 per position, each coordinate is a sum of four letter scores, x = Σ<sub>i</sub> u<sub>1</sub>[i, s<sub>i</sub>] − const: the loadings below.</p>
+  <p><b>The plane holds ${pct(m.cumulative_share)} of the total indicator variance</b> (Σλ = tr C = ${m.total_variance.toFixed(4)}; C has rank ${m.rank} ≤ 100 because each position's indicators sum to 1).
+  Sign convention: each axis is oriented so that its largest-|loading| entry is positive.</p>
+  ${axisBlock(m, 0)}${axisBlock(m, 1)}` : `
+  <p>This basis is a <b>diagnostic coordinate layout</b>, not a linear projection of the indicator vector: x and y are the landmark-MDS coordinates of the substitution graph weighted by energy slope (see the verdict above for the degeneracy analysis and its numbers).</p>`}
+
+  ${basisId === "pca" ? `<h2>Why these axes</h2>
+  <p>(i) For this exponential family, C is the Fisher information with respect to single-site fields h<sub>i</sub>(a) added to the energy (the indicator directions); the top eigenvectors are the field perturbations that change the distribution most per unit size (information geometry; Amari &amp; Nagaoka 2000).</p>
+  <p>(ii) ‖x(s) − x(s′)‖² = 2·Hamming(s, s′), so this P-weighted PCA is a <b>weighted</b> generalisation of classical multidimensional scaling (Torgerson 1952): it is MDS of the Hamming metric with each string weighted by its model probability P(s) (classical MDS weights every point equally). A Hamming step is Stephens &amp; Bialek's single-substitution move; it moves a string by at most √2 in the plane.</p>
+  <p>(iii) ${m.mode === "exact" ? "This is an exact fit: it reproduces every pairwise marginal, so C is the empirical indicator covariance of the corpus (checked above)." : "For exact fits C equals the empirical indicator covariance; this MAP fit's marginals are shrunk towards uniform by the prior, so its C is the smoothed one."}</p>` : ""}
+
+  <h2>What z is</h2>
+  <p><b>E<sub>bin</sub> = −log<sub>2</sub>⟨2<sup>−E(s)</sup>⟩<sub>s∈bin</sub> = −log<sub>2</sub>(P(bin)/|bin|)</b> bits, the Zwanzig (1954) exponential average of string energies E(s) = −log<sub>2</sub>P(s) over all strings projecting into the cell: the bin's free energy −log<sub>2</sub>P(bin) minus its configurational entropy log<sub>2</sub>|bin|.
+  Consequences: a uniform model is a flat plane at log<sub>2</sub>26⁴ = ${fmt(D.uniform_bits)} bits; values are exact (all 26⁴ strings enumerated, no estimation noise).
+  Grid: ${G}×${G} cells over the full range of all 26⁴ strings' coordinates (cell ${m.cell[0].toFixed(3)} × ${m.cell[1].toFixed(3)}); <b>the resolution is a display parameter</b>.
+  ${aboveMaxExplanation()}
+  ${clipExplanation()}
+  Gaps: ${m.n_empty} cells contain no string (empty)${m.mode === "exact" ? `; ${m.n_forbidden} cells contain only forbidden strings (E<sub>bin</sub> = +∞; ${big(m.forbidden_strings)} of 26⁴ strings are forbidden because they contain an unseen letter pair)` : "; no cell is +∞ (finite energies under the prior)"}.</p>
+  ${heatmapNote()}
+
+  <h2>Smoothing (display only)</h2>
+  <p>With the smoothing box checked, the cell staircase is replaced by a continuous surface: Boltzmann-domain kernel regression (an unnormalised Gaussian kernel applied to 2<sup>−E</sup>, the Zwanzig average E<sub>bin</sub> itself is), evaluated on a fine grid. The <b>length (cells)</b> slider sets the longer of two kernel scales; the shorter scale adapts to local variation (a blurred map of the cell-to-cell energy shifts), so jagged regions keep their shifts while flat regions get smooth skirts. In capped mode empty cells enter as weak evidence for the cap (capped cells slightly stronger), so the surface relaxes to the cap far from data without pinning any cell; in uncapped mode cells whose data-kernel mass is below 0.15 are left as gaps (grey). ${smoothingNote()}</p>
+
+  <h2>Wells and barrier (projected, orange/purple)</h2>
+  <p>Cells are linked when a single-letter substitution takes a string of one to a string of the other (S&amp;B's move; independent of the model).
+  Wells are local minima of E<sub>bin</sub> on this cell graph, ranked by sublevel-set persistence (merge tree, elder rule; Edelsbrunner, Letscher &amp; Zomorodian 2002) = saddle height − minimum.
+  <b>Labelled: persistence ≥ ${D.persist_bits} bit</b> (convention: a factor-2 drop in mean string probability) — ${m.wells.length} of ${m.n_wells_all} minima. Basin = steepest descent on the cell graph after cancelling shallower wells; listed words are its ${D.basin_words} most probable strings. The global minimum never merges; by convention its persistence is the full height range, so a flat surface has no well. Because links are substitutions, a saddle need not lie geometrically between its wells.</p>
+  ${wellsTable(m.wells, m.barrier)}
+
+  ${(pathInfo && res) ? pathPanelHTML(pathInfo, res) : ""}
+
+  <h2>String-level minima (white markers)</h2>
+  <p>${big(m.n_string_minima)} strings are strict local minima of E(s) under every single-letter substitution (S&amp;B's definition, <span class="mono">maxent.local_minima</span>). Shown: the top-N most probable (minima selector above; ≤12 word labels drawn), at their own (x, y) and at their cell's E<sub>bin</sub> (their own E(s) is in the hover). These are minima of the 456,976-string landscape; the orange wells are minima of the projected, cell-averaged surface.</p>
+  ${refs()}
+  </details>`;
+  renderPanelMath(document.getElementById("panel1"));
+  const det1 = document.querySelector("#panel1 details.tech");
+  if (det1) det1.addEventListener("toggle", () => { if (det1.open) renderPanelMath(det1); });
+}
+
+function refs() {
+  return `<h2>References</h2><ol class="refs muted">
+  <li>G. J. Stephens &amp; W. Bialek, Statistical mechanics of letters in words, Phys. Rev. E 81, 066119 (2010); arXiv:0801.0253.</li>
+  <li>S. Amari &amp; H. Nagaoka, Methods of Information Geometry, AMS/Oxford Univ. Press, Transl. Math. Monographs 191 (2000).</li>
+  <li>W. S. Torgerson, Multidimensional scaling: I. Theory and method, Psychometrika 17, 401–419 (1952).</li>
+  <li>R. W. Zwanzig, High-temperature equation of state by a perturbation method. I. Nonpolar gases, J. Chem. Phys. 22, 1420–1426 (1954).</li>
+  <li>H. Edelsbrunner, D. Letscher &amp; A. Zomorodian, Topological persistence and simplification, Discrete Comput. Geom. 28, 511–533 (2002).</li>
+  <li>G. R. G. Lewis et al., Science 388, eadv9817 (2025).</li></ol>`;
+}
+
+sel.onchange = renderLandscape;
+basis1.onchange = renderLandscape;
+document.getElementById("res1").oninput = () => { document.getElementById("res1v").textContent = document.getElementById("res1").value; const v = document.getElementById("view1").value; if (v === "2d") renderEngine2D(); else if (+document.getElementById("res1").value !== 32) renderEngine3D(); else renderLandscape(); };
+document.getElementById("hover1").onchange = () => { if (document.getElementById("view1").value === "2d") renderEngine2D(); else renderLandscape(); };
+document.getElementById("clip1").onchange = renderLandscape;
+document.getElementById("smooth1").onchange = () => { document.getElementById("smoothlen1label").style.display = document.getElementById("smooth1").checked ? "" : "none"; renderLandscape(); };
+document.getElementById("smoothlen1").oninput = () => { syncSmoothLen("smoothlen1"); renderLandscape(); };
+document.getElementById("showpath").onchange = renderLandscape;
+document.getElementById("pathfrom").onchange = renderLandscape;
+document.getElementById("pathto").onchange = renderLandscape;
+document.getElementById("view1").onchange = renderLandscape;
+
+/* ------------------------------------------------------------------ tab 3 (S&B trajectory) */
+const T = D.traj;
+const NF = T.months.length;
+const finalModel = D.models.find(m => m.key === "pooled");
+const slider = document.getElementById("frame");
+slider.max = NF - 1;
+const VTRAJ = (() => {
+  const b = atob(D.V_traj_b64), a = new ArrayBuffer(b.length), u = new Uint8Array(a);
+  for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+  const f = new Float32Array(a), o = new Float64Array(f.length);
+  for (let i = 0; i < f.length; i++) o[i] = f[i];
+  return o;
+})();
+function renderTrajEngine2D(f) {
+  const basisId = basis2.value || "pca";
+  const G = +document.getElementById("res2").value;
+  document.getElementById("res2v").textContent = G;
+  const hoverMode = document.getElementById("hover2").value;
+  const topK = hoverMode === "off" || hoverMode === "near" ? 3 : +hoverMode;
+  const clip = document.getElementById("clip2").checked;
+  const pm = D.models.find(m => m.key === "pooled");
+  const eng = pm.engines[basisId];
+  const V = VTRAJ.subarray(f * 4056, (f + 1) * 4056);
+  const res = LandscapeEngine.compute({V, U1: decodeF32(eng.U1), U2: decodeF32(eng.U2),
+    mean: eng.mean, extent: eng.extent, G, topK});
+  const tr = engine2dTraces(res, clip, true, hoverMode);
+  const smooth = document.getElementById("smooth2").checked;
+  if (smooth) {
+    const z2 = [];
+    for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) { const v = res.Ebin[r * G + c]; row.push(isFinite(v) ? v : null); } z2.push(row); }
+    const capVal = clip ? CAP : null;
+    const field = smoothFieldOf(z2, G, capVal, res.x, res.y);
+    const grey = smoothZ2D(field).map(r => r.map(v => v === null ? 0 : null));
+    const zs = smoothZ2D(field).map(r => r.map(v => v === null ? null : clipZ(v, clip)));
+    const [slo, shi] = finiteRange(zs);
+    tr.length = 0;
+    tr.push({type: "heatmap", x: field.xs, y: field.ys, z: grey, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+    tr.push({type: "heatmap", x: field.xs, y: field.ys, z: zs, colorscale: "Viridis", zmin: Math.floor(slo), zmax: clip ? CAP : Math.ceil(shi), zauto: false, connectgaps: false, hoverongaps: false,
+      text: smoothEngineText(field, res, (hoverMode === "off" || hoverMode === "near") ? 0 : +hoverMode),
+      colorbar: colorbar(clip), hovertemplate: "x %{x:.3f} y %{y:.3f}<br>%{text}<extra></extra>"});
+  } else if (hoverMode !== "off" && hoverMode !== "near") {
+    const text = [];
+    for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) {
+      const cell = r * G + c, base = cell * topK;
+      let s = `E<sub>bin</sub> = ${res.Ebin[cell].toFixed(2)} bits`;
+      for (let k = 0; k < topK; k++) { const id = res.words[base + k]; if (id < 0) break; s += `<br>${res.decodeId(id)} (P=${res.wordP[base + k].toExponential(1)})`; }
+      row.push(s);
+    } text.push(row); }
+    tr[1].text = text;
+  }
+  const TB = viewTraj(basisId);
+  const wb2 = displayTrajWells(TB, f, res, G, "traj:" + basisId + ":" + f);
+  const wells2 = wb2.wells, barrier2 = wb2.barrier;
+  tr.push(...wellTraces2d(wells2, barrier2, true));
+  const title = `${monthLabel(f)} · ${G}×${G} bins (${basisMeta(basisId).label})`;
+  Plotly.react("plot2", tr, heatmapLayout(pm, title, wellAnnotations2d(wells2, barrier2, true)), {displaylogo: false, responsive: true});
+  Plotly.relayout("lines", {"shapes[0].x0": f, "shapes[0].x1": f});
+  document.getElementById("dateLabel").textContent = `frame ${f}/${NF - 1}: ${monthLabel(f)}`;
+  renderPanel2(f, basisId);
+  RES2 = res; RES2_K = topK;
+  bindHover("plot2", h2);
+}
+function renderTrajEngine3D(f) {
+  const basisId = basis2.value || "pca";
+  const G = +document.getElementById("res2").value;
+  document.getElementById("res2v").textContent = G;
+  const clip = document.getElementById("clip2").checked;
+  const hoverMode = document.getElementById("hover2").value;
+  const topK = (hoverMode === "off" || hoverMode === "near") ? 3 : +hoverMode;
+  const pm = D.models.find(m => m.key === "pooled");
+  const eng = pm.engines[basisId];
+  const V = VTRAJ.subarray(f * 4056, (f + 1) * 4056);
+  const res = LandscapeEngine.compute({V, U1: decodeF32(eng.U1), U2: decodeF32(eng.U2), mean: eng.mean, extent: eng.extent, G, topK: topK});
+  const z = [];
+  for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) { const v = res.Ebin[r * G + c]; row.push(isFinite(v) ? v : null); } z.push(row); }
+  const [lo, hi] = finiteRange(z);
+  const xs = tileAxis([...res.x]), ys = tileAxis([...res.y]);
+  SMOOTHED_FIELD = null;
+  const smooth = document.getElementById("smooth2").checked;
+  const capVal = clip ? CAP : null;
+  const field = smooth ? smoothFieldOf(z, G, capVal, res.x, res.y) : null;
+  const traces = [{type: "surface", contours: NC,
+    x: field ? field.xs : xs, y: field ? field.ys : ys,
+    z: field ? smoothZ2D(field).map(r => r.map(v => v === null ? null : clipZ(v, clip))) : tileZ(z, clip), text: field ? smoothEngineText(field, res, (hoverMode === "off" || hoverMode === "near") ? 0 : +hoverMode) : engine3dText(res), colorscale: "Viridis",
+    connectgaps: false, cmin: Math.floor(lo), cmax: clip ? CAP : Math.ceil(hi), cauto: false,
+    colorbar: colorbar(clip), hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}<extra></extra>",
+    lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+  const TB = viewTraj(basisId);
+  const wb = displayTrajWells(TB, f, res, G, "traj:" + basisId + ":" + f);
+  const wells = wb.wells, barrier = wb.barrier;
+  traces.push(...wellTraces3d(wells, barrier, true, clip));
+  const title = `${monthLabel(f)} · ${G}×${G} bins (${basisMeta(basisId).label})`;
+  const layout = {height: plotHeight(0.68), margin: {l: 0, r: 0, t: 28, b: 0},
+    title: {text: title, font: {size: 13}, x: 0.02},
+    scene: sceneLayout(pm, zRange(lo, hi, clip), wellAnnotations3d(wells, barrier, true, clip)),
+    uirevision: "tab2-3d"};
+  Plotly.react("plot2", traces, layout, {displaylogo: false, responsive: true});
+  Plotly.relayout("lines", {"shapes[0].x0": f, "shapes[0].x1": f});
+  document.getElementById("dateLabel").textContent = `frame ${f}/${NF - 1}: ${monthLabel(f)}`;
+  renderPanel2(f, basisId);
+}
+function viewTraj(basisId) {
+  if (!basisId || basisId === "pca") return T;
+  return T.bases && T.bases[basisId] ? Object.assign({}, T, T.bases[basisId]) : T;
+}
+function decodeQ(b64) {
+  const bin = atob(b64), buf = new ArrayBuffer(bin.length), u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Int16Array(buf);
+}
+function frameRows(Q, scale, f) {
+  const rows = [], o = f * G * G;
+  for (let r = 0; r < G; r++) {
+    const row = [];
+    for (let c = 0; c < G; c++) { const q = Q[o + r * G + c]; row.push(q === -32768 ? null : q / scale); }
+    rows.push(row);
+  }
+  return rows;
+}
+function smoothFrameRows(SM, f) {
+  let o;
+  if (SM.frames) {
+    const idx = SM.frames.indexOf(f);
+    if (idx < 0) return null;    // reduced stride: this frame has no precomputed surface
+    o = idx * SM.n * SM.n;
+  } else {
+    o = f * SM.n * SM.n;
+  }
+  const rows = [];
+  for (let r = 0; r < SM.n; r++) {
+    const row = [];
+    for (let c = 0; c < SM.n; c++) {
+      const gi = r * SM.n + c, qi = o + r * SM.n + c;
+      row.push(SM.grey[gi] ? null : SM.q[qi] / SM.scale);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+function monthLabel(f) {
+  return f === 0 ? "no tweets (uniform model)" : `through end of ${T.months[f]}`;
+}
+function renderTraj(f) {
+  const basisId = basis2.value || "pca";
+  const TB = viewTraj(basisId);
+  const Q = decodeQ(TB.zb64);
+  const SM = TB.smooth ? decodeSmooth(TB.smooth) : null;
+  const axisModel = (basisId === "pca") ? finalModel : {axes: TB.axes, axis_names: TB.axis_names, basis: basisId};
+  const wells = TB.wells[f] || [], barrier = TB.barrier[f] || null;
+  const clip = document.getElementById("clip2").checked;
+  const smooth = document.getElementById("smooth2").checked;
+  const view = document.getElementById("view2").value;
+  const rows = frameRows(Q, TB.scale, f);
+  const strideNote = (SM && SM.frames) ? `<span class="muted"> Non-default basis: the trajectory surface is smoothed every ${SM.frames.length > 0 && SM.frames[1] - SM.frames[0] > 0 ? (SM.frames[1] - SM.frames[0]) : D.bases_smooth_stride} frames (display/perf); other frames show the cell staircase.</span>` : "";
+  const smoothRows = (smooth && SM) ? smoothFrameRows(SM, f) : null;
+  const title = monthLabel(f);
+  if (view === "2d") {
+    if (basisId === "energy_metric" || +document.getElementById("res2").value !== 32 || smooth) { renderTrajEngine2D(f); return; }
+    let traces;
+    if (smoothRows) {
+      const xf = fineCentres(TB.x, SM.sub), yf = fineCentres(TB.y, SM.sub);
+      const zGrey = [], zData = [];
+      for (let r = 0; r < SM.n; r++) {
+        const gr = [], dr = [];
+        for (let c = 0; c < SM.n; c++) {
+          gr.push(SM.grey[r * SM.n + c] ? 0 : null);
+          dr.push(smoothRows[r][c] === null ? null : clipZ(smoothRows[r][c], clip));
+        }
+        zGrey.push(gr); zData.push(dr);
+      }
+      traces = [
+        {type: "heatmap", x: xf, y: yf, z: zGrey, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"},
+        {type: "heatmap", x: xf, y: yf, z: zData, colorscale: "Viridis", zmin: Math.floor(TB.zmin), zmax: clip ? CAP : Math.ceil(TB.zmax), zauto: false, connectgaps: false, hoverongaps: false,
+         colorbar: colorbar(clip),
+         hovertemplate: "smoothed E ≈ %{z:.2f} bits (display only)<extra></extra>"}];
+      const lv = contourLevels(zData, D.contours);
+      if (lv.length >= 2) traces.push({type: "contour", x: xf, y: yf, z: zData,
+        contours: {coloring: "none", showlines: true, start: lv[0], end: lv[lv.length - 1], size: lv[1] - lv[0]},
+        line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+      traces.push(...wellTraces2d(wells, barrier, true));
+    } else {
+      traces = heatmapTraces({x: TB.x, y: TB.y, wells, barrier, string_minima: null}, rows, false, clip, false, true);
+    }
+    Plotly.react("plot2", traces, heatmapLayout(axisModel, title, wellAnnotations2d(wells, barrier, true)), {displaylogo: false, responsive: true});
+  } else {
+    if (basisId === "energy_metric" || +document.getElementById("res2").value !== 32 || smooth) { renderTrajEngine3D(f); return; }
+    let traces;
+    if (smoothRows) {
+      const xs2f = fineCentres(TB.x, SM.sub), ys2f = fineCentres(TB.y, SM.sub);
+      const zGrey = [], zData = [];
+      for (let r = 0; r < SM.n; r++) {
+        const gr = [], dr = [];
+        for (let c = 0; c < SM.n; c++) {
+          const gi = r * SM.n + c;
+          gr.push(SM.grey[gi] ? 0 : null);
+          dr.push(smoothRows[r][c] === null ? null : clipZ(smoothRows[r][c], clip));
+        }
+        zGrey.push(gr); zData.push(dr);
+      }
+      traces = [
+        {type: "surface", contours: NC, x: xs2f, y: ys2f, z: zGrey, colorscale: [[0, GREY], [1, GREY]], showscale: false,
+         opacity: 1, lighting: {ambient: 1, diffuse: 0, specular: 0}, hoverinfo: "skip"},
+        {type: "surface", contours: NC, x: xs2f, y: ys2f, z: zData, colorscale: "Viridis", connectgaps: false,
+         cmin: Math.floor(TB.zmin), cmax: clip ? CAP : TB.zmax, cauto: false, colorbar: colorbar(clip),
+         hovertemplate: "smoothed E ≈ %{z:.2f} bits (display only)<extra></extra>",
+         lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+    } else {
+      const xs2b = tileAxis(TB.x), ys2b = tileAxis(TB.y);
+      traces = [{type: "surface", contours: NC, x: xs2b, y: ys2b, z: tileZ(rows, clip), text: tileText(rows), colorscale: "Viridis",
+        cmin: Math.floor(TB.zmin), cmax: clip ? CAP : TB.zmax, cauto: false, connectgaps: false,
+        colorbar: colorbar(clip),
+        hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}<extra></extra>",
+        lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+    }
+    traces.push(...wellTraces3d(wells, barrier, true, clip));
+    const layout = {
+      height: plotHeight(0.68), margin: {l: 0, r: 0, t: 28, b: 0},
+      title: {text: title, font: {size: 13}, x: 0.02},
+      scene: sceneLayout(axisModel, zRange(TB.zmin, TB.zmax, clip), wellAnnotations3d(wells, barrier, true, clip)),
+      uirevision: "tab2-" + view};
+    Plotly.react("plot2", traces, layout, {displaylogo: false, responsive: true});
+  }
+  Plotly.relayout("lines", {"shapes[0].x0": f, "shapes[0].x1": f});
+  document.getElementById("dateLabel").textContent = `frame ${f}/${NF - 1}: ${monthLabel(f)}`;
+  renderPanel2(f, basisId);
+}
+
+function trackingTable() {
+  const rows = T.tracking.map((t, i) => `<tr><td class="l"><b>W${i + 1}</b> <span class="mono">${t.words.join(", ")}</span></td>
+    <td class="mono">${fmt(t.persistence)}${t.essential ? "*" : ""}</td>
+    <td class="mono">${t.first_month ?? "—"}</td><td class="mono">${t.stable_month ?? "—"}</td></tr>`).join("");
+  return `<table><tr><th class="l">final well</th><th>persistence</th><th>first ≥ 1 bit</th><th>≥ 1 bit ever since</th></tr>${rows}</table>
+  <p class="muted">A final well is present in frame t if frame t has a well of persistence ≥ ${D.persist_bits} bit whose minimum lies in the final well's basin.</p>`;
+}
+
+function renderPanel2(f, basisId) {
+  const nConv = T.converged.filter(Boolean).length;
+  const p = D.prior;
+  const TB = viewTraj(basisId || "pca");
+  const meta = basisMeta(basisId || "pca");
+  const head = sidebarHead("sb_time", {wells: TB.wells[f], barrier: TB.barrier[f], pathInfo: null, res: null, isNM: false, hasBarrier: !!TB.barrier[f], hasPath: false, hasCap: document.getElementById("clip2").checked});
+  document.getElementById("panel2").innerHTML = `
+  ${head}
+  <details class="tech"><summary>${uc("details_heading")}</summary>
+  <p class="muted">Projection basis: <b>${meta.label}</b>. ${meta.summary || ""} Wells and barriers are features of the projected surface and are recomputed per basis; the string-level minima below are basis-independent.</p>
+  <table>
+    <tr><td>cumulative tokens N<sub>t</sub></td><td class="mono">${big(T.tokens[f])}</td></tr>
+    <tr><td>model entropy S<sub>2</sub>(t)</td><td class="mono">${fmt(T.S2[f], 4)} bits</td></tr>
+    <tr><td>strict string-level minima</td><td class="mono">${big(T.n_string_minima[f])}</td></tr>
+    <tr><td>share of this model's variance in the fixed plane</td><td class="mono">${pct(TB.plane_share ? TB.plane_share[f] : T.plane_share[f])}</td></tr>
+    <tr><td>fit converged · iterations · max gradient (s.e.)</td><td class="mono">${T.converged[f]} · ${T.iterations[f]} · ${fmt(T.max_gradient_in_se[f], 4)}</td></tr>
+  </table>
+  <h3>Wells with persistence ≥ ${D.persist_bits} bit in this frame</h3>
+  ${wellsTable(TB.wells[f], TB.barrier[f])}
+
+  <h2>How each frame is made</h2>
+  <p>Frame t uses every four-letter token of every English tweet posted up to the end of month t (cumulative month-binned counts, 2006-03..2023-04, shards 00–15; months without data are absent). The pairwise model is the MAP fit with the Gaussian prior V ~ N(0, σ²) of model (d): <b>σ² = ${fmt(T.sigma2, 4)}</b>, λ<sub>t</sub> = 1/(2σ²N<sub>t</sub>). With no tweets (frame 0) the likelihood is empty, V = 0 and the model is uniform: the flat plane at ${fmt(D.uniform_bits)} bits.
+  Fits are warm-started from the previous frame within ${T.chain_bounds.length - 1} parallel chains over contiguous frame ranges [${T.chain_bounds.join(", ")}). ${nConv} of ${NF} fits met the convergence criterion (every marginal within 0.01 sampling s.e.).</p>
+  <p><b>σ² selection.</b> ${p.n_folds}-fold cross-validation (the maxent.select_prior procedure, folds run in parallel; seed ${p.seed}) on all ${big(p.tokens)} pooled tokens over σ² ∈ {${p.sigma2.map(s => fmt(s, 3)).join(", ")}}; held-out bits/token ${p.bits.map((b, i) => b.toFixed(6) + " ± " + p.se[i].toFixed(4)).join(", ")}; optimum σ² = ${fmt(p.best_sigma2, 3)}, interior: ${p.interior}. At this N the curve spans ${((Math.max(...p.bits) - Math.min(...p.bits)) * 1e3).toFixed(3)} millibits, ${Math.max(...p.bits) - Math.min(...p.bits) < Math.min(...p.se) ? "less than one standard error, so the prior width barely matters for the pooled fit" : "more than one standard error"}. σ² is the one hyperparameter shared by every frame and is chosen on the full record.</p>
+
+  <h2>Why the surface evolves continuously</h2>
+  <p><b>One fixed basis.</b> x, y are the projections onto the top-2 eigenvectors of the <i>final</i> model's indicator covariance (model (d) in tab 1: x = ${pct(finalModel.axes[0].variance_share)}, y = ${pct(finalModel.axes[1].variance_share)}, plane ${pct(finalModel.cumulative_share)} of its variance; composition in tab 1). Every string keeps its (x, y) in every frame; only its energy changes. The basis is a viewing angle chosen from the final data: no tokens from after month t enter the fit at frame t.</p>
+  <p><b>Smoothness.</b> The MAP objective log Z(V) − ⟨μ<sub>t</sub>, V⟩ + λ<sub>t</sub>‖V‖² is strictly convex with Hessian Cov<sub>P</sub>[features] + 2λ<sub>t</sub>I ⪰ 2λ<sub>t</sub>I, so its optimum is unique and, by the implicit function theorem, a smooth function of the cumulative marginals μ<sub>t</sub> and of λ<sub>t</sub>. Energies and E<sub>bin</sub> therefore change continuously with the counts. Wells are different: they are discrete topological features that appear and vanish at bifurcations, not continuously — the tracking table below records the discrete month in which each final well first appears.</p>
+  <p>Grid ${G}×${G} (display parameter), z-axis and colour range fixed across frames; energies are stored as 0.01-bit integers.</p>
+
+  <h2>When the final wells formed</h2>${trackingTable()}
+  ${refs()}
+  </details>`;
+  renderPanelMath(document.getElementById("panel2"));
+  const det2 = document.querySelector("#panel2 details.tech");
+  if (det2) det2.addEventListener("toggle", () => { if (det2.open) renderPanelMath(det2); });
+}
+
+function renderLines() {
+  const xsL = [...Array(NF).keys()];
+  const ticks = xsL.filter(f => f === 0 || T.months[f].endsWith("-01"));
+  Plotly.newPlot("lines", [
+    {x: xsL, y: T.tokens.map(v => Math.max(v, 1)), name: "N<sub>t</sub> (tokens, log)", type: "scatter", line: {color: "#2b5fab"},
+     hovertemplate: "%{text}<br>N<sub>t</sub> %{y:,}<extra></extra>", text: xsL.map(monthLabel)},
+    {x: xsL, y: T.S2, name: "S<sub>2</sub>(t) bits", yaxis: "y2", type: "scatter", line: {color: "#c2410c"},
+     hovertemplate: "%{text}<br>S<sub>2</sub> %{y:.3f} bits<extra></extra>", text: xsL.map(monthLabel)},
+  ], {
+    height: linesHeight(), margin: {l: 60, r: 60, t: 6, b: 34}, dragmode: NARROW.matches ? false : "zoom",
+    xaxis: {tickvals: ticks, ticktext: ticks.map(f => f === 0 ? "∅" : T.months[f].slice(0, 4)), tickfont: {size: 10}},
+    yaxis: {type: "log", title: {text: "N<sub>t</sub>", font: {size: 11}}, tickfont: {size: 10}},
+    yaxis2: {overlaying: "y", side: "right", title: {text: "S<sub>2</sub> (bits)", font: {size: 11}}, tickfont: {size: 10}},
+    legend: {orientation: "h", x: 0.02, y: 1.0, font: {size: 11}},
+    shapes: [{type: "line", x0: 0, x1: 0, yref: "paper", y0: 0, y1: 1, line: {color: "#111", width: 1.5}}],
+  }, {displaylogo: false, responsive: true});
+  document.getElementById("lines").on("plotly_click", ev => { setFrame(ev.points[0].x); });
+}
+
+let timer = null;
+function setFrame(f) { slider.value = f; renderTraj(+f); }
+slider.oninput = () => renderTraj(+slider.value);
+basis2.onchange = () => renderTraj(+slider.value);
+document.getElementById("res2").oninput = () => { document.getElementById("res2v").textContent = document.getElementById("res2").value; renderTraj(+slider.value); };
+document.getElementById("hover2").onchange = () => renderTraj(+slider.value);
+document.getElementById("clip2").onchange = () => renderTraj(+slider.value);
+document.getElementById("smooth2").onchange = () => { document.getElementById("smoothlen2label").style.display = document.getElementById("smooth2").checked ? "" : "none"; renderTraj(+slider.value); };
+document.getElementById("smoothlen2").oninput = () => { syncSmoothLen("smoothlen2"); renderTraj(+slider.value); };
+document.getElementById("view2").onchange = () => renderTraj(+slider.value);
+const playBtn = document.getElementById("play");
+playBtn.onclick = () => {
+  if (timer) { clearInterval(timer); timer = null; playBtn.textContent = "▶ play"; return; }
+  if (+slider.value >= NF - 1) slider.value = 0;
+  playBtn.textContent = "❚❚ pause";
+  timer = setInterval(() => {
+    const f = +slider.value + 1;
+    if (f >= NF) { clearInterval(timer); timer = null; playBtn.textContent = "▶ play"; return; }
+    setFrame(f);
+  }, 180);
+};
+
+/* ------------------------------------------------------------------ new-model tabs (3 & 4) */
+const NM = D.newmodel || null;
+const NM_CAP = 40;                      // clip reference: z = 40 bits = the data's zero-mass ceiling
+const nmClip = (v, clip) => (v === null || v === undefined || !clip) ? v : Math.min(v, NM_CAP);
+
+function nmDecode(b64, Typed) {
+  const bin = atob(b64), buf = new ArrayBuffer(bin.length), u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Typed(buf);
+}
+function nmUpsample(rows, sub) {
+  // Each coarse cell becomes a sub x sub block: (ny*sub) rows of (nx*sub) values.
+  const out = [];
+  for (const row of rows) {
+    for (let j = 0; j < sub; j++) {
+      const r2 = [];
+      for (const v of row) for (let k = 0; k < sub; k++) r2.push(v);
+      out.push(r2);
+    }
+  }
+  return out;
+}
+
+function nmAxisBlock(a, k) {
+  const top = (a.top_bigrams || []).reduce((t, r) => t + r[2], 0);
+  return `<h3>${k ? "y" : "x"} = PC${k + 1}: ${pct(a.variance_share)} of total variance (λ = ${a.eigenvalue.toFixed(4)})</h3>
+  <p class="muted">Each coordinate is a sum over the word's L+1 boundary-marked bigrams over {a..z, #}. Largest loadings (these ${(a.top_bigrams || []).length} carry ${pct(top)} of Σu² = 1):</p>
+  <table><tr><th>bigram</th><th>signed</th><th>u²</th></tr>${(a.top_bigrams || []).map(([b, v, s]) =>
+    `<tr><td class="l mono">${b}</td><td class="mono">${v >= 0 ? "+" : ""}${v.toFixed(3)}</td><td class="mono">${(100 * s).toFixed(1)}%</td></tr>`).join("")}</table>`;
+}
+
+function nmConfidence2d(mask, zData, xs, ys) {
+  // mask: grid of 0/1 (0 = low confidence). A translucent white tint over
+  // low-confidence DATA cells only (empty cells stay grey); the underlying z
+  // colour remains visible through the tint.
+  const z = mask.map((r, ri) => r.map((v, ci) => (v === 0 && zData[ri][ci] !== null && zData[ri][ci] !== undefined) ? 1 : null));
+  return {type: "heatmap", x: xs, y: ys, z, zmin: 0, zmax: 1,
+    colorscale: [[0, "#ffffff"], [1, "#ffffff"]],
+    showscale: false, hoverinfo: "skip", opacity: 0.22};
+}
+/* Fine-grid confidence wash (smooth mode): nearest-cell lookup of the low-confidence
+   mask onto the fine grid; the wash hugs the smoothed surface (same fine z + 0.05). */
+function nmConfidenceMaskSmooth(field, mask, rawRows) {
+  const G = mask.length, sub = field.sub, nf = field.nf;
+  const rows = [];
+  for (let r = 0; r < nf; r++) {
+    const v = -0.5 + (r + 0.5) / sub;
+    const rr = Math.round(v);
+    const row = [];
+    for (let c = 0; c < nf; c++) {
+      const u = -0.5 + (c + 0.5) / sub;
+      const cc = Math.round(u);
+      const inCell = rr >= 0 && rr < G && cc >= 0 && cc < G;
+      const low = inCell && mask[rr][cc] === 0 && rawRows[rr][cc] !== null && rawRows[rr][cc] !== undefined;
+      row.push(low ? 1 : 0);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+function nmConfidence2dSmooth(field, mask, rawRows) {
+  const m = nmConfidenceMaskSmooth(field, mask, rawRows);
+  const z = m.map(row => row.map(v => v ? 1 : null));
+  return {type: "heatmap", x: field.xs, y: field.ys, z, zmin: 0, zmax: 1,
+    colorscale: [[0, "#ffffff"], [1, "#ffffff"]], showscale: false, hoverinfo: "skip", opacity: 0.22};
+}
+
+function nmWellMask(wells, barrier) {
+  // A well is shown only if its basin is confident (well.confident: >50% of the
+  // basin's model mass sits in confidently-estimated cells) and its basin mass is
+  // at least the user's minimum. Low-confidence / tiny-basin wells (low-ESS /
+  // one-sided-mass cells) become spurious deep minima, so they are suppressed.
+  const all = wells || [];
+  const minMass = 0.001;
+  const conf = all.filter(w => w.confident !== false && ((w.basin_mass ?? 0) >= minMass));
+  const confCells = new Set(conf.map(w => w.cell));
+  let b = null;
+  if (barrier && barrier.wells && barrier.wells.every(c => confCells.has(c))) b = barrier;
+  return {wells: conf, barrier: b, nMasked: all.length - conf.length};
+}
+
+function nmWellsTable(wells, barrier) {
+  const cw = capWells(wells, barrier); wells = cw.wells; barrier = cw.barrier;
+  if (!wells || !wells.length) return "<p>No well reaches the 1-bit threshold.</p>";
+  const capNote = cw.shown < cw.total ? `<p class="muted">Showing ${cw.shown} of ${cw.total} wells (top by persistence; the global minimum and the barrier endpoints are always included).</p>` : "";
+  const rows = wells.map((w, i) => `<tr><td class="l"><b>W${i + 1}</b></td><td class="mono">${fmt(w.E)}</td>
+     <td class="mono">${fmt(w.persistence)}${w.essential ? "*" : ""}</td><td class="l mono">${w.words.map(e => wellWordLabel(e)).join(", ")}</td></tr>`).join("");
+  let b = "";
+  if (barrier) {
+    const iw = barrier.wells.map(c => wells.findIndex(w => w.cell === c) + 1);
+    b = `<p><b>Main barrier</b>: E = ${fmt(barrier.E)} bits, i.e. climb from W${iw[0]} = +${fmt(barrier.above[0])} bits and from W${iw[1]} = +${fmt(barrier.above[1])} bits.</p>`;
+  }
+  return `<table><tr><th>well</th><th>E<sub>min</sub></th><th>persistence</th><th class="l">most probable strings</th></tr>${rows}</table>
+  ${capNote}
+  <p class="muted">* global minimum (full height range). z = energy relative to the prior; the empty frame is flat at z = 0. Wells are minima on the move graph (substitution, transposition, insertion, deletion). A trailing * on a word marks an approximate (importance-sampled, L ≥ 6) entry.</p>${b}`;
+}
+
+/* ---- new-model resolution levels + word hover ---- */
+const NM_LEVELS = (NM && NM.levels_order) ? NM.levels_order : [32];
+const NM_VOCAB = (NM && NM.cell_words_vocab) ? NM.cell_words_vocab : [];
+function nmLevel(id) { const el = document.getElementById(id); return (el && el.value) ? +el.value : 32; }
+function nmAxisCentres(c, G) {
+  const n = c.length;
+  if (n === G) return c;
+  const step = (c[n - 1] - c[0]) / (n - 1);
+  const xmin = c[0] - step / 2, xmax = c[n - 1] + step / 2;
+  const w = (xmax - xmin) / G;
+  const out = [];
+  for (let i = 0; i < G; i++) out.push(+(xmin + (i + 0.5) * w).toFixed(5));
+  return out;
+}
+function nmCellWord(e, vocab) {
+  if (!e) return null;
+  if (Array.isArray(e)) return {w: vocab[e[0]], L: e[1], p: e[2], approx: e[1] >= 6};
+  if (typeof e.w === "string") return {w: e.w, L: e.L, p: e.p, approx: !!(e.approx) || e.L >= 6};
+  return {w: vocab[e.w], L: e.L, p: e.p, approx: e.L >= 6};
+}
+function nmCellWordsHTML(cell, vocab, topK) {
+  if (!cell || !cell.length || !topK || topK === "off") return "";
+  let s = "";
+  const n = Math.min(+topK, cell.length);
+  for (let k = 0; k < n; k++) {
+    const d = nmCellWord(cell[k], vocab);
+    if (!d || d.w == null) break;
+    s += `<br>${d.w}${d.approx ? "*" : ""} (L=${d.L}, P=${(+d.p).toExponential(1)}${d.approx ? " approx" : ""})`;
+  }
+  return s;
+}
+function nmCellWordsGrid(cells, vocab, topK, G) {
+  if (!cells || !cells.length || !topK || topK === "off" || topK === "near") return null;
+  const grid = [];
+  for (let r = 0; r < G; r++) {
+    const row = [];
+    for (let c = 0; c < G; c++) {
+      const cell = cells[r * G + c];
+      row.push(cell ? nmCellWordsHTML(cell, vocab, topK) : "");
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+function renderNM() {
+  if (!NM) return;
+  const selEl = document.getElementById("nmodel");
+  const key = selEl.value || Object.keys(NM.models)[0];
+  const m = NM.models[key];
+  const G = nmLevel("nlevel");
+  const lvl = (G === 32) ? null : (NM.levels ? NM.levels[G] : null);
+  const showW = true;
+  const clip = document.getElementById("nclip").checked;
+  const markLow = true;
+  const view = document.getElementById("nview").value;
+  const smooth = document.getElementById("nsmooth").checked;
+  const hoverK = document.getElementById("nhover").value;
+  const z = lvl ? lvl.z : m.z;
+  const mask = lvl ? lvl.mask : m.mask;
+  const wells = lvl ? lvl.wells : m.wells;
+  const barrier = lvl ? lvl.barrier : m.barrier;
+  const cellWords = lvl ? lvl.cell_words : (m.cell_words || null);
+  const xs = lvl ? nmAxisCentres(m.x, G) : m.x;
+  const ys = lvl ? nmAxisCentres(m.y, G) : m.y;
+  const rows = z.map(r => r.map(v => v));
+  const [lo, hi] = finiteRange(rows);
+  SMOOTHED_FIELD = null;
+  const wm = nmWellMask(wells, barrier);
+  const cwg = nmCellWordsGrid(cellWords, NM_VOCAB, hoverK, G);
+  NM_CW = {cells: cellWords, vocab: NM_VOCAB, xs: xs, ys: ys, G: G};
+  const hoverSuffix = cwg ? "%{customdata}" : "";
+  const title = `${G}×${G}`;
+  if (view === "2d") {
+    let zClip, maskDisp;
+    if (smooth) {
+      const capVal = clip ? NM_CAP : null;
+      const field = smoothFieldOf(rows, G, capVal, xs, ys);
+      const greyRows = smoothZ2D(field).map(r => r.map(v => v === null ? 0 : null));
+      const zClip = smoothZ2D(field).map(r => r.map(v => v === null ? null : nmClip(v, clip)));
+      const tr = [];
+      tr.push({type: "heatmap", x: field.xs, y: field.ys, z: greyRows, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+      tr.push({type: "heatmap", x: field.xs, y: field.ys, z: zClip, colorscale: "Viridis", zmin: Math.floor(lo), zmax: clip ? NM_CAP : Math.ceil(hi), zauto: false, connectgaps: false, hoverongaps: false,
+        text: smoothNMText(field, rows, cellWords, NM_VOCAB, hoverK),
+        colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+        hovertemplate: "x %{x:.3f} y %{y:.3f}<br>%{text}<extra></extra>"});
+      const levels = contourLevels(zClip, D.contours);
+      if (levels.length >= 2) tr.push({type: "contour", x: field.xs, y: field.ys, z: zClip,
+        contours: {coloring: "none", showlines: true, start: levels[0], end: levels[levels.length - 1], size: levels[1] - levels[0]},
+        line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+      if (mask && markLow) tr.push(nmConfidence2dSmooth(field, mask, rows));
+      tr.push(...wellTraces2d(wm.wells, wm.barrier, showW, true));
+      Plotly.react("nplot", tr, heatmapLayout(m, title, wellAnnotations2d(wm.wells, wm.barrier, showW)), {displaylogo: false, responsive: true});
+      renderNMPanel(m, key, wm, {G, lvl});
+      bindHover("nplot", hn);
+      return;
+    }
+    const zClipped = rows.map(r => r.map(v => nmClip(v, clip)));
+    const greyRows = rows.map(r => r.map(v => v === null ? 0 : null));
+    const tr = [];
+    tr.push({type: "heatmap", x: xs, y: ys, z: greyRows, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+    tr.push({type: "heatmap", x: xs, y: ys, z: zClipped, colorscale: "Viridis", zmin: Math.floor(lo), zmax: clip ? NM_CAP : Math.ceil(hi), zauto: false, connectgaps: false, hoverongaps: false,
+      customdata: cwg,
+      colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+      hovertemplate: "z %{z:.2f} bits (energy rel. to prior)" + hoverSuffix + "<extra></extra>"});
+    if (mask && markLow) tr.push(nmConfidence2d(mask, zClipped, xs, ys));
+    const levels = contourLevels(zClipped, D.contours);
+    if (levels.length >= 2) tr.push({type: "contour", x: xs, y: ys, z: zClipped,
+      contours: {coloring: "none", showlines: true, start: levels[0], end: levels[levels.length - 1], size: levels[1] - levels[0]},
+      line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+    tr.push(...wellTraces2d(wm.wells, wm.barrier, showW, true));
+    Plotly.react("nplot", tr, heatmapLayout(m, title, wellAnnotations2d(wm.wells, wm.barrier, showW)), {displaylogo: false, responsive: true});
+    renderNMPanel(m, key, wm, {G, lvl});
+  bindHover("nplot", hn);
+    return;
+  }
+  // 3D
+  let traces;
+  if (smooth) {
+    const capVal = clip ? NM_CAP : null;
+    const field = smoothFieldOf(rows, G, capVal, xs, ys);
+    const zData = smoothZ2D(field).map(r => r.map(v => v === null ? null : nmClip(v, clip)));
+    traces = [
+      {type: "surface", contours: NC, x: field.xs, y: field.ys, z: zData, colorscale: "Viridis", connectgaps: false, cmin: Math.floor(lo), cmax: clip ? NM_CAP : Math.ceil(hi), cauto: false,
+        text: smoothNMText(field, rows, cellWords, NM_VOCAB, hoverK),
+        colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+        hovertemplate: "%{text}<extra></extra>",
+        lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+  } else {
+    traces = [{type: "surface", contours: NC, x: tileAxis(xs), y: tileAxis(ys), z: tileZ(rows.map(r => r.map(v => nmClip(v, clip))), false), text: tileText(rows, null, "z"),
+      customdata: cwg ? tileZ(cwg, false) : null,
+      colorscale: "Viridis", connectgaps: false, cmin: Math.floor(lo), cmax: clip ? NM_CAP : Math.ceil(hi), cauto: false,
+      colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+      hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}" + hoverSuffix + "<extra></extra>",
+      lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+  }
+  traces.push(...wellTraces3d(wm.wells, wm.barrier, showW, clip, true));
+  const layout = {
+    height: plotHeight(1.0), margin: {l: 0, r: 0, t: 28, b: 0},
+    title: {text: title, font: {size: 13}, x: 0.02},
+    scene: Object.assign(sceneLayout(m, zRange(lo, hi, clip), wellAnnotations3d(wm.wells, wm.barrier, showW, clip), "z (bits rel. to prior)")),
+    uirevision: "nm-" + view};
+  layout.scene.xaxis.title.text = `x = PC1 (${pct(m.axes[0].variance_share)})`;
+  layout.scene.yaxis.title.text = `y = PC2 (${pct(m.axes[1].variance_share)})`;
+  Plotly.react("nplot", traces, layout, {displaylogo: false, responsive: true});
+  renderNMPanel(m, key, wm, {G, lvl});
+  bindHover("nplot", hn);
+}
+
+function renderNMPanel(m, key, wm, lv) {
+  lv = lv || {G: 32, lvl: null};
+  const lvl = lv.lvl;
+  const G = lv.G;
+  wm = wm || {wells: m.wells || [], barrier: m.barrier, nMasked: 0};
+  const wellList = wm.wells;
+  const ess = m.ess_by_L || {};
+  const essNote = (ess[6] != null) ? ` Effective sample size of the importance sampler (of 2·10⁶ draws): L=6 ${Math.round(ess[6])}, L=7 ${Math.round(ess[7])}, L=8 ${Math.round(ess[8])}. L=7 and L=8 are below the ESS = 100 threshold (the mixture proposal is thin-tailed against the concentrated long-word models), so L=7–8-dominated cells are honestly flagged low-confidence; their standard errors are lower bounds.` : "";
+  const adj = lvl ? lvl.wells_adjacency : "move_set";
+  const adjLabel = adj === "move_set" ? "the move graph (substitution, transposition, insertion, deletion)" : "the 8-neighbour grid (a coarser/finer binning is not yet re-linked by move graph, so grid adjacency stands in)";
+  const nGaps = lvl ? lvl.n_gaps : (m.n_gaps ?? 0);
+  const nLow = lvl ? lvl.n_low_confidence : (m.n_low_confidence ?? 0);
+  const medSe = lvl ? lvl.median_se : null;
+  const levelNote = (G !== 32) ? ` <b>Level ${G}×${G}.</b> Wells here are minima of the 8-neighbour grid (adjacency: grid8), not the move graph — see the wells note.` : "";
+  const head = sidebarHead("nm_static", {wells: wellList, barrier: wm.barrier, pathInfo: null, res: null, isNM: true, hasBarrier: !!wm.barrier, hasPath: false, hasCap: document.getElementById("nclip").checked});
+  document.getElementById("npanel").innerHTML = `
+  ${head}
+  <details class="tech"><summary>${uc("details_heading")}</summary>
+  ${blurbHTML("sb_vs_new")}
+  <p>${big(m.tokens)} tokens; grand-canonical entropy ${fmt(m.S2, 4)} bits. ${big(m.n_string_minima)} string-level minima (any length).${levelNote}</p>
+  <h2>What z is</h2>
+  <p><b>z = log<sub>2</sub>P<sub>prior</sub>(bin) − log<sub>2</sub>P(bin)</b> bits: the bin energy relative to the prior (empty-data) model, so the empty frame is exactly flat at z = 0. P(bin) = Σ<sub>L</sub> P(L)·P(bin|L) over lengths 1..8. Exact for L ≤ 5 (enumeration); importance-sampled for L = 6..8, whose cells are marked (low-confidence shading where SE &gt; 0.5 bit).</p>
+  ${blurbHTML("heatmap")}
+  <h2>What x and y are</h2>
+  <p>x, y are the top-2 principal axes of the boundary-marked bigram-profile covariance under the final model: each word is a 729-dim profile over {a..z, #}-bigrams (the # marks the boundary), and each coordinate is a sum of its L+1 bigram scores. This is the variable-length analogue of the S&amp;B indicator basis; the plane holds ${pct(m.cumulative_share)} of the variance.</p>
+  ${nmAxisBlock(m.axes[0], 0)}${nmAxisBlock(m.axes[1], 1)}
+  <h2>Confidence shading</h2>
+  <p>Cells whose z was importance-sampled with standard error above 0.5 bit (or dominated by a low-ESS length, or one-sided mass) are washed white in the 2-D view; the 3-D view does not mark them: ${big(nLow)} of ${big(nGaps != null ? (G * G - nGaps) : 0)} occupied cells${medSe != null ? ` (median SE ${fmt(medSe, 3)} bits)` : ""}, plus ${big(nGaps)} empty cells.${essNote}</p>
+  <h2>Wells and barrier</h2>
+  <p>Wells are strict minima on ${adjLabel}, ranked by sublevel-set persistence ≥ ${D.persist_bits} bit. ${wellList.length} of ${m.n_wells_all || (lvl ? lvl.wells.length : m.wells.length)} minima have confident basins (&gt;50% of basin mass in confidently-estimated cells) and are labelled; ${wm.nMasked} lie in low-confidence basins and are suppressed.</p>
+  ${nmWellsTable(wellList, wm.barrier)}
+  <h2>String-level minima</h2>
+  <p>${big(m.n_string_minima)} strict minima over all modelled lengths.${(m.string_minima || []).length ? " Top " + m.string_minima.length + ": <span class='mono'>" + m.string_minima.map(v => `${v.word}(L=${v.L})`).join(", ") + "</span>." : ""}</p>
+  <h2>Smoothing (display only)</h2>
+  <p>Smoothing is a display filter: Boltzmann-domain kernel regression (a Gaussian kernel, length set by the slider, adaptive to local variation); in capped mode empty cells count as weak evidence for the cap (z = 40), so the surface relaxes to it far from data without pinning any cell. ${smoothingNote()}</p>
+  </details>`;
+  renderPanelMath(document.getElementById("npanel"));
+  const det3 = document.querySelector("#npanel details.tech");
+  if (det3) det3.addEventListener("toggle", () => { if (det3.open) renderPanelMath(det3); });
+}
+
+/* ---- new-model trajectory ---- */
+const NT = NM ? NM.traj : null;
+const NMQ = NT ? nmDecode(NT.zb64, Int16Array) : null;
+const NT_VOCAB = (NT && NT.cell_words_vocab) ? NT.cell_words_vocab : [];
+const NT_LEVEL_Q = {};
+const NT_LEVEL_MASK = {};
+async function nmInflate(b64) {
+  if (typeof DecompressionStream !== "function") return null;
+  const bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const buf = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate"))).arrayBuffer();
+  return buf;
+}
+function nmTrajQ(G) {
+  if (G === 32) return NMQ;
+  if (NT_LEVEL_Q[G]) return NT_LEVEL_Q[G];
+  const lvl = (NT && NT.levels) ? NT.levels[G] : null;
+  if (lvl && lvl.zb64 && !lvl.deflated) NT_LEVEL_Q[G] = nmDecode(lvl.zb64, Int16Array);
+  return NT_LEVEL_Q[G] || null;
+}
+function nmTrajMaskArr(G) {
+  if (G === 32) return NT.mask_b64 ? nmDecode(NT.mask_b64, Int8Array) : null;
+  if (NT_LEVEL_MASK[G]) return NT_LEVEL_MASK[G];
+  const lvl = (NT && NT.levels) ? NT.levels[G] : null;
+  if (lvl && lvl.mask_b64 && !lvl.deflated) NT_LEVEL_MASK[G] = nmDecode(lvl.mask_b64, Int8Array);
+  return NT_LEVEL_MASK[G] || null;
+}
+(async () => {
+  if (!NT || !NT.levels || typeof DecompressionStream !== "function") return;
+  for (const G of Object.keys(NT.levels)) {
+    const lvl = NT.levels[G];
+    if (!lvl.deflated) continue;
+    try {
+      const zbuf = await nmInflate(lvl.zb64);
+      if (zbuf) NT_LEVEL_Q[G] = new Int16Array(zbuf);
+      if (lvl.mask_b64) {
+        const mbuf = await nmInflate(lvl.mask_b64);
+        if (mbuf) NT_LEVEL_MASK[G] = new Int8Array(mbuf);
+      }
+    } catch (e) { console.warn("traj level inflate failed", G, e); }
+  }
+})();
+function nmTrajScale(G) { const lvl = (G === 32) ? null : ((NT && NT.levels) ? NT.levels[G] : null); return lvl ? lvl.scale : NT.scale; }
+function nmFrameRows(f, G) {
+  const q = nmTrajQ(G), scale = nmTrajScale(G);
+  const rows = [], o = f * G * G;
+  for (let r = 0; r < G; r++) {
+    const row = [];
+    for (let c = 0; c < G; c++) { const v = q ? q[o + r * G + c] : -32768; row.push((v === -32768 || !q) ? null : v / scale); }
+    rows.push(row);
+  }
+  return rows;
+}
+function nmFrameMask(f, G) {
+  const arr = nmTrajMaskArr(G);
+  if (!arr) return null;
+  const rows = [], o = f * G * G;
+  for (let r = 0; r < G; r++) { const row = []; for (let c = 0; c < G; c++) row.push(arr[o + r * G + c]); rows.push(row); }
+  return rows;
+}
+const nmSmooth = NT && NT.smooth ? decodeSmooth(NT.smooth) : null;
+function nmSmoothRows(f) {
+  // Both q and grey are per-frame (the importance sampler is re-run each frame, so
+  // each frame has its own gap set).
+  const rows = [], o = f * nmSmooth.n * nmSmooth.n;
+  for (let r = 0; r < nmSmooth.n; r++) {
+    const row = [];
+    for (let c = 0; c < nmSmooth.n; c++) {
+      const i = o + r * nmSmooth.n + c;
+      row.push(nmSmooth.grey[i] ? null : nmSmooth.q[i] / nmSmooth.scale);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+const nmSlider = document.getElementById("nframe");
+if (NT) nmSlider.max = NT.months.length - 1;
+function nmMonthLabel(f) { return f === 0 ? "empty (prior) model" : `through end of ${NT.months[f]}`; }
+function renderNMTraj(f) {
+  if (!NT) return;
+  const G = nmLevel("nlevel2");
+  const lvl = (G === 32) ? null : ((NT.levels && NT.levels[G]) ? NT.levels[G] : null);
+  const clip = document.getElementById("nclip2").checked;
+  const markLow = true;
+  const view = document.getElementById("nview2").value;
+  const smooth = document.getElementById("nsmooth2").checked;
+  const hoverK = document.getElementById("nhover2").value;
+  const xs = lvl ? nmAxisCentres(NT.x, G) : NT.x;
+  const ys = lvl ? nmAxisCentres(NT.y, G) : NT.y;
+  const rows = nmFrameRows(f, G);
+  const mask = nmFrameMask(f, G);
+  const [lo, hi] = finiteRange(rows);
+  SMOOTHED_FIELD = null;
+  const zmin = lvl ? lvl.zmin : NT.zmin;
+  const zmax = lvl ? lvl.zmax : NT.zmax;
+  // Per-frame move-set wells/barrier are precomputed at 32x32 only.
+  const wells = (G === 32) ? (NT.wells[f] || []) : [];
+  const barrier = (G === 32) ? (NT.barrier[f] || null) : null;
+  const wm = nmWellMask(wells, barrier);
+  // Cell words (final-frame ranking) are available at 32x32 only.
+  const cwg = (G === 32) ? nmCellWordsGrid(NT.cell_words, NT_VOCAB, hoverK, G) : null;
+  NT_CW = (G === 32) ? {cells: NT.cell_words, vocab: NT_VOCAB, xs: xs, ys: ys, G: 32} : null;
+  const hoverSuffix = cwg ? "%{customdata}" : "";
+  const title = nmMonthLabel(f);
+  if (view === "2d") {
+    let xs2 = xs, ys2 = ys, zClip;
+    let field = null;
+    if (smooth) {
+      field = smoothFieldOf(rows, G, clip ? NM_CAP : null, xs, ys);
+      xs2 = field.xs; ys2 = field.ys;
+      zClip = smoothZ2D(field).map(r => r.map(v => v === null ? null : nmClip(v, clip)));
+    } else {
+      zClip = rows.map(r => r.map(v => nmClip(v, clip)));
+    }
+    const greyRows = smooth ? smoothZ2D(field).map(r => r.map(v => v === null ? 0 : null))
+                            : rows.map(r => r.map(v => v === null ? 0 : null));
+    const tr = [];
+    tr.push({type: "heatmap", x: xs2, y: ys2, z: greyRows, zmin: 0, zmax: 1, colorscale: [[0, GREY], [1, GREY]], showscale: false, hoverinfo: "skip"});
+    tr.push({type: "heatmap", x: xs2, y: ys2, z: zClip, colorscale: "Viridis", zmin: Math.floor(zmin), zmax: clip ? NM_CAP : Math.ceil(zmax), zauto: false, connectgaps: false, hoverongaps: false,
+      customdata: smooth ? null : cwg,
+      text: smooth ? smoothNMText(field, rows, (G === 32) ? NT.cell_words : null, NT_VOCAB, hoverK) : undefined,
+      colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+      hovertemplate: (smooth ? "x %{x:.3f} y %{y:.3f}<br>%{text}<extra></extra>" : "z %{z:.2f} bits (energy rel. to prior)" + hoverSuffix + "<extra></extra>")});
+    const levels = contourLevels(zClip, D.contours);
+    if (levels.length >= 2) tr.push({type: "contour", x: xs2, y: ys2, z: zClip,
+      contours: {coloring: "none", showlines: true, start: levels[0], end: levels[levels.length - 1], size: levels[1] - levels[0]},
+      line: {width: 0.7, color: "#333"}, showscale: false, hoverinfo: "skip"});
+    if (mask && markLow) tr.push(smooth ? nmConfidence2dSmooth(field, mask, rows) : nmConfidence2d(mask, zClip, xs, ys));
+    tr.push(...wellTraces2d(wm.wells, wm.barrier, true, true));
+    const nm = NM.models[Object.keys(NM.models)[0]];
+    Plotly.react("nplot2", tr, heatmapLayout(nm, title, wellAnnotations2d(wm.wells, wm.barrier, true)), {displaylogo: false, responsive: true});
+  } else {
+    let traces;
+    if (smooth) {
+      const field = smoothFieldOf(rows, G, clip ? NM_CAP : null, xs, ys);
+      const zData = smoothZ2D(field).map(r => r.map(v => v === null ? null : nmClip(v, clip)));
+      traces = [
+        {type: "surface", contours: NC, x: field.xs, y: field.ys, z: zData, colorscale: "Viridis", connectgaps: false, cmin: Math.floor(zmin), cmax: clip ? NM_CAP : Math.ceil(zmax), cauto: false,
+          text: smoothNMText(field, rows, (G === 32) ? NT.cell_words : null, NT_VOCAB, hoverK),
+          colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+          hovertemplate: "%{text}<extra></extra>",
+          lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+    } else {
+      traces = [{type: "surface", contours: NC, x: tileAxis(xs), y: tileAxis(ys), z: tileZ(rows.map(r => r.map(v => nmClip(v, clip))), false), text: tileText(rows, null, "z"),
+        customdata: cwg ? tileZ(cwg, false) : null,
+        colorscale: "Viridis", connectgaps: false, cmin: Math.floor(zmin), cmax: clip ? NM_CAP : Math.ceil(zmax), cauto: false,
+        colorbar: {title: {text: "z bits<br>(energy rel.<br>to prior)", side: "top"}, len: 0.6, thickness: 12},
+        hovertemplate: "x %{x:.3f}  y %{y:.3f}<br>%{text}" + hoverSuffix + "<extra></extra>",
+        lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05}, opacity: SURFACE_OPACITY}];
+    }
+    traces.push(...wellTraces3d(wm.wells, wm.barrier, true, clip, true));
+    const nm = NM.models[Object.keys(NM.models)[0]];
+    const layout = {
+      height: plotHeight(0.68), margin: {l: 0, r: 0, t: 28, b: 0},
+      title: {text: title, font: {size: 13}, x: 0.02},
+      scene: sceneLayout(nm, zRange(zmin, zmax, clip), wellAnnotations3d(wm.wells, wm.barrier, true, clip), "z (bits rel. to prior)"),
+      uirevision: "nmtraj-" + view};
+    Plotly.react("nplot2", traces, layout, {displaylogo: false, responsive: true});
+  }
+  document.getElementById("ndateLabel").textContent = `frame ${f}/${NT.months.length - 1}: ${nmMonthLabel(f)}`;
+  renderNMTrajPanel(f, wm, G);
+  bindHover("nplot2", hn2);
+}
+function renderNMTrajPanel(f, wm, G) {
+  const pL = NT.per_length_tokens || {};
+  const lens = Object.keys(pL).sort((a, b) => a - b);
+  const allWells = NT.wells[f] || [];
+  const confWells = wm ? wm.wells : allWells;
+  const confBarrier = wm ? wm.barrier : (NT.barrier[f] || null);
+  const nMasked = wm ? wm.nMasked : 0;
+  const levelNote = (G !== 32) ? `<p class="muted"><b>Level ${G}×${G}.</b> The per-frame move-set wells, barrier and cell-word rankings are precomputed at 32×32 only, so they are hidden at other levels.</p>` : "";
+  const head = sidebarHead("nm_time", {wells: confWells, barrier: confBarrier, pathInfo: null, res: null, isNM: true, hasBarrier: !!confBarrier, hasPath: false, hasCap: document.getElementById("nclip2").checked});
+  document.getElementById("npanel2").innerHTML = `
+  ${head}
+  <details class="tech"><summary>${uc("details_heading")}</summary>
+  <table>
+    <tr><td>cumulative tokens N<sub>t</sub></td><td class="mono">${big(NT.tokens[f])}</td></tr>
+    <tr><td>grand-canonical entropy S(t)</td><td class="mono">${fmt(NT.S2[f], 4)} bits</td></tr>
+    <tr><td>string-level minima (L ≤ 5)</td><td class="mono">${big(NT.n_string_minima[f])}</td></tr>
+    <tr><td>confident cells (SE ≤ 0.5 bit)</td><td class="mono">${big(NT.n_confident[f])}</td></tr>
+    <tr><td>max finite per-cell SE</td><td class="mono">${(NT.z_se_max[f] === null || NT.z_se_max[f] === undefined) ? "—" : fmt(NT.z_se_max[f], 3) + " bits"}</td></tr>
+  </table>
+  <p class="muted">Frames are ${NT.period}ly; each frame fits a grand-canonical model over lengths 1..8 (exact MAP L≤5, pseudo-likelihood + exact log Z L=6..8) with per-length Gaussian priors σ²<sub>L</sub> fixed across frames. The empty frame is the prior model (flat at z = 0).</p>
+  ${levelNote}
+  ${nMasked ? `<p class="muted">${nMasked} of ${allWells.length} wells lie in low-confidence (low-ESS / importance-sampled) cells and are suppressed.</p>` : ""}
+  ${nmWellsTable(confWells, confBarrier)}
+  <h2>Tokens by length</h2>
+  <table><tr><th>L</th><th>tokens in this frame</th></tr>${lens.map(l => `<tr><td class="mono">${l}</td><td class="mono">${big(pL[l][f])}</td></tr>`).join("")}</table>
+  </details>`;
+  renderPanelMath(document.getElementById("npanel2"));
+  const det4 = document.querySelector("#npanel2 details.tech");
+  if (det4) det4.addEventListener("toggle", () => { if (det4.open) renderPanelMath(det4); });
+}
+
+/* ---- wire up new-model tabs ---- */
+function initNMTabs() {
+  if (!NM) {
+    document.getElementById("nplot").innerHTML = `<div class="note">New-model landscape data not yet integrated.</div>`;
+    document.getElementById("nplot2").innerHTML = `<div class="note">New-model landscape data not yet integrated.</div>`;
+    return;
+  }
+  const sel = document.getElementById("nmodel");
+  Object.keys(NM.models).forEach(k => { const o = document.createElement("option"); o.value = k; o.textContent = NM.models[k].label; sel.appendChild(o); });
+  NM_LEVELS.forEach(G => {
+    const o1 = document.createElement("option"); o1.value = G; o1.textContent = G + "×" + G; document.getElementById("nlevel").appendChild(o1);
+    const o2 = document.createElement("option"); o2.value = G; o2.textContent = G + "×" + G; document.getElementById("nlevel2").appendChild(o2);
+  });
+  document.getElementById("nlevel").value = "32";
+  document.getElementById("nlevel2").value = "32";
+}
+initNMTabs();
+let nmTimer = null;
+function nmSetFrame(f) { nmSlider.value = f; renderNMTraj(+f); }
+nmSlider.oninput = () => renderNMTraj(+nmSlider.value);
+document.getElementById("nclip2").onchange = () => renderNMTraj(+nmSlider.value);
+document.getElementById("nsmooth2").onchange = () => { document.getElementById("smoothlen4label").style.display = document.getElementById("nsmooth2").checked ? "" : "none"; renderNMTraj(+nmSlider.value); };
+document.getElementById("smoothlen4").oninput = () => { syncSmoothLen("smoothlen4"); renderNMTraj(+nmSlider.value); };
+document.getElementById("nview2").onchange = () => renderNMTraj(+nmSlider.value);
+document.getElementById("nlevel2").onchange = () => renderNMTraj(+nmSlider.value);
+document.getElementById("nhover2").onchange = () => renderNMTraj(+nmSlider.value);
+document.getElementById("nplay").onclick = () => {
+  if (nmTimer) { clearInterval(nmTimer); nmTimer = null; document.getElementById("nplay").textContent = "▶ play"; return; }
+  if (+nmSlider.value >= NT.months.length - 1) nmSlider.value = 0;
+  document.getElementById("nplay").textContent = "❚❚ pause";
+  nmTimer = setInterval(() => { const f = +nmSlider.value + 1; if (f >= NT.months.length) { clearInterval(nmTimer); nmTimer = null; document.getElementById("nplay").textContent = "▶ play"; return; } nmSetFrame(f); }, 180);
+};
+document.getElementById("nmodel").onchange = renderNM;
+document.getElementById("nclip").onchange = renderNM;
+document.getElementById("nsmooth").onchange = () => { document.getElementById("smoothlen3label").style.display = document.getElementById("nsmooth").checked ? "" : "none"; renderNM(); };
+document.getElementById("smoothlen3").oninput = () => { syncSmoothLen("smoothlen3"); renderNM(); };
+document.getElementById("nview").onchange = renderNM;
+document.getElementById("nlevel").onchange = renderNM;
+document.getElementById("nhover").onchange = renderNM;
+
+/* ---- nearest-word (cursor) hover handlers ---- */
+function hoverXY(ev) {
+  if (ev.x != null && ev.y != null) return [ev.x, ev.y];
+  const p = ev.points && ev.points[0];
+  if (p && p.x != null && p.y != null) return [p.x, p.y];
+  return null;
+}
+const nearestBound = {};
+function bindHover(id, handler) {
+  const el = document.getElementById(id);
+  if (!el || typeof el.on !== "function") return;
+  if (!nearestBound[id]) { el.on("plotly_unhover", nearestHide); nearestBound[id] = true; }
+  if (el.removeAllListeners) el.removeAllListeners("plotly_hover");
+  el.on("plotly_hover", handler);
+}
+function h1(ev) {
+  if (document.getElementById("hover1").value !== "near" || !RES1) { nearestHide(); return; }
+  const xy = hoverXY(ev);
+  if (!xy) { nearestHide(); return; }
+  const cell = nearestCell(RES1, xy[0], xy[1]);
+  const html = nearestEngineHTML(RES1, RES1_K, cell, xy[0], xy[1]);
+  if (html && ev.event) nearestShow(html, ev.event.clientX, ev.event.clientY); else nearestHide();
+}
+function h2(ev) {
+  if (document.getElementById("hover2").value !== "near" || !RES2) { nearestHide(); return; }
+  const xy = hoverXY(ev);
+  if (!xy) { nearestHide(); return; }
+  const cell = nearestCell(RES2, xy[0], xy[1]);
+  const html = nearestEngineHTML(RES2, RES2_K, cell, xy[0], xy[1]);
+  if (html && ev.event) nearestShow(html, ev.event.clientX, ev.event.clientY); else nearestHide();
+}
+function nmNearestHandler(ev, cw, modeEl) {
+  if (!modeEl || modeEl.value !== "near" || !cw) { nearestHide(); return; }
+  const xy = hoverXY(ev);
+  if (!xy) { nearestHide(); return; }
+  const cell = nearestCellXY(cw.xs, cw.ys, xy[0], xy[1]);
+  const html = nearestNMHTML(cw, cell);
+  if (html && ev.event) nearestShow(html, ev.event.clientX, ev.event.clientY); else nearestHide();
+}
+function hn(ev) { nmNearestHandler(ev, NM_CW, document.getElementById("nhover")); }
+function hn2(ev) { nmNearestHandler(ev, NT_CW, document.getElementById("nhover2")); }
+
+const PLOT_FRACS = {plot1: 1.0, plot2: 0.68, nplot: 1.0, nplot2: 0.68};
+function refit() {
+  for (const [id, frac] of Object.entries(PLOT_FRACS)) {
+    const el = document.getElementById(id);
+    if (el && el.data && el.offsetParent !== null) Plotly.relayout(id, {height: plotHeight(frac)});
+  }
+  const ln = document.getElementById("lines");
+  if (ln && ln.data && ln.offsetParent !== null) Plotly.relayout("lines", {height: linesHeight(), dragmode: NARROW.matches ? false : "zoom"});
+}
+let refitTimer = null;
+/* Mobile browsers show/hide the URL bar while scrolling, which changes innerHeight; ignore small height-only changes there. */
+let lastW = window.innerWidth, lastH = window.innerHeight;
+function onResize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  if (NARROW.matches && w === lastW && Math.abs(h - lastH) < 150) return;
+  lastW = w; lastH = h; refit();
+}
+window.addEventListener("resize", () => { clearTimeout(refitTimer); refitTimer = setTimeout(onResize, 120); });
+window.addEventListener("orientationchange", () => { clearTimeout(refitTimer); refitTimer = setTimeout(() => { lastW = lastH = 0; onResize(); }, 250); });
+/* Crossing the 900 px breakpoint (rotating a tablet, resizing a window): redraw so colour bar, camera and heights switch mode. */
+NARROW.addEventListener("change", () => {
+  const k = [0, 1, 2, 3, 4].find(i => document.getElementById("tab" + i).classList.contains("on"));
+  for (const i of [1, 2, 3, 4]) ready[i] = false;
+  showTab(k);
+});
+
+/* ------------------------------------------------------------------ tab switching */
+const N_TABS = 5;
+const ready = {0: false, 1: false, 2: false, 3: false, 4: false};
+function showTab(k) {
+  for (const i of [0, 1, 2, 3, 4]) {
+    document.getElementById("tab" + i).classList.toggle("on", i === k);
+    document.getElementById("tb" + i).classList.toggle("on", i === k);
+  }
+  if (k === 1 && !ready[1]) { renderLandscape(); ready[1] = true; }
+  else if (k === 1) Plotly.Plots.resize("plot1");
+  if (k === 2 && !ready[2]) { renderLines(); setFrame(NF - 1); ready[2] = true; }
+  else if (k === 2) { Plotly.Plots.resize("plot2"); Plotly.Plots.resize("lines"); }
+  if (k === 3 && !ready[3]) { renderNM(); ready[3] = true; }
+  else if (k === 3) Plotly.Plots.resize("nplot");
+  if (k === 4 && !ready[4] && NT) { nmSetFrame(NT.months.length - 1); ready[4] = true; }
+  else if (k === 4) Plotly.Plots.resize("nplot2");
+  refit();
+}
+bindUICopy();
+showTab(0);
+</script>
+</body>
+</html>

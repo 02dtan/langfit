@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 318" width="920" height="318" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif" font-size="12">
+<line x1="64.0" y1="254.0" x2="464.0" y2="254.0" stroke="var(--border)"/>
+<line x1="64.0" y1="254.0" x2="64.0" y2="34.0" stroke="var(--border)"/>
+<line x1="102.7" y1="254.0" x2="102.7" y2="257.0" stroke="var(--border)"/>
+<text x="102.7" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Austen</text>
+<line x1="167.2" y1="254.0" x2="167.2" y2="257.0" stroke="var(--border)"/>
+<text x="167.2" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Gutenberg</text>
+<line x1="231.7" y1="254.0" x2="231.7" y2="257.0" stroke="var(--border)"/>
+<text x="231.7" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Twitter 2010</text>
+<line x1="296.3" y1="254.0" x2="296.3" y2="257.0" stroke="var(--border)"/>
+<text x="296.3" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Twitter 2017</text>
+<line x1="360.8" y1="254.0" x2="360.8" y2="257.0" stroke="var(--border)"/>
+<text x="360.8" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Twitter 2023</text>
+<line x1="425.3" y1="254.0" x2="425.3" y2="257.0" stroke="var(--border)"/>
+<text x="425.3" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">Bluesky 2024</text>
+<line x1="61.0" y1="254.0" x2="64.0" y2="254.0" stroke="var(--border)"/>
+<text x="58.0" y="257.5" fill="var(--muted)" font-size="10.5" text-anchor="end">0</text>
+<line x1="61.0" y1="189.7" x2="64.0" y2="189.7" stroke="var(--border)"/>
+<text x="58.0" y="193.2" fill="var(--muted)" font-size="10.5" text-anchor="end">5</text>
+<line x1="61.0" y1="125.4" x2="64.0" y2="125.4" stroke="var(--border)"/>
+<text x="58.0" y="128.9" fill="var(--muted)" font-size="10.5" text-anchor="end">10</text>
+<line x1="61.0" y1="61.1" x2="64.0" y2="61.1" stroke="var(--border)"/>
+<text x="58.0" y="64.6" fill="var(--muted)" font-size="10.5" text-anchor="end">15</text>
+<text x="64.0" y="25.0" fill="var(--fg)" font-size="12.5" font-weight="600">Held-out code length per word token (nested CV)</text>
+<text x="24.0" y="144.0" fill="var(--muted)" font-size="11.5" text-anchor="middle" transform="rotate(-90 24.0 144.0)">bits per token</text>
+<rect x="78.2" y="69.0" width="23.2" height="185.0" fill="var(--c1)" opacity="0.75"/>
+<rect x="104.0" y="155.2" width="23.2" height="98.8" fill="var(--c2)" opacity="0.9"/>
+<line x1="89.8" y1="69.1" x2="89.8" y2="68.9" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="115.6" y1="155.4" x2="115.6" y2="155.1" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<rect x="142.7" y="67.8" width="23.2" height="186.2" fill="var(--c1)" opacity="0.75"/>
+<rect x="168.5" y="143.0" width="23.2" height="111.0" fill="var(--c2)" opacity="0.9"/>
+<line x1="154.3" y1="67.9" x2="154.3" y2="67.8" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="180.1" y1="143.1" x2="180.1" y2="142.9" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<rect x="207.2" y="57.7" width="23.2" height="196.3" fill="var(--c1)" opacity="0.75"/>
+<rect x="233.0" y="126.9" width="23.2" height="127.1" fill="var(--c2)" opacity="0.9"/>
+<line x1="218.8" y1="57.9" x2="218.8" y2="57.6" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="244.6" y1="127.0" x2="244.6" y2="126.9" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<rect x="271.7" y="60.2" width="23.2" height="193.8" fill="var(--c1)" opacity="0.75"/>
+<rect x="297.5" y="130.6" width="23.2" height="123.4" fill="var(--c2)" opacity="0.9"/>
+<line x1="283.4" y1="60.3" x2="283.4" y2="60.1" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="309.2" y1="130.7" x2="309.2" y2="130.5" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<rect x="336.3" y="61.8" width="23.2" height="192.2" fill="var(--c1)" opacity="0.75"/>
+<rect x="362.1" y="132.1" width="23.2" height="121.9" fill="var(--c2)" opacity="0.9"/>
+<line x1="347.9" y1="61.8" x2="347.9" y2="61.7" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="373.7" y1="132.2" x2="373.7" y2="131.9" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<rect x="400.8" y="63.0" width="23.2" height="191.0" fill="var(--c1)" opacity="0.75"/>
+<rect x="426.6" y="134.2" width="23.2" height="119.8" fill="var(--c2)" opacity="0.9"/>
+<line x1="412.4" y1="63.1" x2="412.4" y2="63.0" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<line x1="438.2" y1="134.3" x2="438.2" y2="134.1" stroke="var(--fg)" stroke-width="1.2" opacity="0.7"/>
+<text x="72.0" y="47.2" fill="var(--c1)" font-size="10.5" text-anchor="start">independent model</text>
+<text x="208.0" y="47.2" fill="var(--c2)" font-size="10.5" text-anchor="start">pairwise model</text>
+<line x1="540.0" y1="34.0" x2="540.0" y2="254.0" stroke="var(--border)" opacity="0.45"/>
+<line x1="638.8" y1="34.0" x2="638.8" y2="254.0" stroke="var(--border)" opacity="0.45"/>
+<line x1="737.6" y1="34.0" x2="737.6" y2="254.0" stroke="var(--border)" opacity="0.45"/>
+<line x1="836.5" y1="34.0" x2="836.5" y2="254.0" stroke="var(--border)" opacity="0.45"/>
+<line x1="540.0" y1="254.0" x2="906.0" y2="254.0" stroke="var(--border)" opacity="0.45"/>
+<line x1="540.0" y1="194.6" x2="906.0" y2="194.6" stroke="var(--border)" opacity="0.45"/>
+<line x1="540.0" y1="135.2" x2="906.0" y2="135.2" stroke="var(--border)" opacity="0.45"/>
+<line x1="540.0" y1="75.8" x2="906.0" y2="75.8" stroke="var(--border)" opacity="0.45"/>
+<line x1="540.0" y1="254.0" x2="906.0" y2="254.0" stroke="var(--border)"/>
+<line x1="540.0" y1="254.0" x2="540.0" y2="34.0" stroke="var(--border)"/>
+<line x1="540.0" y1="254.0" x2="540.0" y2="257.0" stroke="var(--border)"/>
+<text x="540.0" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">0</text>
+<line x1="638.8" y1="254.0" x2="638.8" y2="257.0" stroke="var(--border)"/>
+<text x="638.8" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">2</text>
+<line x1="737.6" y1="254.0" x2="737.6" y2="257.0" stroke="var(--border)"/>
+<text x="737.6" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">4</text>
+<line x1="836.5" y1="254.0" x2="836.5" y2="257.0" stroke="var(--border)"/>
+<text x="836.5" y="269.0" fill="var(--muted)" font-size="10.5" text-anchor="middle">6</text>
+<line x1="537.0" y1="254.0" x2="540.0" y2="254.0" stroke="var(--border)"/>
+<text x="534.0" y="257.5" fill="var(--muted)" font-size="10.5" text-anchor="end">0</text>
+<line x1="537.0" y1="194.6" x2="540.0" y2="194.6" stroke="var(--border)"/>
+<text x="534.0" y="198.1" fill="var(--muted)" font-size="10.5" text-anchor="end">2</text>
+<line x1="537.0" y1="135.2" x2="540.0" y2="135.2" stroke="var(--border)"/>
+<text x="534.0" y="138.7" fill="var(--muted)" font-size="10.5" text-anchor="end">4</text>
+<line x1="537.0" y1="75.8" x2="540.0" y2="75.8" stroke="var(--border)"/>
+<text x="534.0" y="79.3" fill="var(--muted)" font-size="10.5" text-anchor="end">6</text>
+<text x="540.0" y="25.0" fill="var(--fg)" font-size="12.5" font-weight="600">Pairwise information: in-sample vs held-out</text>
+<text x="723.0" y="286.0" fill="var(--muted)" font-size="11.5" text-anchor="middle">in-sample S_1 - S_2 (bits)</text>
+<text x="500.0" y="144.0" fill="var(--muted)" font-size="11.5" text-anchor="middle" transform="rotate(-90 500.0 144.0)">held-out H_1 - H_2 (bits/token)</text>
+<polyline points="540.0,254.0 906.0,34.0" fill="none" stroke="var(--muted)" stroke-width="1.7" stroke-dasharray="5 3"/>
+<line x1="872.7" y1="55.0" x2="872.7" y2="54.5" stroke="var(--c1)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="872.7" cy="54.7" r="3.6" fill="var(--c1)" stroke="var(--c1)"/>
+<text x="554.6" y="51.6" fill="var(--c1)" font-size="10.5" text-anchor="start">Austen: 100% generalises</text>
+<line x1="829.7" y1="80.7" x2="829.7" y2="80.0" stroke="var(--c2)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="829.7" cy="80.4" r="3.6" fill="var(--c2)" stroke="var(--c2)"/>
+<text x="554.6" y="68.1" fill="var(--c2)" font-size="10.5" text-anchor="start">Gutenberg: 100% generalises</text>
+<line x1="807.8" y1="94.4" x2="807.8" y2="93.9" stroke="var(--c3)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="807.8" cy="94.1" r="3.6" fill="var(--c3)" stroke="var(--c3)"/>
+<text x="554.6" y="84.6" fill="var(--c3)" font-size="10.5" text-anchor="start">Twitter 2010: 99% generalises</text>
+<line x1="812.9" y1="91.6" x2="812.9" y2="91.1" stroke="var(--c4)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="812.9" cy="91.4" r="3.6" fill="var(--c4)" stroke="var(--c4)"/>
+<text x="554.6" y="101.1" fill="var(--c4)" font-size="10.5" text-anchor="start">Twitter 2017: 99% generalises</text>
+<line x1="811.8" y1="92.0" x2="811.8" y2="91.5" stroke="var(--c5)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="811.8" cy="91.7" r="3.6" fill="var(--c5)" stroke="var(--c5)"/>
+<text x="554.6" y="117.6" fill="var(--c5)" font-size="10.5" text-anchor="start">Twitter 2023: 99% generalises</text>
+<line x1="816.2" y1="89.9" x2="816.2" y2="89.3" stroke="var(--c6)" stroke-width="1.2" opacity="0.7"/>
+<circle cx="816.2" cy="89.6" r="3.6" fill="var(--c6)" stroke="var(--c6)"/>
+<text x="554.6" y="134.1" fill="var(--c6)" font-size="10.5" text-anchor="start">Bluesky 2024: 99% generalises</text>
+<text x="741.3" y="243.0" fill="var(--muted)" font-size="10" text-anchor="start">dashed: all of it generalises</text>
+</svg>

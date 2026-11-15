@@ -1,0 +1,189 @@
+{
+ "note": "Metrics: pooled model, grid 32, raw uncapped E_bin. ROUGHNESS uses three normalisations: roughness_sd_norm / lap_sd_norm divide mean|dE| and Laplacian RMS by the P-mass-weighted SD of E_bin (OUTLIER-ROBUST, primary); roughness_iqr_norm divides by the mass-weighted 5-95 inter-percentile range; roughness_range_norm divides by the raw range (outlier-SENSITIVE, kept for reference). roughness_core_sd_norm is the SD-normalised |dE| restricted to the top-90% P-mass cells (common-support). r2 = P-weighted ANOVA R2 of E(s) given cell; wells_1_2_3 = persistent wells at 1/2/3 bits; spurious = fraction backed by <=8 strings; continuity = mass-weighted fraction of substitution neighbours in same/adjacent cell; occ_cv = CV of |bin|; occupied = occupied-cell fraction; eff_cells = exp(entropy of cell mass); components = 4-/8-connected occupied components (no basis is fully connected at G=32 except coupling_spectral on pooled/twitter); var_ratio = P-weighted axis-variance ratio (collapse guard); stability_deg = angle to the basis fit one year earlier.",
+ "bases": {
+  "pca": {
+   "id": "pca",
+   "label": "PCA (default)",
+   "summary": "Top-2 principal axes of the P-weighted indicator covariance.",
+   "html": "\n        <p>Each string is its one-hot vector \\(\\mathbf{x}(s)\\in\\{0,1\\}^{104}\\); the basis\n        is the top-2 eigenvectors of \\(C=\\mathbb{E}_P[(\\mathbf{x}-\\mu)(\\mathbf{x}-\\mu)^\\top]\\),\n        computed exactly from the model marginals. By Eckart &amp; Young (1936) this is the\n        <em>unique</em> 2-D linear subspace maximising the captured variance (17&ndash;20%).</p>\n        <p><strong>Why the default.</strong> On the pooled model PCA has the highest substitution continuity\n        (0.375), is time-stable (9.8&deg;, more stable than raw TICA/LDA), and is the\n        smoothest on the robust full-surface metric (SD-normalised \\(|\\Delta E|=0.656\\));\n        these orderings are not uniform across the four models (e.g. on bluesky2024\n        tempered_pca has higher continuity, 0.231 vs 0.171, and other bases are smoother\n        on austen/twitter/bluesky).</p>\n        <p><strong>Why the surface looks jagged.</strong> The within-cell energy spread\n        (6.8 bits) makes \\(E_{\\mathrm{bin}}\\) a noisy average, and 19% of the \\(\\ge 1\\)-bit\n        wells are \"spurious\" (backed by \\(\\le 8\\) strings). This is a lattice/energy-summary\n        artifact, not a real energy feature.</p>\n        <p class=\"cite\">Eckart &amp; Young, <em>Psychometrika</em> 1, 211&ndash;218 (1936),\n        doi:10.1007/BF02288367.</p>",
+   "metrics": {
+    "roughness_sd_norm": 0.656,
+    "lap_sd_norm": 0.825,
+    "roughness_iqr_norm": 0.209,
+    "roughness_core_sd_norm": 0.347,
+    "roughness_range_norm": 0.103,
+    "range_bits": 33.4,
+    "moran": 0.23,
+    "r2": 0.629,
+    "wells_1_2_3": [
+     53,
+     40,
+     30
+    ],
+    "spurious": 0.19,
+    "continuity": 0.375,
+    "occ_cv": 6.35,
+    "occupied": 0.49,
+    "eff_cells": 116.6,
+    "components": 1,
+    "var_ratio": 1.4,
+    "stability_deg": 9.8,
+    "components_4_8": "11/4"
+   }
+  },
+  "coupling_spectral": {
+   "id": "coupling_spectral",
+   "label": "Coupling spectral (Hopfield)",
+   "summary": "Top-2 eigenvectors of the gauge-fixed coupling matrix J — directions of largest quadratic energy variation.",
+   "html": "\n        <p>For the pairwise model \\(E(s)=-\\tfrac12\\mathbf{x}^\\top\\hat J\\mathbf{x}\\) (zero\n        fields after double-centring each \\(26\\times26\\) block). The basis is the top-2\n        eigenvectors of \\(\\hat J\\): the Hopfield memory patterns (Hopfield 1982) along which\n        the wells are oriented. It is genuinely distinct from PCA (principal angle &gt; 20&deg;).</p>\n        <p><strong>Corrected smoothness claim (after outlier-robust normalisation).</strong>\n        Its raw-range-normalised roughness is the lowest (0.055), but that is an artifact: its\n        E_bin range (37 bits) is stretched by a few sparse cells, while its mass-weighted SD\n        is small. On the outlier-robust SD-normalised metric it is the <em>roughest</em>\n        (0.724, vs PCA's 0.656) and on the common-support core (top-90% mass cells) also the\n        roughest (0.429 vs energy_aligned's 0.236). It does, however, give the most uniform occupancy on three of four models (CV 1.45 pooled, 1.27 twitter, 1.15 bluesky; energy_aligned is more uniform on Austen, 1.27 vs 1.47) and the fewest spurious wells (5%).</p>\n        <p><strong>Assumptions / limitations.</strong> Forbidden pairs (\\(V=-\\infty\\)) are\n        set to zero coupling here. Substitution continuity is the lowest (0.083):\n        \\(x^\\top\\hat Jx\\) is a non-local summary.</p>\n        <p><strong>When it helps / misleads.</strong> Use it to see the well/attractor\n        geometry and the uniform coverage. Do not read its smooth appearance as energy\n        smoothness.</p>\n        <p class=\"cite\">Hopfield, <em>PNAS</em> 79(8), 2554&ndash;2558 (1982),\n        doi:10.1073/pnas.79.8.2554.</p>",
+   "metrics": {
+    "roughness_sd_norm": 0.724,
+    "lap_sd_norm": 0.969,
+    "roughness_iqr_norm": 0.214,
+    "roughness_core_sd_norm": 0.429,
+    "roughness_range_norm": 0.055,
+    "range_bits": 37.2,
+    "moran": 0.64,
+    "r2": 0.697,
+    "wells_1_2_3": [
+     42,
+     25,
+     14
+    ],
+    "spurious": 0.05,
+    "continuity": 0.083,
+    "occ_cv": 1.45,
+    "occupied": 0.71,
+    "eff_cells": 159.6,
+    "components": 1,
+    "var_ratio": 1.7,
+    "stability_deg": 4.2,
+    "components_4_8": "1/1"
+   }
+  },
+  "energy_aligned": {
+   "id": "energy_aligned",
+   "label": "Energy-aligned (PLS)",
+   "summary": "P-weighted regression of E(s) on the indicators; axis 2 is the deflated residual.",
+   "html": "\n        <p>Axis 1 maximises \\(\\mathrm{Cov}_P[\\mathbf{v}^\\top\\mathbf{x},\\,E(s)]\\), the\n        P-weighted least-squares linear predictor of energy; axis 2 is the next (deflated)\n        partial-least-squares component. Genuinely distinct from PCA (principal angle\n        &gt; 10&deg;).</p>\n        <p><strong>Optimality (verified in tests).</strong> The PLS loading is proportional\n        to \\(\\mathrm{Cov}_P[\\mathbf{x},E]\\), so it achieves the maximum \\(|\\)covariance with\n        energy\\(|\\) among unit directions.</p>\n        <p><strong>What it buys.</strong> Cells are among the most energy-homogeneous (ANOVA\n        \\(R^2=0.69\\)&ndash;0.80; coupling_spectral is higher on twitter/bluesky/pooled, tempered on Austen), so \\(E_{\\mathrm{bin}}\\) is a faithful summary; and it is\n        the <em>smoothest on the common-support core</em> (top-90% mass cells): core\n        SD-normalised \\(|\\Delta E|=0.236\\), the best of the five.</p>\n        <p><strong>The tension (explicit).</strong> \\(x=E\\) smooths any surface only by\n        collapsing equal-energy strings, destroying identity: substitution continuity is the\n        lowest (0.145). Always read it <em>alongside</em> a neighbour-preservation metric.</p>\n        <p><strong>When it helps / misleads.</strong> Use it to see energy-driven roughness\n        and the well-amplitude ordering. Do not read it as a 2-D map of word identity.</p>",
+   "metrics": {
+    "roughness_sd_norm": 0.666,
+    "lap_sd_norm": 0.891,
+    "roughness_iqr_norm": 0.21,
+    "roughness_core_sd_norm": 0.236,
+    "roughness_range_norm": 0.081,
+    "range_bits": 42.5,
+    "moran": 0.42,
+    "r2": 0.693,
+    "wells_1_2_3": [
+     62,
+     47,
+     38
+    ],
+    "spurious": 0.11,
+    "continuity": 0.145,
+    "occ_cv": 3.2,
+    "occupied": 0.64,
+    "eff_cells": 167.7,
+    "components": 1,
+    "var_ratio": 1.0,
+    "stability_deg": 6.4,
+    "components_4_8": "7/5"
+   }
+  },
+  "tempered_pca": {
+   "id": "tempered_pca",
+   "label": "Tempered PCA",
+   "summary": "PCA of the covariance weighted by P^alpha (alpha=0.75 default).",
+   "html": "\n        <p>The covariance is \\(\\sum_s P(s)^\\alpha(\\mathbf{x}(s)-m)(\\mathbf{x}(s)-m)^\\top\\)\n        (normalised): \\(\\alpha=1\\) is PCA, \\(\\alpha=0\\) is classical MDS. Down-weighting the\n        common words spreads the rare ones into the plane.</p>\n        <p><strong>Alpha choice &mdash; honest caveat.</strong> \\(\\alpha=0.75\\) was selected\n        on the <em>same</em> evaluation metrics used to compare the bases (not held-out). The\n        scan (pooled, grid 32; SD-normalised \\(|\\Delta E|\\)) is:</p>\n        <table><tr><th>α</th><th>\\|ΔE\\|/sd</th><th>occupied</th><th>continuity</th></tr>\n        <tr><td>0.25</td><td>1.250</td><td>0.206</td><td>0.432</td></tr>\n        <tr><td>0.50</td><td>0.913</td><td>0.295</td><td>0.401</td></tr>\n        <tr><td>0.75</td><td>0.663</td><td>0.516</td><td>0.319</td></tr></table>\n        <p>No \\(\\alpha\\) in {0.25, 0.5, 0.75} gives a single connected component (4-/8-connected components at G=32: 0.25 \\(\\to\\) 3/3, 0.5 \\(\\to\\) 3/3, 0.75 \\(\\to\\) 5/2), so the earlier \"connected support\" part of the criterion is unsatisfiable and is dropped; \\(\\alpha=0.75\\) is kept on the smoother-surface criterion alone.</p>\n        <p><strong>Limitations.</strong> Not energy-aligned (within-cell \\(R^2=0.67\\)); the\n        down-weighting is a deliberate loss of mass-fidelity.</p>\n        <p><strong>When it helps / misleads.</strong> Use it to equalise common vs rare words\n        and inspect global geometry. Do not trust its energy levels.</p>",
+   "metrics": {
+    "roughness_sd_norm": 0.663,
+    "lap_sd_norm": 0.847,
+    "roughness_iqr_norm": 0.198,
+    "roughness_core_sd_norm": 0.345,
+    "roughness_range_norm": 0.064,
+    "range_bits": 45.1,
+    "moran": 0.43,
+    "r2": 0.671,
+    "wells_1_2_3": [
+     32,
+     27,
+     20
+    ],
+    "spurious": 0.09,
+    "continuity": 0.319,
+    "occ_cv": 4.57,
+    "occupied": 0.52,
+    "eff_cells": 143.7,
+    "components": 1,
+    "var_ratio": 1.5,
+    "stability_deg": 3.4,
+    "components_4_8": "5/2"
+   }
+  },
+  "lda": {
+   "id": "lda",
+   "label": "Well-discriminant (LDA)",
+   "summary": "Fisher discriminant axes of the string-level descent basins (best separates the wells).",
+   "html": "\n        <p>The basis solves Fisher's criterion \\(S_B\\,v=\\lambda C\\,v\\), with\n        \\(S_B=\\sum_k\\pi_k(\\mu_k-\\mu)(\\mu_k-\\mu)^\\top\\) the P-weighted between-basin scatter\n        over the string-level descent basins. \\(\\lambda\\) is the correlation ratio\n        \\(\\eta^2\\in[0,1]\\); the top-2 axes best separate the landscape's wells (regularised\n        to the 95%-variance subspace). Genuinely distinct from PCA (principal angle\n        8&ndash;17&deg;).</p>\n        <p><strong>Optimality (verified in tests).</strong> \\(\\lambda\\) equals the correlation\n        ratio, and a random direction's \\(\\eta^2\\) never exceeds the top eigenvalue.</p>\n        <p><strong>What it buys.</strong> Places strings by which well they belong to\n        (substitution continuity 0.341, near PCA's 0.375), non-degenerate on all four models\n        (coverage \\(\\ge 50\\%\\) of PCA, axis-variance ratio \\(\\le 1.7\\)).</p>\n        <p><strong>Limitations (honest).</strong> Least time-stable (23.0&deg;, basin\n        relabeling). It is <em>not</em> a locality-preserving projection: the LPP idea it\n        replaces was audited and found vacuous (flat Laplacian spectrum on the full Hamming\n        graph) or degenerate (flux-weighted, sparse models).</p>\n        <p><strong>When it helps / misleads.</strong> Use it to see the wells as\n        discriminable clusters. Do not use it across trajectory frames.</p>",
+   "metrics": {
+    "roughness_sd_norm": 0.674,
+    "lap_sd_norm": 0.82,
+    "roughness_iqr_norm": 0.213,
+    "roughness_core_sd_norm": 0.335,
+    "roughness_range_norm": 0.1,
+    "range_bits": 35.1,
+    "moran": 0.35,
+    "r2": 0.647,
+    "wells_1_2_3": [
+     47,
+     35,
+     30
+    ],
+    "spurious": 0.26,
+    "continuity": 0.341,
+    "occ_cv": 5.38,
+    "occupied": 0.5,
+    "eff_cells": 129.6,
+    "components": 1,
+    "var_ratio": 1.4,
+    "stability_deg": 23.0,
+    "components_4_8": "17/7"
+   }
+  },
+  "energy_metric": {
+   "id": "energy_metric",
+   "label": "Energy-metric layout — DEGENERATE (diagnostic)",
+   "summary": "Landmark-MDS (Isomap) of the substitution graph weighted by energy slope; found degenerate (y ~ energy ramp, x ~ linear). Diagnostic only.",
+   "kind": "coords",
+   "diagnostic": true,
+   "html": "\n<p><strong>VERDICT: DEGENERATE — this is a diagnostic, not a recommended basis.</strong>\nThe layout reproduces the degenerate λ→0 control (the energy ramp) mixed with a linear\nprojection. On the pooled model the y-axis is 95% the energy ramp (R²(y,E)=0.948,\nSpearman 0.976), the x-axis is 98% linear in the one-hot indicators (linear R²=0.98),\nKruskal stress is 0.88–0.92, and Austen occupancy is 0.18 (&lt; half of PCA's 0.37).</p>\n<p><strong>Why.</strong> H(4,26) has diameter 4: 85.5% of string pairs are at Hamming\ndistance 4 and the geodesic D-spread has CV 0.10 (near-equidistant), so MDS of the\nenergy-weighted geodesic metric returns a near-Euclidean (linear) ball plus the energy\nramp. The λ-sweep is degenerate end to end: R²(y,E) = 0.999 / 0.948 / 0.001 at\nλ×{0.25, 1, 4} of the flux-median scale — no intermediate λ escapes. The\nenergy-weighted Laplacian-eigenmap comparator (w = exp(-ΔE²/ℓ²)) fails the same way or\nworse: coverage 0.076–0.089 (localised rare-direction with eigengap ≈ 3–6×10⁴) at finite\nℓ, and a flat level-1 spectrum (eigengap 0) at ℓ→∞.</p>\n<p><strong>Why GP/BO and splines do not escape.</strong> GP/Bayesian optimisation has\n2N = 913 952 free coordinates with a cheap differentiable objective and a trivial\noptimum without a constraint — the wrong tool for a low-dimensional black box. A spline\nlayout x(u), y(u) with a feature vector u is again a parametric projection of word data,\nand with u = energy rank it is the degenerate control. Neither supplies a non-trivial\norganising principle.</p>\n<p><strong>Controls (also reported).</strong> `basis.energy_rank_layout` (λ→0: a\nboustrophedon raster sorted by energy, the quantile function of E — smooth at every scale,\nx,y encode only the density of states) and `basis.hamming_layout` (λ→∞: MDS of the pure\nHamming geodesic, the near-equidistant graph geometry). Both are kept as the honest\ndemonstration of the two limits, not as selectable bases.</p>\n<p class=\"cite\">Tenenbaum, de Silva &amp; Langford, <em>Science</em> 290, 2319–2323 (2000),\ndoi:10.1126/science.290.5500.2319. de Silva &amp; Tenenbaum, <em>Sparse multidimensional\nscaling using landmark points</em>, Stanford Tech. Rep. (2004). Ceriotti, Tribello &amp;\nParrinello, <em>PNAS</em> 108(32), 13023–13028 (2011), doi:10.1073/pnas.1108486108.\nBecker &amp; Karplus, <em>J. Chem. Phys.</em> 106, 1495 (1997).</p>\n",
+   "metrics": {
+    "diagnostic": true,
+    "lam": 3.22,
+    "K": 150,
+    "kruskal_stress": 0.88,
+    "spearman_y_E": 0.976,
+    "r2_y_E": 0.948,
+    "linear_r2_x": 0.98,
+    "occupancy": 0.45,
+    "roughness_sd_norm": 0.428,
+    "d_spread_cv": 0.1,
+    "d_spread_p_at_d4": 0.855,
+    "sweep_r2_yE": {
+     "0.25x": 0.999,
+     "1x": 0.948,
+     "4x": 0.001
+    },
+    "laplacian_occ": 0.089,
+    "laplacian_eigengap": "3e4..6e4",
+    "austen_occupancy": 0.18,
+    "laplacian_linear_degree_occ": "0.005-0.089",
+    "laplacian_linear_P_occ": "0.369-0.511",
+    "laplacian_nonlinear_degree_occ": 0.062,
+    "laplacian_nonlinear_degree_r2xE": 0.85,
+    "laplacian_nonlinear_P_occ": 0.006
+   }
+  }
+ }
+}

@@ -1,0 +1,53 @@
+[13:08:46] 28 jobs to run on 1 worker(s); 1 already done
+[13:09:03] L=2: S1 6.385 S2<= 4.566 gain 1.818+-0.007 minima 9 (18s)
+[13:10:00] L=4: S1 14.993 S2<= 9.508 gain 5.431+-0.024 minima 116 (57s)
+[13:12:26] L=5: S1 19.460 S2<= 12.424 gain 6.953+-0.030 minima 327 (146s)
+[13:16:07] L=6: S1 23.336 S2<= 15.048 gain 8.167+-0.034 minima 784 (221s)
+[13:19:01] L=7: S1 26.951 S2<= 16.867 gain 9.975+-0.040 minima 1719 (174s)
+[13:26:39] L=8: S1 31.166 S2<= 18.374 gain 12.589+-0.046 minima 3202 (458s)
+[13:34:40] L=9: S1 34.454 S2<= 19.080 gain 15.117+-0.053 minima 4342 (481s)
+[13:42:17] L=10: S1 38.026 S2<= 19.922 gain 17.812+-0.062 minima 6187 (457s)
+[13:49:30] L=11: S1 40.576 S2<= 19.226 gain 20.914+-0.063 minima 6417 (433s)
+[13:56:48] L=12: S1 44.588 S2<= 18.848 gain 25.260+-0.076 minima 6684 (438s)
+[14:04:22] L=13: S1 46.205 S2<= 16.290 gain 29.529+-0.068 minima 6208 (454s)
+[14:13:22] L=14: S1 48.621 S2<= 19.995 gain 28.242+-0.077 minima 6855 (540s)
+[14:21:44] L=15: S1 38.447 S2<= 19.566 gain 18.414+-0.079 minima 6479 (502s)
+[14:34:15] L=16: S1 59.535 S2<= 29.591 gain 29.285+-0.121 minima 11204 (751s)
+[14:43:10] L=17: S1 65.627 S2<= 34.317 gain 29.665+-0.201 minima 8613 (535s)
+[14:48:13] L=18: S1 70.009 S2<= 43.265 gain 23.364+-0.290 minima 6870 (302s)
+[14:51:37] L=19: S1 77.890 S2<= 45.562 gain 25.833+-0.446 minima 5199 (204s)
+[14:55:05] L=20: S1 82.065 S2<= 44.219 gain 29.629+-0.560 minima 3896 (208s)
+[14:55:28] validate L=4 N=10000: pearson 0.9820 dS -0.0500 S2 9.262 vs bound 9.404
+[14:55:57] validate L=4 N=142614: pearson 0.9801 dS +0.0713 S2 9.430 vs bound 9.486
+[14:57:17] validate L=4 N=1000000: pearson 0.9811 dS +0.0998 S2 9.475 vs bound 9.526
+[14:58:28] validate L=5 N=10000: pearson 0.9760 dS +0.0192 S2 11.835 vs bound 12.163
+[15:00:59] validate L=5 N=142614: pearson 0.9729 dS +0.0993 S2 12.270 vs bound 12.447
+[15:01:33] ais L=4 N=142614: err +0.0024 se 0.0014
+[15:02:26] ais L=5 N=142614: err +0.0007 se 0.0033
+[15:03:54] ais L=6 N=142614: err -0.0003 se 0.0021
+[15:05:35] ais L=7 N=142614: err -0.0027 se 0.0040
+[15:09:01] ais L=8 N=142614: err -0.0076 se 0.0051
+[15:09:02] wrote /Users/dtan/projects/languagefitness/data/derived/length_study.json (7217s)
+[15:32:13] 0 jobs to run on 1 worker(s); 29 already done
+[15:33:03]   ais schedule L=10 T=1000: lnZ 80.485 +- 0.063 (certificate 79.645)
+[15:33:26]   ais schedule L=10 T=4000: lnZ 80.474 +- 0.029 (certificate 79.645)
+[15:35:04]   ais schedule L=10 T=16000: lnZ 80.513 +- 0.015 (certificate 79.645)
+[15:35:42]   ais schedule L=14 T=1000: lnZ 80.654 +- 0.049 (certificate 80.598)
+[15:36:16]   ais schedule L=14 T=4000: lnZ 80.719 +- 0.028 (certificate 80.598)
+[15:38:22]   ais schedule L=14 T=16000: lnZ 80.692 +- 0.014 (certificate 80.598)
+[15:38:52]   ais schedule L=18 T=1000: lnZ 92.884 +- 0.047 (certificate 92.803)
+[15:39:41]   ais schedule L=18 T=4000: lnZ 92.933 +- 0.023 (certificate 92.803)
+[15:42:51]   ais schedule L=18 T=16000: lnZ 92.918 +- 0.012 (certificate 92.803)
+[15:42:52] wrote /Users/dtan/projects/languagefitness/data/derived/length_study.json (639s)
+[00:46:25] 0 jobs to run on 1 worker(s); 29 already done
+[00:47:04]   ablation L=10 s2=0.316: gap +2.44 test 19.414 deepest experience +3.15
+[00:47:48]   ablation L=10 s2=1: gap +5.57 test 19.772 deepest experience +3.77
+[00:48:33]   ablation L=10 s2=3.16: gap +6.78 test 20.195 deepest experience +4.15
+[00:49:31]   ablation L=10 s2=10: gap +8.93 test 20.842 deepest experience +4.06
+[00:50:35]   ablation L=10 s2=31.6: gap +14.15 test 23.111 deepest experience +2.08
+[00:51:33]   ablation L=14 s2=0.316: gap +17.27 test 20.450 deepest administration +3.56
+[00:52:29]   ablation L=14 s2=1: gap +18.94 test 21.559 deepest administration +3.66
+[00:53:31]   ablation L=14 s2=3.16: gap +20.04 test 22.517 deepest administration +3.74
+[00:54:40]   ablation L=14 s2=10: gap +20.96 test 23.480 deepest administration +3.76
+[00:56:06]   ablation L=14 s2=31.6: gap +21.95 test 24.330 deepest administration +3.75
+[01:16:05] wrote /Users/dtan/projects/languagefitness/data/derived/length_study.json (1780s)

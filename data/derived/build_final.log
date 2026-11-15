@@ -1,0 +1,10 @@
+[23:18:27] stage build
+[23:30:09]   (a) Austen, S&B protocol: PC1 0.1179 PC2 0.0790 plane 0.1969; 6 wells >= 1.0 bit; 149 string minima
+[23:30:34]   (b) Twitter 2023, N-matched: PC1 0.1074 PC2 0.0687 plane 0.1761; 5 wells >= 1.0 bit; 137 string minima
+[23:32:12]   (c) Bluesky 2024, N-matched: PC1 0.1129 PC2 0.0668 plane 0.1797; 5 wells >= 1.0 bit; 158 string minima
+[23:32:33]   (d) Twitter pooled 2006-03..2023-04, MAP: PC1 0.0997 PC2 0.0707 plane 0.1704; 4 wells >= 1.0 bit; 135 string minima
+[23:32:33] trajectory: 203 frames in the fixed final basis
+[23:46:35]   final well this: persistence >= 1.0 bit first at 2006-05 (frame 3), continuously from 2006-05
+[23:46:35]   final well with: persistence >= 1.0 bit first at 2006-04 (frame 2), continuously from 2006-04
+[23:46:35]   final well that: persistence >= 1.0 bit first at 2006-03 (frame 1), continuously from 2006-03
+[23:46:35]   final well your: persistence >= 1.0 bit first at 2006-03 (frame 1), continuously from 2006-05

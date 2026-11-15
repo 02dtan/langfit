@@ -1,0 +1,33 @@
+[22:36:54] stage build
+[22:36:54] build: 19 frames in the fixed basis
+[22:37:26]   building move-set cell adjacency ...
+[22:42:36]   computing per-cell top words at all resolutions ...
+[22:42:59]   frame 0 ((none)): N=0  z in [0.00, 0.00]  max z_se nan bits  wells 0  minima 0
+[22:43:14]   frame 1 (2006-12): N=8,639  z in [-24.51, 16.46]  max z_se nan bits  wells 10  minima 307
+[22:43:28]   frame 2 (2007-12): N=23,994  z in [-26.41, 25.11]  max z_se nan bits  wells 10  minima 342
+[22:43:43]   frame 3 (2008-12): N=124,822  z in [-21.36, 30.08]  max z_se nan bits  wells 7  minima 390
+[22:43:57]   frame 4 (2009-12): N=1,406,861  z in [-19.63, 30.26]  max z_se nan bits  wells 9  minima 412
+[22:44:12]   frame 5 (2010-12): N=3,769,767  z in [-15.62, 43.13]  max z_se nan bits  wells 6  minima 416
+[22:44:27]   frame 6 (2011-12): N=8,513,110  z in [-21.58, 37.60]  max z_se nan bits  wells 9  minima 416
+[22:44:42]   frame 7 (2012-12): N=16,385,167  z in [-16.49, 34.99]  max z_se nan bits  wells 8  minima 424
+[22:44:57]   frame 8 (2013-12): N=27,705,377  z in [-16.71, 32.43]  max z_se nan bits  wells 8  minima 414
+[22:45:12]   frame 9 (2014-12): N=42,388,873  z in [-16.30, 30.12]  max z_se nan bits  wells 10  minima 402
+[22:45:28]   frame 10 (2015-12): N=60,773,235  z in [-18.78, 28.39]  max z_se nan bits  wells 10  minima 407
+[22:45:43]   frame 11 (2016-12): N=83,439,147  z in [-18.79, 33.38]  max z_se nan bits  wells 10  minima 408
+[22:45:59]   frame 12 (2017-12): N=111,025,232  z in [-18.91, 43.37]  max z_se nan bits  wells 5  minima 397
+[22:46:15]   frame 13 (2018-12): N=152,709,128  z in [-21.22, 40.46]  max z_se nan bits  wells 10  minima 392
+[22:46:31]   frame 14 (2019-12): N=204,377,506  z in [-18.52, 47.18]  max z_se nan bits  wells 11  minima 386
+[22:46:47]   frame 15 (2020-12): N=279,347,059  z in [-17.17, 17.92]  max z_se nan bits  wells 10  minima 390
+[22:47:03]   frame 16 (2021-12): N=380,105,787  z in [-16.18, 32.86]  max z_se nan bits  wells 7  minima 393
+[22:47:20]   frame 17 (2022-12): N=597,255,289  z in [-16.14, 22.13]  max z_se nan bits  wells 11  minima 392
+[22:47:37]   frame 18 (2023-04): N=774,217,636  z in [-18.67, 39.25]  max z_se nan bits  wells 12  minima 391
+[22:47:59]   final string minima: 10171 (top shown)
+[22:47:59]   level G=8: gaps 12 low-conf 21 median_SE 0.4144063832296603 wells 6
+[22:47:59]   level G=12: gaps 37 low-conf 56 median_SE 0.5916782941909938 wells 9
+[22:47:59]   level G=16: gaps 84 low-conf 91 median_SE 0.5420134789028079 wells 17
+[22:47:59]   level G=24: gaps 224 low-conf 210 median_SE 0.6834494725683047 wells 33
+[22:47:59]   level G=32: gaps 455 low-conf 372 median_SE 0.7441544750212811 wells 12
+[22:47:59]   level G=48: gaps 1156 low-conf 784 median_SE 0.8644030794058329 wells 94
+[22:47:59]   level G=64: gaps 2233 low-conf 1324 median_SE 0.9552266656677182 wells 171
+[22:47:59]   level G=96: gaps 5497 low-conf 2739 median_SE 1.0417201780231387 wells 346
+[22:47:59] wrote nm_landscape.npz and nm_landscape.json

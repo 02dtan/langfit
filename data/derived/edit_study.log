@@ -1,0 +1,17 @@
+[15:09:22] loading counts
+[15:09:24] dictionary
+[15:09:24] model exact
+[15:09:25]   landscapes on 12,355,928 states
+[15:09:43]   recovery
+[15:09:45]   channel
+[15:09:46]   channel rho(selection-corrected, L=[4])={'sub': 0.532779047026894, 'trans': 0.009422548533230789, 'ins': 0.13487708112092758, 'del': 0.32292132331894763} near-miss=0.0328
+[15:10:02] closure lengths 1-5 (exact)
+[15:10:03]   landscapes on 12,356,630 states
+[15:10:20]   recovery
+[15:10:22] map check L=(3, 4): exact
+[15:10:22]   landscapes on 474,552 states
+[15:10:24]   recovery
+[15:10:25] map check L=(3, 4): map
+[15:10:25]   landscapes on 474,552 states
+[15:10:27]   recovery
+[15:10:27] wrote /Users/dtan/projects/languagefitness/data/derived/edit_study.json

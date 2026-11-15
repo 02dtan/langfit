@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+
+# Raw social-media text: too large (tw100m ~9 GB, bsky ~0.8 GB) and individual posts should not be
+# republished. Everything derived from them (aggregate counts, fits) lives in data/derived/ and IS tracked;
+# scripts/ingest_social.py regenerates it from the raw shards.
+data/tw100m/
+data/bsky/
+
+# Third-party files that are fetched, not authored here (fastText language-ID model, S&B paper PDF).
+data/lid/
+data/refs/

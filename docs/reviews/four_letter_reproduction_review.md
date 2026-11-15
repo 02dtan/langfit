@@ -1,0 +1,41 @@
+# Review of four_letter_reproduction.md
+
+## Label the Newton-decrement stopping rule as an estimate, not a bound
+
+Blocker: “the entropy error is below 0.01 se_S” and §2's “bounds the entropy error either way” do not follow from f−f* ≈ ½gᵀH⁻¹g. The inequality involving the true dual gap is valid, but langfit/maxent.py:302–327 substitutes an inexact-CG local quadratic estimate, not an upper bound. A concrete pairwise counterexample is uniform empirical mass on the six nonconstant binary triples, with a fixed fourth letter: every allowed pair cell is observed, yet the remaining two triples are forced zeros. For potentials −x times the number of equal pairs, f−f*=ln(1+e^(−2x)/3), whereas half the squared decrement is e^(−2x)/6; at x=8 these are 3.75117e−8 and 1.87559e−8 nats. The resulting entropy-error estimate also understates the actual error. Replace the claims with “We stop when the marginal residual and a local quadratic estimate of entropy error fall below the stated tolerances; the latter is not a rigorous certificate, particularly for boundary optima,” and use H⁺ (or a gauge-fixed Hessian) rather than H⁻¹.
+
+## Convert the KL divergence to bits in the entropy-gap identity
+
+Should-fix: “S_k−S_full=D_KL(P̂∥P_k)” mixes the bit-valued S_k defined in §1.4 and used throughout the result tables with the natural-log KL divergence just defined by f−H(Q), where both f and H use ln. The implementation explicitly divides entropy by ln 2 in MaxEnt.entropy_bits. Replace this equation with “S_k−S_full = D_KL^(ln)(P̂∥P_k)/ln 2 bits,” or explicitly define a base-2 divergence for this equation; otherwise a reader computing the claimed code-length loss from the preceding dual obtains the wrong units.
+
+## Distinguish beyond-pairwise effects from four-body correlations
+
+Should-fix: “These are strings whose letters co-occur as a unit (a four-body correlation)” is not established by a large residual against P₂. Three-body interactions can also produce such residuals, and scripts/maxent_study.py:job_corpus fits only orders 1 and 2 for these social-media samples; §4.1 explicitly says S₃ is not reported for them. The connected-information hierarchy in §1.4 distinguishes the missing third-order contribution S₂−S₃ from the fourth-order contribution S₃−S_full, so this attribution bypasses the very distinction the document defines. Replace with “These strings are strongly underpredicted by the pairwise model, indicating structure beyond pairwise compatibility; these fits do not distinguish three-body from four-body contributions.”
+
+## Describe descent as traversing states, not a chain of wells
+
+Should-fix: “shows descent cascading through a chain of wells” contradicts the strict-well definition: no strictly energy-decreasing step can leave a local minimum. The stored Austen rep-0 path has energies want 11.8646 → went 10.2534 → welt 9.3151 → well 6.4377 → will 6.0576 bits, proving that every intermediate word has a lower-energy neighbour and is not a well. The nearby assertion that descent reaches “the nearest deep well” is also not a property of descend/descent_path, which greedily chooses the lowest-energy neighbour rather than minimizing distance to a terminal well. Replace these passages with “Steepest descent follows a sequence of decreasing-energy states to its basin's terminal state; in this Austen example only the endpoint, will, is a well.”
+
+## Correct the claimed one-percentage-point replication agreement
+
+Should-fix: “The captured share, unseen mass and minima mass reproduce to within a percentage point” is numerically false for minima mass. The frozen replication.minima_model_mass is 0.6218881236, so the difference from S&B's 63.5% is 1.3112 percentage points, not less than one; moreover, that S&B figure concerns ANC rather than Austen, as the document correctly notes elsewhere. Replace with “Captured share and unseen mass agree within 0.3 percentage points; our minima mass is 62.19%, 1.31 points below S&B's ANC value, an indicative cross-corpus comparison rather than a direct replication.”
+
+## Qualify the claim that annual changes greatly exceed sampling spread
+
+Should-fix: “the year-to-year changes are far larger than the subsample sd” is contradicted by the matched-N table and its source aggregates. For S₁, 2014→2015 changes by only 0.00321 bits versus a 2014 sd of 0.00279; 2016→2017 changes by 0.01333 versus a 2016 sd of 0.01227. Also S₂ and S_full rise in 2011, so the decade-long fall should not be read as monotonic. Replace with “All three entropies show substantial net decreases from 2010 to 2020, although S₂ and S_full initially rise in 2011; some annual S₁ changes are comparable to the subsample spread.” This preserves the supported long-run result without overstating year-resolution evidence.
+
+## Include the stored exceptions when summarizing probe trajectories
+
+Should-fix: “it descends to lman, best or read” omits three recorded Twitter lmao targets: lost (2010 rep 2), xmas (2015 rep 0), and lmam (2015 rep 3). Likewise §4.8's assertion that jsut reaches just “in all Twitter years shown” is true for rep-0 paths, not all subsamples: the JSON has 65/70 Twitter endpoints at just, four at that, and one at used. Replace the first statement with “Its Twitter targets are lman, best, read, lost, xmas and lmam,” and the second with “Every displayed rep-0 Twitter path ends at just; across all Twitter draws, 65/70 do so (four end at that and one at used).” Explicitly scoping these summaries prevents the representative paths from being mistaken for universal trajectory stability.
+
+## Identify the arXiv version used for equations and benchmarks
+
+Should-fix: “The model as published … Phys. Rev. E 81, 066119 (2010)” conflates two source versions. The supplied arXiv-v1 PDF uses exp(+ΣV), whereas the published paper's Eq. (2) uses exp(−ΣV); its Fig. 2 reports S₂=7.471±0.006, versus the preprint's 7.48, and its references 17/18/20 replace the preprint's corpus/error-bar/iterative-scaling references 16/19/21. These differences matter when checking signs, uncertainties and citations against the journal article (https://swh.princeton.edu/~wbialek/our_papers/stephens+bialek_10.pdf). Replace the heading/source note with “We reproduce arXiv:0801.0253v1 (2007); equation numbers, reference numbers and benchmark values below refer to that version. Our V equals −V in the 2010 published convention; published Fig. 2 gives S₂=7.471±0.006.” No sign change to the implementation is needed.
+
+## Separate all-word recovery from S&B's stable-word claim
+
+Should-fix: the row “substitution recovery | ‘can always be corrected’ | 0.670” juxtaposes different denominators. S&B's sentence is explicitly restricted to “such stable words,” i.e. local minima, whereas substitution_recovery and analyse average over every observed type and assign zero recovery to nonterminal words. Consequently 0.670 is not the empirical success rate conditional on the class covered by S&B's claim, and cannot directly test its ‘always’ wording. Replace the row with “Exact-word substitution recovery, all observed tokens | not reported by S&B | 0.670,” and add “S&B's qualitative claim concerns only stable words; our all-token measurement is an extension, not a like-for-like replication of that claim” (source: supplied PDF, p. 4; also https://swh.princeton.edu/~wbialek/our_papers/stephens+bialek_10.pdf, p. 3).
+
+## Disclose the different search procedures behind the minima comparison
+
+Should-fix: “S&B's minima figures are for ANC, so the minima comparison is only indicative” omits a second methodological difference. Published Fig. 4 explicitly finds minima by steepest descent starting from each observed corpus word; langfit/maxent.py:local_minima instead tests every one of the 26⁴ strings. The common strict-minimum definition does not make these searches equivalent: the published procedure counts observed-word-reachable minima, whereas the implementation includes minima in other basins as well. Extend the caveat to “The comparison also uses different searches: S&B describe descent from observed words (PRE Fig. 4), while we enumerate all states; their reported minima set is not demonstrated to be exhaustive” (https://swh.princeton.edu/~wbialek/our_papers/stephens+bialek_10.pdf).

@@ -1,0 +1,70 @@
+{
+  "tab0": "<section id=\"tab0\" class=\"tab intro\"><div class=\"intro-body\"><div class=\"intro-width\"><h2>A landscape of words</h2><p>Picture every possible string of letters laid out as a landscape, similar spellings side by side. Common words lie in deep valleys (<b>wells</b>), gibberish on high hills. Like a ball, a typo tends to roll downhill into the nearest real word. Strings draining into one well form its <b>basin</b>; basins meet at a <b>saddle</b>, the lowest pass between them.</p><p>Height is <b>energy</b> in bits: \\(E=-\\log_2 P\\) for a string of probability <i>P</i>, so each bit higher halves the probability.</p><h2>Two models</h2><ul><li><b>Four-letter</b> (Stephens &amp; Bialek; tabs 1–2): a <b>pairwise maximum-entropy model</b>, the least-biased model matching letter-pair frequencies (how often, say, <i>t</i> comes first with <i>h</i> second).</li><li><b>New</b> (tabs 3–4): the same kind of model for words of 1–8 letters in one landscape, built from 774 million words of tweets. Swaps, insertions and deletions are allowed moves, so a swapped pair like <span class=\"mono\">waht</span> is one move from <span class=\"mono\">what</span>.</li></ul><h2>Using it</h2><p>Drag to rotate, hover to read the words, press play on tabs 2 and 4. The <b>projection basis</b> is the map's viewing angle: changing it redraws the view, not the model. Four-letter heights are exact; the new model is exact up to five letters and <b>importance-sampled</b> (estimated from weighted random draws) for 6–8. <b>Smoothing</b> draws a continuous surface through the cell values; it keeps wells deep but lowers barriers, so smoothed passes read below the unsmoothed numbers.</p><p class=\"muted\">Based on Stephens &amp; Bialek, Phys. Rev. E 81, 066119 (2010).</p></div></div></section>",
+  "tabs": {
+    "sb_static": {
+      "title": "S&B four-letter landscape",
+      "blurb": "All 456,976 four-letter strings projected onto one 2-D map: words pool in wells, gibberish piles up on hills. Pick two wells to trace the minimax path, the route whose highest point is lowest."
+    },
+    "sb_time": {
+      "title": "S&B four-letter landscape over time",
+      "blurb": "The same model refitted to tweets up to each month, 2006–2023, seen from one fixed viewing angle. Press play: it starts flat (no data means a uniform model) and wells form as tweets accumulate."
+    },
+    "nm_static": {
+      "title": "New model: words of 1–8 letters",
+      "blurb": "Words of 1–8 letters on one map, placed by their letter pairs (bigrams). On the 32×32 grid the biggest basins, by share of probability, are <i>of</i> (44.6%), <i>be</i> (13.8%), <i>to</i> (13.4%) and <i>is</i> (7.6%)."
+    },
+    "nm_time": {
+      "title": "New model over time",
+      "blurb": "The new model refitted to tweets up to the end of each year, 2006 to April 2023, seen from one fixed viewing angle. Press play: it starts flat (uniform prior, no data) and wells emerge as data grow."
+    }
+  },
+  "legend": {
+    "height_sb": "Height: bin energy, −log2 of a cell's mean string probability, in bits (lower = likelier). Uniform random letters: flat at 18.80.",
+    "height_nm": "z = log2(prior/model mass) per cell, prior = random letters of each length; −10 ≈ 1,000× likelier. Relative, so not comparable with S&B or across lengths.",
+    "wells": "Orange dots W1, W2…: lowest points of basins, ranked by depth below their lowest exit. Each is named after the most probable word of its whole basin, but the dot sits on the basin's lowest cell, and that cell's own top word (hover: ‘minimum cell’) can differ.",
+    "barrier": "Purple diamond: the main barrier, a saddle (lowest pass) between two wells. ‘climb from W2 = +7.7 / from W1 = +8.4 bits’: its height above each well's floor.",
+    "path": "Maroon line: the minimax path, the chain of single-letter changes between two words whose highest point is as low as possible; dotted where it jumps across empty cells. Hover any point for the nearest word.",
+    "approx": "*: a 6–8-letter string found by importance sampling (weighted random draws); it may never occur in real text. In 2D, whitened cells: estimate too uncertain to trust.",
+    "cap": "Optional cap at 18.80 bits (uniform random letters): cells less likely than uniform are drawn at 18.80. Display only; hover shows the true height.",
+    "minima": "White dots: strict local minima, strings likelier than every neighbour one move away, where a rolling typo comes to rest.",
+    "empty": "Grey cells: no string lands there, so they have no height."
+  },
+  "controls": {
+    "model": "Corpus the model is fitted to: Jane Austen, Twitter 2023, Bluesky 2024, or pooled Twitter 2006–2023.",
+    "basis": "Projection basis: the 2-D viewing angle onto all strings. Changes the view, never the model.",
+    "view": "Switch between the 3D landscape and a flat, top-down colour map.",
+    "resolution": "Grid bins per axis: finer shows more detail, but also more tiny, spurious wells.",
+    "hover": "What hovering shows: the most probable words in that spot, or the nearest word.",
+    "clip": "Cap very high cells (display only) so the wells stay visible; hover shows the true height.",
+    "smooth": "Continuous display fit of the cell values, with a short length that adapts to local variation. Empty cells count as weak evidence for the cap (capped cells slightly stronger); no value is pinned. Barrier and path numbers stay unsmoothed.",
+    "path": "Show the minimax path: the one-letter-at-a-time route between two wells with the lowest peak.",
+    "level": "Bins per axis; finer grids spread the samples thinner: noisier cells, more spurious wells.",
+    "play": "Animate through time, from no data to the full record.",
+    "frame": "Drag to choose a date.",
+    "path_words": "Or type two four-letter words to trace a route between them.",
+    "show_wells": "Show the wells (orange) and the main barrier between them (purple).",
+    "show_minima": "Show white dots: strict local minima, where rolling typos come to rest.",
+    "minima": "How many white dots to show, most probable first.",
+    "wells_shown": "How many wells to label, most prominent first.",
+    "min_mass": "Hide new-model wells whose basin holds less than this share of total probability.",
+    "lowconf": "Whiten cells whose importance-sampled height is too uncertain to trust."
+  },
+  "bases": {
+    "pca": "Default view. Principal component analysis: the two directions in which the letters of probable strings vary most.",
+    "coupling_spectral": "Axes follow the dominant coupling patterns the fit learned: which position-letter pairs co-occur more or less than chance. Strings sharing such pairs sit together.",
+    "energy_aligned": "Partial least squares: axes maximising covariance with energy. Each cell's strings are similar in energy, but the surface is not the smoothest by the main roughness measure.",
+    "tempered_pca": "PCA with each string weighted by P^0.75 instead of P, so rare strings pull on the axes more than in plain PCA.",
+    "lda": "Linear discriminant analysis: axes that best separate the basins of the energy wells, maximising between-basin over total variance.",
+    "energy_metric": "One axis just re-plots energy, so the layout adds nothing. Shown only as a diagnostic of that failure."
+  },
+  "bases_labels": {
+    "pca": "PCA (default)",
+    "coupling_spectral": "Coupling modes",
+    "energy_aligned": "Energy-aligned (PLS)",
+    "tempered_pca": "Tempered PCA (α = 0.75)",
+    "lda": "Valley-discriminant (LDA)",
+    "energy_metric": "Energy axis (degenerate)"
+  },
+  "details_heading": "Technical details",
+  "sidebar_empty_hint": "Hover or click the map to see details here."
+}

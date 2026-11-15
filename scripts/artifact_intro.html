@@ -1,0 +1,435 @@
+<!--
+  First tab of index.html: orientation, the S&B model, its formalism
+  with proofs, and an orientation to the augmented model. This is a single <section>
+  fragment; ArtifactBuilder2 inserts it as the FIRST tab (id="tab0", a "tb0" button,
+  showTab extended to include 0), before the existing tab1/tab2.
+
+  Styling: relies on the template's .tab/.tab.on display rules (the fragment does NOT
+  redefine them). All intro-specific styles are scoped under #tab0.intro and reuse the
+  template palette (:root hex values) so the look matches. Math renders via KaTeX
+  auto-render (cdnjs.cloudflare.com); the URLs below were verified to load (HTTP 200).
+-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous">
+<script>
+window.__introRenderMath = function () {
+  var el = document.getElementById('tab0');
+  if (!el) return;
+  if (typeof window.renderMathInElement !== 'function') {
+    window.addEventListener('load', window.__introRenderMath, { once: true });
+    return;
+  }
+  renderMathInElement(el, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '\\[', right: '\\]', display: true },
+      { left: '$', right: '$', display: false },
+      { left: '\\(', right: '\\)', display: false }
+    ],
+    throwOnError: false
+  });
+};
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="window.__introRenderMath && window.__introRenderMath()"></script>
+
+<section id="tab0" class="tab intro">
+  <style>
+    #tab0.intro { --fg:#1d2330; --muted:#5b6475; --line:#d9dde5; --accent:#2b5fab; --bg:#fafbfc; }
+    #tab0.intro .intro-body {
+      position:relative; flex:1 1 auto; min-width:0; overflow-y:auto; height:calc(100vh - 70px);
+      padding:14px 20px 48px; font:13px/1.55 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif; color:var(--fg);
+    }
+    #tab0.intro .intro-width { max-width:840px; margin:0 auto; }
+    #tab0.intro h2 { font-size:16px; margin:20px 0 6px; padding-top:6px; border-top:1px solid var(--line); }
+    #tab0.intro h2:first-child { border-top:none; margin-top:0; }
+    #tab0.intro h3 { font-size:13px; margin:12px 0 3px; color:var(--accent); }
+    #tab0.intro p { margin:6px 0; }
+    #tab0.intro ul { margin:6px 0 6px 20px; padding:0; }
+    #tab0.intro li { margin:3px 0; }
+    #tab0.intro code { font-family:Menlo,Consolas,monospace; font-size:12px; background:var(--bg); padding:0 3px; border-radius:3px; }
+    #tab0.intro .muted { color:var(--muted); }
+    #tab0.intro table { border-collapse:collapse; width:100%; margin:8px 0; font-size:12px; }
+    #tab0.intro th, #tab0.intro td { border-bottom:1px solid var(--line); padding:3px 6px; text-align:right; }
+    #tab0.intro th:first-child, #tab0.intro td:first-child { text-align:left; }
+    #tab0.intro .prop { margin:12px 0 2px; }
+    #tab0.intro .prop .tag { display:inline-block; background:var(--bg); border:1px solid var(--line); border-radius:4px;
+      padding:0 6px; font-weight:600; color:var(--accent); }
+    #tab0.intro .proof { margin:4px 0 12px 14px; padding:2px 0 2px 10px; border-left:2px solid var(--line); color:var(--fg); }
+    #tab0.intro .proof .lead { font-variant:small-caps; font-weight:600; color:var(--muted); }
+    #tab0.intro .refs { font-size:12px; }
+    #tab0.intro .refs li { margin-bottom:4px; }
+    #tab0.intro .refs a { color:var(--accent); text-decoration:none; }
+    #tab0.intro .todo { background:#fff6e5; border:1px solid #e6c986; border-radius:4px; padding:6px 10px; color:#6b5316; }
+    #tab0.intro details.tech { margin:40px 0 16px; padding:0 22px; background:#f3f5f9; border:1px solid var(--line);
+      border-radius:8px; box-shadow:0 1px 4px rgba(29,35,48,.08); }
+    #tab0.intro details.tech[open] { padding-bottom:18px; }
+    #tab0.intro details.tech > summary { cursor:pointer; padding:14px 0; font-size:14px; font-weight:600; color:var(--accent); }
+    #tab0.intro details.tech[open] > summary { border-bottom:1px solid var(--line); margin-bottom:12px; }
+    /* the summary's rule is the single divider: drop the first heading's own top rule */
+    #tab0.intro details.tech > summary + h2 { border-top:none; margin-top:0; padding-top:0; }
+    #tab0.intro .katex-display { overflow-x:auto; overflow-y:hidden; max-width:100%; }
+    #tab0.intro code { overflow-wrap:anywhere; }
+    @media (max-width: 900px) {
+      #tab0.intro .intro-body { height:auto; overflow:visible; padding:12px 14px 40px; }
+      #tab0.intro table { display:block; overflow-x:auto; }
+      #tab0.intro details.tech { margin:28px 0 12px; padding:0 12px; }
+      #tab0.intro details.tech[open] { padding-bottom:14px; }
+      #tab0.intro .proof { margin-left:4px; }
+    }
+  </style>
+  <div class="intro-body"><div class="intro-width">
+
+    <h2>What this is, and why it is interesting</h2>
+    <p>Written English, seen through a physical lens, is a system with a huge number of configurations — the
+    strings of letters people actually write — each carrying a probability: how often it occurs. Statistical
+    physics is exactly the tool kit for such systems: a <b>probability distribution</b> over configurations, a
+    rule for reading its logarithm as an <b>energy</b>, and a notion of an <b>energy landscape</b> — low-energy
+    basins ("wells") separated by barriers — that governs which configurations are stable and how the system
+    relaxes when disturbed.</p>
+    <ul>
+      <li><b>Words are wells.</b> A common word sits at the bottom of a basin: its neighbours — its typos such
+      as <code>waht</code>, <code>thsi</code>, <code>jsut</code> — have higher energy, so a single-letter change
+      "relaxes" a misspelling downhill, back into the word. This is the intuition of Stephens &amp; Bialek's 2007
+      paper: any single-letter spelling error of a stable word is corrected by relaxing to the nearest local
+      minimum — an energy-landscape picture in the spirit of Hopfield's attractor networks for neural memory.</li>
+      <li><b>Energy is information.</b> With energies in bits ($w$ a string, $P(w)$ its probability), $E(w) = -\log_2 P(w)$: a word carrying fraction
+      $2^{-n}$ of the distribution costs $n$ bits. Low energy means probable; high energy means improbable. The
+      average energy is the <b>entropy</b> $S = \sum_w P(w)E(w)$ (the sum runs over every possible string $w$), which measures how much information written
+      English carries — or, dually, how <b>redundant</b> it is. If all $26^4$ strings (26 letters at each of 4 positions) were equally likely each
+      word would carry $18.80$ bits; real English uses only about $7$–$9$ bits, so it is highly predictable.</li>
+      <li><b>The landscape changes with data.</b> Fitting the same model month by month and year by year to
+      Twitter shows the wells moving as language evolves — some slang forms become stable words, others fade —
+      turning a static picture of English into a film of a statistical system at work.</li>
+    </ul>
+    <p>This artifact has two parts, kept strictly separate: (i) a reproduction and exploration of
+    <b>Stephens &amp; Bialek's (S&amp;B) model</b> of fixed-length four-letter words, and (ii) a <b>new,
+    augmented model</b> that lifts the same maximum-entropy idea to words of any length, a richer set of edit
+    moves, and much more data. This tab gives the model, its mathematical basis with proofs, and an orientation
+    to the rest of the artifact.</p>
+
+    <h2>The Stephens–Bialek model <span class="muted">(shown in tabs 1 and 2)</span></h2>
+    <p><b>State space.</b> A four-letter word $w = (l_1, l_2, l_3, l_4)$, with $l_i \in \{a,\dots,z\}$ the letter at position $i$, is a
+    configuration of $L=4$ "Potts spins" (word length $L$) with $A=26$ states each (alphabet size $A$). The space has $26^4 = 456{,}976$ strings —
+    small enough to enumerate exactly. The empirical distribution $\hat P(w)$ is the token frequency of $w$ — its count divided by
+    $N$, the number of four-letter tokens in the corpus.</p>
+    <p><b>Maximum-entropy problem.</b> S&amp;B approximate $\hat P$ by the distribution $P$ of maximum entropy
+    (Jaynes 1957: the least-biased distribution consistent with given averages) subject to reproducing the six
+    <i>pairwise</i> letter marginals — for each position pair $(i,j)$ and letter pair $(a,b)$, the probability
+    that positions $i,j$ hold letters $a,b$:</p>
+    <p>$$\max_P\; H[P] = -\sum_w P(w)\ln P(w)\quad\text{s.t.}\quad
+      \sum_{w:\,(l_i,l_j)=(a,b)} P(w) = \hat\mu_{ij}(a,b)\ \ \forall\, i&lt;j,\ a,b,\qquad \sum_w P(w) = 1.$$</p>
+    <p>Here $\hat\mu_{ij}(a,b)$ is the <b>measured</b> pair frequency: the fraction of the $N$ corpus tokens that have letter $a$ at
+    position $i$ and letter $b$ at position $j$, i.e. $\hat\mu_{ij}(a,b)=\sum_{w:\,(l_i,l_j)=(a,b)}\hat P(w)$ (for example
+    $\hat\mu_{12}(t,h)$ is the fraction of tokens that begin <code>th</code>). The left-hand side of the first constraint is the same
+    quantity computed under the model $P$, so the constraint says <i>the model reproduces every measured letter-pair frequency</i> — the
+    data-consistency condition — for all six position pairs $i&lt;j$ and all $26\times26$ letter pairs $(a,b)$; the second constraint says
+    $P$ is normalised. $H$ is in nats here (natural log); energies and entropies in bits follow below.</p>
+    <p><b>Boltzmann form.</b> The solution (Proposition P1) is the Boltzmann / Potts distribution</p>
+    <p>$$P^{(2)}(w) = \frac1Z \exp\!\Big[\sum_{i&lt;j} V_{ij}(l_i,l_j)\Big],\qquad
+      Z = \sum_w \exp\!\Big[\sum_{i&lt;j} V_{ij}(l_i,l_j)\Big].$$</p>
+    <p>Here $P^{(2)}$ denotes the pairwise solution ($P^{(k)}$ is the analogue that matches all $k$-letter marginals), and $Z$ is the
+    partition function, the sum over all $26^4$ strings that normalises $P^{(2)}$. The couplings $V_{ij}$ are the Lagrange multipliers of the
+    marginal constraints: six $26\times26$ tables, one per position pair, where $V_{ij}(a,b)$ is the log-weight that having letters $a,b$
+    at positions $i,j$ adds to a word's probability (positive favours the pair, negative disfavours it). It is <i>not</i> a Markov chain —
+    position 1 interacts with position 4 directly.</p>
+    <p><b>Energy.</b> We report energy in bits: $E(w) = -\log_2 P(w)$. Words the model says are likely sit low;
+    rare and forbidden words sit high.</p>
+    <p><b>Entropy hierarchy and multi-information.</b> Let $S_k$ be the maximum entropy (in bits) consistent with all
+    $k$-point marginals — those of all $k$-letter combinations, so $S_1$ keeps only single-letter frequencies (independent letters). Each added constraint shrinks the feasible set, so</p>
+    <p>$$S_{\rm rand} = 4\log_2 26 = 18.80\ \text{bits}\ \ge\ S_1\ \ge\ S_2\ \ge\ S_3\ \ge\ S_{\rm full} = H[\hat P].$$</p>
+    <p>Here $S_{\rm rand}$ is the entropy of the uniform distribution over all strings and $S_{\rm full}=H[\hat P]$ is the entropy of the
+    empirical distribution itself (every constraint kept). The <b>multi-information</b> $I_N = S_1 - S_{\rm full}$ is the total letter–letter
+    dependence (its subscript $N$ is the number of letters in the system, here 4 — not the token count $N$); the
+    pairwise model captures the share $I^{(2)}/I_N = (S_1 - S_2)/(S_1 - S_{\rm full})$ (Schneidman et&nbsp;al.
+    2003).</p>
+    <p><b>Local minima.</b> A string is a strict local minimum when all $L(A-1)=4\cdot25=100$ of its single-letter
+    substitutions have strictly higher energy — S&amp;B's definition of a stable word, and the basis of their
+    error-correction claim.</p>
+    <p><b>Fitting.</b> S&amp;B solved the marginal equations by generalised iterative scaling (Darroch &amp;
+    Ratcliff 1972). We minimise the same convex dual $f$ (defined in P2–P3 below) with a trust-region Newton method (Gould et&nbsp;al. 1999);
+    the stopping rule uses the Newton decrement (the Newton step's predicted decrease in $f$; Boyd &amp; Vandenberghe 2004) — see the four-letter
+    reproduction document for the exact tolerance.</p>
+    <p><b>What was reproduced</b> (Austen, S&amp;B's protocol; source <code>data/derived/maxent_study.json</code>,
+    paths <code>replication.*</code>):</p>
+    <table>
+      <tr><th>quantity</th><th>S&amp;B</th><th>this study</th></tr>
+      <tr><td>four-letter tokens / types</td><td>135,441 / 763</td><td>141,198 / 820</td></tr>
+      <tr><td>$S_{\rm rand}$ (bits)</td><td>18.802</td><td>18.8018</td></tr>
+      <tr><td>$S_1$ (bits)</td><td>14.083 ± 0.001</td><td>14.3230</td></tr>
+      <tr><td>$S_2$ (bits)</td><td>7.48</td><td>7.5495</td></tr>
+      <tr><td>$S_{\rm full}$ (bits)</td><td>6.918 ± 0.003</td><td>6.98190</td></tr>
+      <tr><td>captured $I^{(2)}/I_N$</td><td>92%</td><td>92.27%</td></tr>
+      <tr><td>model mass on unseen strings</td><td>15%</td><td>15.07%</td></tr>
+      <tr><td>strict minima (in dictionary)</td><td>136 (118, ANC)</td><td>149 (138)</td></tr>
+      <tr><td>minima model mass</td><td>63.5% (ANC)</td><td>62.19%</td></tr>
+    </table>
+    <p class="muted"><b>Reading the table.</b> <i>Tokens / types</i>: running four-letter words versus distinct ones.
+    <i>±</i>: the uncertainty S&amp;B quote. <i>Model mass on unseen strings</i>: the total probability the fitted model gives to
+    four-letter strings that never occur in the corpus. <i>Strict minima (in dictionary)</i>: the number of strict local minima and,
+    in brackets, how many of them are dictionary words. <i>Minima model mass</i>: the total model probability carried by those minima.
+    Rows marked ANC are S&amp;B's figures for the American National Corpus, the text they used for the minima counts; the other S&amp;B
+    figures and all "this study" figures are for the Austen novels.</p>
+    <p class="muted">Captured share and unseen mass agree within 0.3 percentage points. The minima comparison is
+    indicative only: S&amp;B's 136/118 figures are for the ANC corpus, and S&amp;B find minima by descending from
+    observed words whereas we test all 456,976 strings (full caveats in the reproduction document).
+    The strict-minima count (149) is shown as <b>149 (148 at fit tolerance)</b>: the words
+    <code>lamb</code> and <code>limb</code> differ by &lt;4&times;10<sup>&minus;4</sup> bits, below the fit
+    tolerance, so whether one is a strict minimum flips with the fit's convergence — the count of strict minima is
+    not stable at that margin.</p>
+
+    <h2>Formalism, with proofs</h2>
+    <p>Throughout, a <b>clique</b> $c$ is a set of word positions whose letters interact directly (for the pairwise model, the six
+    position pairs $\{i,j\}$) and a <b>cell</b> is a clique together with one specific letter assignment, e.g. "positions 1 and 2 hold
+    <code>t</code>, <code>h</code>". Then $\phi(w)\in\{0,1\}^D$ is the vector of clique-cell indicators ($\phi_c(w)=1$ when $w$ matches
+    cell $c$; every word activates exactly one cell per clique; <code>MaxEnt._features</code>), where $D$ is the number of cells carried by the fit
+    (at most $6\cdot26^2=4{,}056$ for the pairwise four-letter model; in exact mode cells never observed in the corpus are dropped, see P6); $\theta\in\mathbb R^D$ is the vector of packed
+    couplings — all the $V_{ij}(a,b)$ listed as one vector, so $\theta\cdot\phi(w)=\sum_{i&lt;j}V_{ij}(l_i,l_j)$
+    (<code>MaxEnt._pack</code>/<code>_unpack</code>); and $\hat\mu$ is the vector of packed empirical clique marginals, the measured
+    $\hat\mu_{ij}(a,b)$ of the previous section in the same order. The index $c$ labels a clique in $V_c(w_c)$ ($w_c$ = the letters of $w$ at
+    that clique's positions) and a single cell in $\phi_c$, $\lambda_c$, $\hat\mu_c$. $\langle\cdot\rangle_P$ is an average over strings
+    drawn from $P$ (sums over $w$ run over all strings), so $\langle\phi\rangle_P$ is the vector of the model's own marginals;
+    $\langle\cdot\rangle_\theta$ is the same under $P_\theta\propto e^{\theta\cdot\phi}$. Logarithms are natural in the proofs. The
+    same notation covers order-1 and order-3 models (<code>cliques(order, L)</code>).</p>
+
+    <div class="prop"><span class="tag">P1</span> <b>Maximum entropy under linear marginal constraints is the
+    Boltzmann form.</b> The maximiser of $H[P]$ subject to $\langle\phi\rangle_P = \hat\mu$ is
+    $P(w)\propto\exp[\sum_c V_c(w_c)] = e^{\theta\cdot\phi(w)}$.</div>
+    <div class="proof"><span class="lead">Proof.</span> Form the Lagrangian (multiplier $\lambda_c$ for each marginal constraint, $\lambda_0$ for normalisation) $\mathcal L = H[P] +
+    \sum_c\lambda_c\big(\sum_w P(w)\phi_c(w)-\hat\mu_c\big) + \lambda_0\big(\sum_w P(w)-1\big)$. Stationarity
+    $\partial\mathcal L/\partial P(w) = -\ln P(w) - 1 + \sum_c\lambda_c\phi_c(w) + \lambda_0 = 0$ gives
+    $P(w)=\exp\!\big(\sum_c\lambda_c\phi_c(w)+\lambda_0-1\big)$, i.e. $P\propto e^{\theta\cdot\phi(w)}$ with
+    $V_c=\lambda_c$ and $Z=e^{1-\lambda_0}$. This is the standard least-biased (Lagrange/KKT — Karush–Kuhn–Tucker — Jaynes 1957)
+    derivation of the Gibbs–Boltzmann law. <i>Code:</i> <code>MaxEnt.log_weights</code> $= \theta\cdot\phi(w)$
+    (the negative unnormalised energy); <code>MaxEnt.energy</code> returns the normalised energy
+    $-\ln P(w)$ in <b>nats</b> ($+\infty$ for forbidden strings); the bits form used for display is
+    $-\log_2 P(w) = E_{\rm nats}(w)/\ln 2$ (everywhere else on this page $E$ is this bits energy).</div>
+
+    <div class="prop"><span class="tag">P2</span> <b>Uniqueness and gauge.</b> The maximum-entropy distribution
+    is unique; the couplings $\theta$ are unique only up to gauge. The identifiable parameter count is
+    $3{,}850 = 4\cdot25 + 6\cdot25^2$.</div>
+    <div class="proof"><span class="lead">Proof.</span> $H[P]=-\sum P\ln P$ is strictly concave on the simplex (the set of all probability
+    distributions on the strings; Hessian $-\operatorname{diag}(1/P)\prec0$, negative definite, on the interior), and the feasible set $\{P\ge0:\langle\phi\rangle_P=\hat\mu\}$
+    is convex, so the maximiser is unique. The dual $f(\theta)=\ln Z-\theta\cdot\hat\mu$ (the negative mean log-likelihood per token of the corpus under
+    $P_\theta$) is convex with Hessian $\operatorname{Cov}_\theta[\phi]\succeq0$ (the covariance matrix of the cell indicators under $P_\theta$, positive semidefinite); its minimiser is unique only up to directions that leave $P$
+    unchanged. Two gauge families do: adding a constant to any $V_{ij}$ (absorbed by $Z$), and shifting a
+    function $u(a)$ of the letter at one position between the pair tables that share that position — both leave
+    $\sum_{i&lt;j}V_{ij}(l_i,l_j)$, hence $P$, unchanged. The functions on $26^4$ depending on at most two
+    positions span a space of dimension $\sum_{k=0}^{2}\binom{4}{k}(26-1)^k = 1 + 100 + 3750 = 3851$ ($k$ = number of positions involved, each with $26-1$ independent letter values); subtracting
+    the absorbed normalisation leaves $3{,}850 = 100$ single-letter fields $+ 3{,}750$ pair couplings. (S&amp;B
+    remove only the constant gauge and quote $6\cdot(26^2-1)=4050$; $3{,}850$ is ours.) The code keeps the
+    over-complete parametrisation; the Hessian is singular along the gauge directions, and the
+    <code>newton</code> helper stops its conjugate-gradient (CG) inner solve at relative residual $10^{-3}$.</div>
+
+    <div class="prop"><span class="tag">P3</span> <b>Moment matching $\Leftrightarrow$ stationarity; the Hessian
+    is the covariance.</b> $\nabla f = \langle\phi\rangle_\theta - \hat\mu$, and
+    $\nabla^2 f = \operatorname{Cov}_\theta[\phi]\succeq0$ (the Fisher information).</div>
+    <div class="proof"><span class="lead">Proof.</span> With $f(\theta)=\ln Z-\theta\cdot\hat\mu$ (the P2 dual; <code>fun</code> in the code),
+    $\nabla f=\langle\phi\rangle_\theta-\hat\mu$ (<code>jac</code>; $+\,2\lambda\theta$ in MAP mode, P7), so $\nabla f=0$ is exactly the
+    marginal equations $\mu_{\rm model}=\hat\mu$ (here $\mu_{\rm model}=\langle\phi\rangle_\theta$, the fitted model's own letter-pair frequencies; S&amp;B eq.&nbsp;3). Differentiating again,
+    $\nabla^2 f=\langle\phi\phi^\top\rangle_\theta-\langle\phi\rangle_\theta\langle\phi\rangle_\theta^\top
+    =\operatorname{Cov}_\theta[\phi]$, the per-token Fisher information of the exponential family
+    (Wainwright &amp; Jordan 2008), which is positive semidefinite — so $f$ is convex and Newton-type methods
+    are appropriate. <i>Code:</i> <code>fun</code>, <code>jac</code>, <code>hessp</code> (the Hessian–vector product: $F$ is the
+    strings-by-cells indicator matrix whose row $w$ is $\phi(w)$, $p$ the vector of model probabilities, $m=F^\top p=\langle\phi\rangle_\theta$, $v$ the
+    vector being multiplied, and $\mathrm{reg}=2\lambda$ (P7; zero in exact mode); it computes
+    $\operatorname{Cov}_\theta[\phi,\ \phi\!\cdot\!v] = F^\top(p\cdot Fv)-m\,(m\cdot v)+\mathrm{reg}\,v$, with $p\cdot Fv$ the elementwise product).</div>
+
+    <div class="prop"><span class="tag">P4</span> <b>Entropy is the mean energy; the $\ln Z$ identity.</b>
+    $S=\langle E\rangle$, and $H(P_\theta)=\ln Z-\theta\cdot\langle\phi\rangle_\theta$.</div>
+    <div class="proof"><span class="lead">Proof.</span> Write the unnormalised energy
+    $\mathcal E_\theta(w)=-\theta\cdot\phi(w)$ and $E(w)=-\ln P_\theta(w)=\mathcal E_\theta(w)+\ln Z$. Then
+    $\langle E\rangle=-\sum_w P\ln P=H(P_\theta)=S$; equivalently $H(P_\theta)=\ln Z-\theta\cdot\langle\phi\rangle_\theta
+    =\langle\mathcal E_\theta\rangle-F$ with free energy $F=-\ln Z$ (not the matrix $F$ of P3) at inverse temperature $\beta=1$, i.e. energy in units of information (nats). In bits,
+    $S_{\rm bits}=\langle-\log_2 P\rangle$. <i>Code:</i> <code>MaxEnt.energy</code> (nats, $+\infty$ for
+    forbidden strings); <code>MaxEnt.entropy_bits</code> $= -\sum P\ln P/\ln2$.</div>
+
+    <div class="prop"><span class="tag">P5</span> <b>Monotone hierarchy and the gap identity.</b>
+    $S_{\rm rand}\ge S_1\ge S_2\ge S_3\ge S_{\rm full}$, and
+    $S_k-S_{\rm full}=D^{(\ln)}_{\rm KL}(\hat P\,\Vert\,P_k)/\ln 2$, where $P_k=P^{(k)}$ is the $k$-point maximum-entropy model and
+    $D_{\rm KL}(\hat P\Vert P_k)=\sum_w\hat P(w)\ln[\hat P(w)/P_k(w)]$ is the Kullback–Leibler divergence ((ln) = in nats).</div>
+    <div class="proof"><span class="lead">Proof.</span> Each added marginal constraint shrinks the feasible set,
+    so the maximised entropy is non-increasing. For the gap: for any feasible $Q$
+    ($Q$ any distribution with $\langle\phi\rangle_Q=\hat\mu$, i.e. matching the measured marginals), $-\sum_w Q\ln P_\theta=\ln Z-\theta\cdot\hat\mu=f(\theta)$, hence
+    $f(\theta)-H(Q)=D_{\rm KL}(Q\,\Vert\,P_\theta)\ge0$. At the optimum $\theta^*$ (the minimiser of $f$, where $\nabla f=0$),
+    $f(\theta^*)=H(P_k)$; taking $Q=\hat P$ gives $H(P_k)-H(\hat P)=D^{(\ln)}_{\rm KL}(\hat P\,\Vert\,P_k)$, i.e.
+    $S_k-S_{\rm full}=D^{(\ln)}_{\rm KL}(\hat P\,\Vert\,P_k)/\ln2$ bits (the natural-log divergence is divided by
+    $\ln2$ because $S_k$ and $S_{\rm full}$ are in bits). The multi-information decomposes exactly,
+    $I_N=S_1-S_{\rm full}=\sum_{k=2}^{L}I^{(k)}$ with $I^{(k)}=S_{k-1}-S_k$ the dependence that first appears at $k$-letter interactions (so $I^{(2)}$ is the pairwise share used above; $L=4$ is the word length) (Schneidman et&nbsp;al. 2003).
+    <i>Code:</i> <code>MaxEnt.entropy_bits</code> ($S_k$; $S_{\rm full}$ from counts); <code>fun</code>/<code>jac</code>
+    (the dual whose minimum is $S_k$).</div>
+
+    <div class="prop"><span class="tag">P6</span> <b>Support and forbidden cells.</b> The maximum-entropy
+    solution vanishes on every string containing an unseen clique cell (a cell with $\hat\mu_c=0$; its coupling is $V_c=-\infty$); among
+    feasible distributions it has the largest support.</div>
+    <div class="proof"><span class="lead">Proof.</span> If $\hat\mu_c(\mathrm{cell})=0$, every feasible $Q\ge0$
+    satisfies $\sum_{w\ni\mathrm{cell}}Q(w)=0$ (sum over strings $w$ containing that cell's letters), so $Q$ vanishes on all strings carrying that cell — in particular
+    the maximum-entropy solution does. An exponential form vanishing there requires the corresponding coupling to
+    be $-\infty$. This is Csiszár's (1975) statement that the I-projection (information projection: the feasible distribution closest in KL divergence to the uniform one, which is the maximum-entropy solution) has maximal support among feasible
+    distributions. <i>Code:</i> <code>fit</code> builds <code>masks = [mu &gt; 0 …]</code> and
+    <code>fill = -np.inf</code>; <code>_features</code> marks every word containing a masked cell
+    <code>forbidden</code> (log-weight $-\infty$).</div>
+
+    <div class="prop"><span class="tag">P7</span> <b>Gaussian-prior MAP and continuity.</b> With an iid prior
+    $V\sim\mathcal N(0,\sigma^2)$ (independent Gaussians of variance $\sigma^2$, a smoothing hyperparameter chosen by cross-validation) on every cell, the posterior mode (MAP estimate) minimises $f_0(\theta)+\lambda\|\theta\|^2$
+    ($f_0$ is the dual $f$ of P3, $\|\theta\|^2=\sum_c\theta_c^2$) with $\lambda=1/(2\sigma^2 N)$ ($N$ the number of training tokens); the fitted model satisfies $\langle\phi\rangle_\theta=\hat\mu-2\lambda\theta$,
+    and the map $\hat\mu\mapsto\theta^*(\hat\mu)$ (measured marginals to fitted couplings) is continuous.</div>
+    <div class="proof"><span class="lead">Proof.</span> The negative log-posterior is
+    $-N f_0(\theta)+\|\theta\|^2/(2\sigma^2)+\mathrm{const}=N\,[f_0(\theta)+\lambda\|\theta\|^2]$ with
+    $\lambda=1/(2\sigma^2 N)$. The MAP estimate minimises $f_0+\lambda\|\theta\|^2$; its stationarity condition
+    $\langle\phi\rangle_\theta-\hat\mu+2\lambda\theta=0$ is moment matching relaxed by shrinkage — it does not
+    match the marginals, so its entropy is not $S_2$; it exists to give held-out words containing an unseen cell
+    a finite probability (the Gaussian prior is the standard smoother for maximum-entropy models, Chen &amp;
+    Rosenfeld 2000). Because $f_0+\lambda\|\theta\|^2$ is strictly convex (Hessian
+    $\operatorname{Cov}+2\lambda I\succ0$, positive definite), the minimiser is unique and, by the implicit function theorem applied
+    to $\nabla(f_0+\lambda\|\theta\|^2)=0$, depends continuously (indeed smoothly) on the data vector $\hat\mu$.
+    <i>Code:</i> <code>prior_lambda(sigma2, n_tokens)</code> $=1/(2\sigma^2 N)$; <code>fit(mode="l2")</code> with
+    <code>reg = 2·lam</code> and <code>fun</code> adding <code>0.5·reg·θ·θ</code> $=\lambda\|\theta\|^2$.</div>
+
+    <div class="prop"><span class="tag">P8</span> <b>Bin energy, the flat plane, and heights above 18.80 bits.</b>
+    The displayed quantity — the height of a grid cell (<i>bin</i>) of the 2-D projection (P9) — is $E_{\rm bin}=-\log_2\!\big(P(\mathrm{bin})/|\mathrm{bin}|\big)$, where $P(\mathrm{bin})$ is the total model probability of the strings projected into that cell and $|\mathrm{bin}|$ their number; the uniform model
+    gives a flat plane at $\log_2 26^4=18.80$ bits; individual energies and $E_{\rm bin}$ can exceed
+    $18.80$ bits without contradiction.</div>
+    <div class="proof"><span class="lead">Proof.</span> (i) $E_{\rm bin}$ is the negative log of the
+    <i>bin-averaged</i> probability $\langle P\rangle_{\rm bin}=P(\mathrm{bin})/|\mathrm{bin}|$ over the
+    $|\mathrm{bin}|$ strings that project into the cell — a Zwanzig-style (1954) average of $P$. (ii) For the
+    uniform model $P(w)=1/26^4$, so $P(\mathrm{bin})=|\mathrm{bin}|/26^4$ and $E_{\rm bin}=\log_2 26^4=18.80$ bits
+    everywhere: a flat plane. (iii) $18.80$ bits bounds the <i>entropy</i> $S=\langle E\rangle=\sum_w P(w)E(w)$,
+    not any individual energy: by Jensen's inequality, $S=\sum P\cdot(-\log_2 P)=\langle E\rangle\le
+    -\log_2(1/26^4)=\log_2 26^4$, with equality iff $P$ is uniform — so the <i>mean</i> energy is at most
+    $18.80$ bits, while $E(w)=-\log_2 P(w)$ diverges as $P(w)\to0$ and $E_{\rm bin}$ exceeds $18.80$ bits
+    precisely when a bin's average occupancy $P(\mathrm{bin})/|\mathrm{bin}|$ falls below the uniform level
+    $1/26^4$. Because $S_2\approx7.5$–$9.4$ bits $\ll18.80$ bits, most mass sits far below the plane, and the
+    identity $S=\sum PE$ forces the remaining mass onto strings with energies well above it. This is a generic
+    property of any non-uniform distribution — <i>not</i> a finite-sample artefact — although the specific case of
+    exact-mode (P6) forbidden strings at $E=+\infty$ is a finite-sample consequence (an unseen cell today may be seen
+    with more data, dropping to a finite but still high energy). <i>Code:</i>
+    <code>projection.bin_energy(log2p, bins, n_cells)</code> (<code>log2p</code>: $\log_2P$ of each string; <code>bins</code>: the cell index of each string; <code>n_cells</code>: the number of grid cells); the uniform plane is the constant
+    $-\log_2(1/26^4)$.</div>
+
+    <div class="prop"><span class="tag">P9</span> <b>Projection basis.</b> The landscape is projected onto the top
+    two eigenvectors of the model's P-weighted one-hot indicator covariance — a P-weighted principal-component
+    (PCA) basis over the $(i,a)$ letter indicators. Concretely, each string $w$ is a 104-dimensional one-hot vector $x(w)$
+    ($L=4$ positions $\times$ $A=26$ letters; entry $(i,a)=1$ when $l_i=a$, else 0); $\bar x=\sum_wP(w)x(w)$ is its model mean and
+    $C=\sum_wP(w)\,(x(w)-\bar x)(x(w)-\bar x)^\top$ its covariance under the model; the two eigenvectors $u_1,u_2$ of $C$ with the largest
+    eigenvalues span the plane, and each string is drawn at its coordinates along $u_1,u_2$ (up to a constant shift).</div>
+    <div class="proof"><span class="lead">Justification.</span> This basis was chosen against three alternatives by
+    a quantitative study (<code>data/derived/basis_study.json</code>; code <code>langfit/basis.py</code>,
+    <code>scripts/basis_study.py</code>), scored on kinetic relevance (VAMP-2, implied timescales; Wu &amp; Noé
+    2020), landscape faithfulness (mass-weighted basin separation of the strict string minima), neighbourhood
+    preservation (P-weighted trustworthiness/continuity; Venna &amp; Kaski 2001), coverage continuity (isolated
+    grid components, empty cells inside the support hull), interpretability, and time stability across trajectory
+    frames. The candidates were (a) this PCA, (b) time-lagged independent-component analysis (tICA) of the
+    single-letter substitution (heat-bath) chain — the slow-mode projection used by BioEmu (Lewis et&nbsp;al. 2025)
+    — (c) Fisher linear discriminant analysis on the P-weighted descent basins, and (d) a regularised tICA.
+    Raw tICA degenerates on one-hot indicators: rare letters blow up the lagged covariance, collapsing the map to
+    7 occupied cells with outliers 108 RMS-radii from the data mass. Regularised tICA and Fisher LDA come out
+    statistically indistinguishable from PCA (±2% VAMP-2) yet <i>worse</i> on basin separation and time stability.
+    PCA wins: it keeps the most P-weighted mass in one connected component, gives the best basin separation
+    (0.35 pooled) and tied-best trustworthiness (0.886; LDA 0.887, within sampling noise), and is the most
+    time-stable among the TICA/LDA candidates (9.8°; the selectable tempered/coupling/energy bases are still more
+    stable at 3.4–6.4°). It
+    also remains directly interpretable: each axis is a sum of per-(position, letter) loadings. By Eckart–Young no
+    linear combination of the principal components can explain more variance than PC1 + PC2, and none of the
+    nonlinear candidates (autoencoder/VAE) beat PCA on the coverage and stability metrics that matter for a fixed,
+    shareable projection. <i>Code:</i> <code>projection.indicator_covariance</code>,
+    <code>projection.principal_axes</code>, <code>projection.project</code>;
+    <code>basis.pca_basis(P)</code> returns the same axes with the annotation shown in the landscape tabs.
+    <b>PCA is the default view.</b> Tabs 1 and 2 also offer four further linear 2-D projections
+    (coupling-spectral, energy-aligned PLS, tempered PCA, and well-discriminant LDA), plus one clearly-labelled
+    degenerate diagnostic layout (energy-metric); each is precomputed and rigorously justified in the artifact's
+    "Why this basis" panel — see the "Projection bases" section below for a summary and the selector on tabs 1 and 2
+    to try them.</div>
+    <p class="muted"><b>Terms used in that justification.</b> The <i>substitution (heat-bath) chain</i> is the random walk over strings that
+    repeatedly picks a position and redraws its letter from the model's conditional probability given the other letters; $P$ is its
+    stationary distribution. <i>tICA</i> (time-lagged independent-component analysis) finds the linear coordinates along which that walk's
+    autocorrelation decays most slowly; <i>VAMP-2</i> scores how much of this slow dynamics a projection retains; an <i>implied
+    timescale</i> $t=-1/\ln(\text{autocorrelation})$ is a slow mode's relaxation time in single-letter updates. <i>Fisher LDA</i> (linear
+    discriminant analysis) picks the plane that best separates the descent basins (each string labelled by the minimum it descends to).
+    <i>Trustworthiness</i> and <i>continuity</i> (Venna &amp; Kaski) measure how often strings close in the map are not close in the data, and
+    vice versa. <i>Basin separation</i> is the $P$-weighted fraction of strings whose nearest support string in the plane lies in the same
+    descent basin. <i>Isolated components</i> are occupied grid cells not 8-connected to the largest occupied region. <i>RMS-radii</i> measure
+    an outlier's distance in units of the data's root-mean-square spread. The <i>stability angle</i> (degrees) is the principal angle
+    between a basis's 2-D plane fitted at an earlier time frame and its plane at the final frame. <i>Eckart–Young</i>: the top-$k$ principal
+    components give the best rank-$k$ approximation, i.e. retain the most variance. <i>Tempered PCA</i> replaces $P$ by $P^\alpha$ in
+    $C$ ($\alpha=0.75$ here; $\alpha=1$ is the default PCA, $\alpha=0$ weights all strings equally); <i>coupling-spectral</i> uses the
+    leading eigenvectors of the centred coupling matrix assembled from the $V_{ij}$ (the Hopfield-memory directions);
+    <i>energy-aligned PLS</i> (partial least squares) chooses the axes along which the letter indicators covary most with $E$;
+    <i>well-discriminant LDA</i> is Fisher LDA with the basins of the strict minima as classes.</p>
+
+    <h2>The new (augmented) model</h2>
+    <p>Everything above is Stephens &amp; Bialek's model of fixed-length four-letter words, reproduced and
+    explored in tabs 1 and 2. The remaining tabs add four things on top of it, all inside the same
+    maximum-entropy framework.</p>
+    <ul>
+      <li><b>One energy scale across lengths (grand-canonical).</b> Words of lengths $1\dots5$ (and beyond) live
+      in one configuration space; a chemical potential $\mu_L=\log_2 P(L)-\log_2 Z_L$ per length class $L$ ($P(L)=(n_L+1)/(N+|\mathcal L|)$ is the length distribution — the posterior mean of a uniform Dirichlet prior given $n_L$ corpus words of length $L$, $N$ words in total and $|\mathcal L|$ modelled lengths; $Z_L$ the partition function of the length-$L$ pairwise model; $\mu_L$ is unrelated to the measured marginals $\hat\mu$ above) makes
+      energies of words of different length commensurable, $E(w)=-\log_2 P(w)=H_L(w)-\mu_L$, where $H_L(w)=-\sum_{i&lt;j}V^{L}_{ij}(l_i,l_j)/\ln 2$ is the unnormalised within-length energy of a length-$L$ word (its couplings, in bits). Within one length
+      this differs from S&amp;B's energy by a constant, so the substitution-only landscape is exactly S&amp;B's.
+      <i>Code:</i> <code>edits.grand_canonical_energy</code>, <code>edits.chemical_potential</code>.</li>
+      <li><b>An extended move set.</b> Substitution (single-spin flip, Glauber: change one letter), adjacent transposition (spin
+      exchange, Kawasaki: swap two neighbouring letters), insertion and deletion (grand-canonical particle moves: add or remove a letter, so the word length changes) — each a classic
+      stochastic-dynamics move whose equilibrium law is the same Boltzmann distribution. Wells, descent and
+      basins are computed on this richer graph, so <code>waht</code>→<code>what</code> (a transposition) and
+      insertions/deletions that change word length are now representable. <i>Code:</i> <code>edits.landscape</code>,
+      <code>edits.basins</code>, <code>edits.best_neighbour</code>.</li>
+      <li><b>Approximation methods with declared trust regions</b> (the word lengths over which each was validated). Exact enumeration of all strings ends around $L=5$
+      (length 6 has $26^6\approx3\times10^8$ states). Longer words use maximum pseudo-likelihood (fit each letter's conditional probability given the other letters, in closed form, so no
+      partition function is needed), exact $\log Z_L$ up to $L=8$, and annealed importance sampling (a sampling estimate of $\log Z_L$) beyond; each method's
+      accuracy and failure modes are measured against the exact fits. <i>Code:</i> <code>longwords.fit_plm</code>,
+      <code>longwords.exact_log_partition</code>, <code>longwords.ais_log_partition</code>.</li>
+      <li><b>More data.</b> All 41 Twitter shards (up to $\approx1.6\times10^8$ tokens), monthly and yearly, plus
+      Austen, Gutenberg and Bluesky.</li>
+    </ul>
+    <p><b>Which tabs show which model.</b> Tabs 1 and 2 ("3D landscape — S&amp;B" and "Over time — S&amp;B") show
+    the S&amp;B model of fixed-length four-letter words. Tabs 3 and 4 ("3D landscape — New model" and "Over time —
+    New model") show the augmented model: the grand-canonical landscape over words of all modelled lengths and its
+    evolution over the Twitter timeline. The two are separate studies of the same idea; do not read numbers from
+    one as numbers about the other.</p>
+
+    <h2>References</h2>
+    <ul class="refs">
+      <li><b>S&amp;B</b> — G. J. Stephens &amp; W. Bialek, "Toward a statistical mechanics of four letter words",
+      arXiv:0801.0253 (2007), <a href="https://arxiv.org/abs/0801.0253">arxiv.org/abs/0801.0253</a>; published as
+      "Statistical mechanics of letters in words", <i>Phys. Rev. E</i> 81, 066119 (2010),
+      <a href="https://doi.org/10.1103/PhysRevE.81.066119">doi:10.1103/PhysRevE.81.066119</a>.</li>
+      <li><b>Jaynes 1957</b> — E. T. Jaynes, "Information theory and statistical mechanics", <i>Phys. Rev.</i> 106,
+      620–630 (1957), <a href="https://doi.org/10.1103/PhysRev.106.620">doi:10.1103/PhysRev.106.620</a>.</li>
+      <li><b>Schneidman, Still, Berry &amp; Bialek 2003</b> — "Network information and connected correlations",
+      <i>Phys. Rev. Lett.</i> 91, 238701 (2003), <a href="https://doi.org/10.1103/PhysRevLett.91.238701">doi:10.1103/PhysRevLett.91.238701</a>.</li>
+      <li><b>Darroch &amp; Ratcliff 1972</b> — "Generalized iterative scaling for log-linear models",
+      <i>Ann. Math. Stat.</i> 43(5), 1470–1480 (1972), <a href="https://doi.org/10.1214/aoms/1177692379">doi:10.1214/aoms/1177692379</a>.</li>
+      <li><b>Hopfield 1982</b> — J. J. Hopfield, "Neural networks and physical systems with emergent collective
+      computational abilities", <i>PNAS</i> 79(8), 2554–2558 (1982), <a href="https://doi.org/10.1073/pnas.79.8.2554">doi:10.1073/pnas.79.8.2554</a>.</li>
+      <li><b>Csiszár 1975</b> — I. Csiszár, "I-divergence geometry of probability distributions and minimization
+      problems", <i>Ann. Probab.</i> 3(1), 146–158 (1975), <a href="https://doi.org/10.1214/aop/1176996454">doi:10.1214/aop/1176996454</a>.</li>
+      <li><b>Wainwright &amp; Jordan 2008</b> — "Graphical models, exponential families, and variational
+      inference", <i>Found. Trends Mach. Learn.</i> 1(1–2), 1–305 (2008), <a href="https://doi.org/10.1561/2200000001">doi:10.1561/2200000001</a>.</li>
+      <li><b>Chen &amp; Rosenfeld 2000</b> — "A survey of smoothing techniques for ME models", <i>IEEE Trans.
+      Speech Audio Process.</i> 8(1), 37–50 (2000), <a href="https://doi.org/10.1109/89.817452">doi:10.1109/89.817452</a>.</li>
+      <li><b>Gould, Lucidi, Roma &amp; Toint 1999</b> — "Solving the trust-region subproblem using the Lanczos
+      method", <i>SIAM J. Optim.</i> 9(2), 504–525 (1999), <a href="https://doi.org/10.1137/S1052623497322735">doi:10.1137/S1052623497322735</a>.</li>
+      <li><b>Boyd &amp; Vandenberghe 2004</b> — <i>Convex Optimization</i>, Cambridge University Press (2004),
+      §9.5.1 (Newton decrement), <a href="https://web.stanford.edu/~boyd/cvxbook/">web.stanford.edu/~boyd/cvxbook</a>.</li>
+      <li><b>Zwanzig 1954</b> — R. W. Zwanzig, "High-temperature equation of state by a perturbation method.
+      I. Nonpolar gases", <i>J. Chem. Phys.</i> 22, 1420 (1954), <a href="https://doi.org/10.1063/1.1740409">doi:10.1063/1.1740409</a>.</li>
+      <li><b>Lewis et&nbsp;al. 2025</b> — "Scalable emulation of protein equilibrium ensembles with generative deep
+      learning", <i>Science</i> 389(6761), 2025, <a href="https://doi.org/10.1126/science.adv9817">doi:10.1126/science.adv9817</a>.
+      Their 2-D free-energy maps are plotted in the plane of the two slowest time-lagged independent components
+      (tICA) of the sampled structures (their Fig.&nbsp;3 caption).</li>
+      <li><b>Pérez-Hernández, Paul, Giorgino, De Fabritiis &amp; Noé 2013</b> — "Identification of slow molecular
+      order parameters for Markov model construction", <i>J. Chem. Phys.</i> 139, 015102 (2013),
+      <a href="https://doi.org/10.1063/1.4811489">doi:10.1063/1.4811489</a>.</li>
+      <li><b>Wu &amp; Noé 2020</b> — "Variational approach for learning Markov processes from time series data",
+      <i>J. Nonlinear Sci.</i> 30, 23–66 (2020), <a href="https://doi.org/10.1007/s00332-019-09567-y">doi:10.1007/s00332-019-09567-y</a>;
+      arXiv:1707.04659.</li>
+      <li><b>Venna &amp; Kaski 2001</b> — "Neighborhood preservation in nonlinear projection methods: an
+      experimental study", in <i>Proc. ICANN 2001</i> (LNCS 2130), 485–491,
+      <a href="https://doi.org/10.1007/3-540-44668-0_68">doi:10.1007/3-540-44668-0_68</a>.</li>
+      <li><b>Data and lexica</b> — Twitter: <code>enryu43/twitter100m_tweets</code>,
+      <a href="https://huggingface.co/datasets/enryu43/twitter100m_tweets">huggingface.co/datasets/enryu43/twitter100m_tweets</a>;
+      web2: Webster's Second International (1934) word list, <a href="https://github.com/freebsd/freebsd-src/blob/main/share/dict/web2">freebsd-src/share/dict/web2</a>.</li>
+    </ul>
+
+  </div></div>
+</section>

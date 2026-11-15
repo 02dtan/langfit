@@ -1,0 +1,81 @@
+{
+ "N": 156879957.0,
+ "converged": true,
+ "cells": {
+  "las_": {
+   "top_word": "last",
+   "top_share": 0.9959297105571951,
+   "word_ratio_emp_over_p2": 4.539196348399498
+  },
+  "tim_": {
+   "top_word": "time",
+   "top_share": 0.9990502976552722,
+   "word_ratio_emp_over_p2": 1.867020533551588
+  },
+  "gam_": {
+   "top_word": "game",
+   "top_share": 0.9989375984088837,
+   "word_ratio_emp_over_p2": 6.213589398566978
+  },
+  "sur_": {
+   "top_word": "sure",
+   "top_share": 0.9852684397228297,
+   "word_ratio_emp_over_p2": 4.412913580553924
+  },
+  "wa_t": {
+   "top_word": "want",
+   "top_share": 0.7109207958383013,
+   "word_ratio_emp_over_p2": 3.1587517880465104
+  },
+  "la_t": {
+   "top_word": "last",
+   "top_share": 0.999476995613008,
+   "word_ratio_emp_over_p2": 4.539196348399498
+  },
+  "ci_y": {
+   "top_word": "city",
+   "top_share": 0.9998549147624229,
+   "word_ratio_emp_over_p2": 52.82297019119441
+  },
+  "we_e": {
+   "top_word": "were",
+   "top_share": 0.9986639036176497,
+   "word_ratio_emp_over_p2": 3.470817643700911
+  },
+  "m_et": {
+   "top_word": "meet",
+   "top_share": 0.99793107855511,
+   "word_ratio_emp_over_p2": 243.96581316168192
+  },
+  "d_es": {
+   "top_word": "does",
+   "top_share": 0.9539178464346824,
+   "word_ratio_emp_over_p2": 41.6980312504784
+  },
+  "w_nt": {
+   "top_word": "want",
+   "top_share": 0.8232156750831314,
+   "word_ratio_emp_over_p2": 3.1587517880465104
+  },
+  "p_rt": {
+   "top_word": "part",
+   "top_share": 0.9446663446533403,
+   "word_ratio_emp_over_p2": 5.022595317611767
+  },
+  "_oes": {
+   "top_word": "does",
+   "top_share": 0.7165740988748676,
+   "word_ratio_emp_over_p2": 41.6980312504784
+  },
+  "_eam": {
+   "top_word": "team",
+   "top_share": 0.9914450347934775,
+   "word_ratio_emp_over_p2": 4.428717063939309
+  },
+  "_eet": {
+   "top_word": "meet",
+   "top_share": 0.8405064824096937,
+   "word_ratio_emp_over_p2": 243.96581316168192
+  }
+ }
+}
